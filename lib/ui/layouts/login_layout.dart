@@ -22,14 +22,14 @@ class LoginLayout extends StatelessWidget {
                 bottom: 100.h,
               ),
               child: Image.asset(
-                LoginWidgetConstant.loginLogoImagePath,
+                LoginWidgetConstants.loginLogoImagePath,
                 fit: BoxFit.contain,
                 height: 270.h,
               ),
             ),
             Text(
-              LoginWidgetConstant.loginToContinue,
-              style: TextStyle(color: AppColor.greyFF9098B1, fontSize: 35.sp),
+              LoginWidgetConstants.loginToContinue,
+              style: TextStyle(color: AppColors.greyFF9098B1, fontSize: 35.sp),
             ),
             Container(
               child: Column(
@@ -39,8 +39,8 @@ class LoginLayout extends StatelessWidget {
                       top: 55.h,
                     ),
                     child: InputField(
-                      labelText: LoginWidgetConstant.phoneNumber,
-                      commonColor: AppColor.greenFF61C53D,
+                      labelText: LoginWidgetConstants.phoneNumber,
+                      commonColor: AppColors.greenFF61C53D,
                       keyboardType: TextInputType.phone,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
@@ -52,8 +52,8 @@ class LoginLayout extends StatelessWidget {
                       top: 30.h,
                     ),
                     child: InputField(
-                      labelText: LoginWidgetConstant.password,
-                      commonColor: AppColor.greenFF61C53D,
+                      labelText: LoginWidgetConstants.password,
+                      commonColor: AppColors.greenFF61C53D,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
                     ),
@@ -65,14 +65,14 @@ class LoginLayout extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 37.w),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: AppColor.greenFF61C53D,
+                        primary: AppColors.greenFF61C53D,
                         minimumSize: Size(
                           double.infinity,
                           130.h,
                         ),
                       ),
                       onPressed: () {},
-                      child: Text(LoginWidgetConstant.login),
+                      child: Text(LoginWidgetConstants.login),
                     ),
                   ),
                 ],
@@ -81,7 +81,7 @@ class LoginLayout extends StatelessWidget {
             TextButton(
               onPressed: () {},
               child: Text(
-                LoginWidgetConstant.forgetPassword,
+                LoginWidgetConstants.forgetPassword,
               ),
             ),
             Container(
@@ -102,9 +102,9 @@ class LoginLayout extends StatelessWidget {
                       horizontal: 20.w,
                     ),
                     child: Text(
-                      LoginWidgetConstant.or,
+                      LoginWidgetConstants.or,
                       style: TextStyle(
-                        color: AppColor.greyFF9098B1,
+                        color: AppColors.greyFF9098B1,
                         fontSize: 33.sp,
                       ),
                     ),
@@ -123,9 +123,9 @@ class LoginLayout extends StatelessWidget {
               ),
               child: ElevatedButton(
                 onPressed: () {},
-                child: Text(LoginWidgetConstant.createNewAccount),
+                child: Text(LoginWidgetConstants.createNewAccount),
                 style: ElevatedButton.styleFrom(
-                  primary: AppColor.orangeFFF5670A,
+                  primary: AppColors.orangeFFF5670A,
                   minimumSize: Size(double.infinity, 80.h),
                 ),
               ),

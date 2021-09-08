@@ -11,15 +11,18 @@ class SellerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize:
-          Size(DeviceConstant.logicalWidth, DeviceConstant.logicalHeight),
+          Size(DeviceConstants.logicalWidth, DeviceConstants.logicalHeight),
       builder: () => MaterialApp(
-        title: AppConstant.appTitle,
+        title: AppConstants.appTitle,
         theme: ThemeData(
           primarySwatch: Colors.green,
-          primaryColor: AppConstant.primaryColor,
-          accentColor: AppConstant.accentColor,
+          primaryColor: AppConstants.primaryColor,
+          accentColor: AppConstants.accentColor,
         ),
-        home: LoginLayout(),
+        initialRoute: Routes.initial,
+        routes: {
+          Routes.login: (context) => const LoginLayout(),
+        },
       ),
     );
   }
