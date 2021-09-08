@@ -38,6 +38,7 @@ dependencies:
   location: ^4.3.0
   mapbox_gl: 0.10.0
   flutter_screenutil: ^5.0.0+2
+  country_code_picker: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -53,7 +54,6 @@ flutter:
     - assets/env/.env_testing
     - assets/env/.env_production
     - assets/images/
-        
 
   uses-material-design: true
 
