@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seller_app/ui/widgets/login_widget.dart';
+import 'package:seller_app/ui/layouts/login_layout.dart';
 import 'package:seller_app/utils/env_util.dart';
 import '../utils/constants.dart';
 
@@ -19,7 +19,7 @@ class SellerApp extends StatelessWidget {
           primaryColor: AppConstant.primaryColor,
           accentColor: AppConstant.accentColor,
         ),
-        home: LoginWidget(),
+        home: LoginLayout(),
       ),
     );
   }

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:seller_app/utils/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoginWidget extends StatelessWidget {
-  const LoginWidget({Key? key}) : super(key: key);
+class LoginLayout extends StatelessWidget {
+  const LoginLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
