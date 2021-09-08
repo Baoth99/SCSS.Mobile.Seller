@@ -28,6 +28,7 @@ class AppColors {
   static const Color greyFF9098B1 = const Color(0xFF9098B1);
   static const Color white = Colors.white;
   static const Color black = Colors.black;
+  static const Color greyFFDADADA = const Color(0xFFDADADA);
 }
 
 class ImagesPaths {

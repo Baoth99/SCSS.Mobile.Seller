@@ -59,53 +59,63 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                       margin: EdgeInsets.symmetric(
                         vertical: 80.0.h,
                       ),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: AppColors.greyFF9098B1,
+                      child: IntrinsicHeight(
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.greyFF9098B1,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(17.0.r),
+                                ),
                               ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(17.0.r),
+                              child: CountryCodePicker(
+                                initialSelection: Symbols.vietnamISOCode,
+                                favorite: <String>[
+                                  Symbols.vietnamCallingCode,
+                                  Symbols.vietnamISOCode,
+                                ],
+                                showCountryOnly: false,
+                                showOnlyCountryWhenClosed: false,
+                                alignLeft: false,
+                                enabled: false,
+                                textStyle: TextStyle(
+                                  fontSize: 40.sp,
+                                  color: AppColors.black,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
-                            child: CountryCodePicker(
-                              initialSelection: Symbols.vietnamISOCode,
-                              favorite: <String>[
-                                Symbols.vietnamCallingCode,
-                                Symbols.vietnamISOCode,
-                              ],
-                              showCountryOnly: false,
-                              showOnlyCountryWhenClosed: false,
-                              alignLeft: false,
-                              enabled: false,
-                            ),
-                          ),
-                          Expanded(
-                            child: CustomBorderTextFormField(
-                              hintText: PhoneNumberSignupLayoutConstants
-                                  .phoneNumberHint,
-                              hintStyle: _getPhoneNumberTextStyle(),
-                              style: _getPhoneNumberTextStyle(),
-                              commonColor: AppColors.greyFF9098B1,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 26.0.h,
-                                horizontal: 15.0.w,
+                            Expanded(
+                              child: CustomBorderTextFormField(
+                                hintText: PhoneNumberSignupLayoutConstants
+                                    .phoneNumberHint,
+                                hintStyle: _getPhoneNumberTextStyle(
+                                  color: AppColors.greyFFDADADA,
+                                ),
+                                style: _getPhoneNumberTextStyle(),
+                                commonColor: AppColors.greyFF9098B1,
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: 26.0.h,
+                                  horizontal: 15.0.w,
+                                ),
+                                cirularBorderRadius: 17.0.r,
+                                padding: EdgeInsets.only(
+                                  left: 25.0.w,
+                                ),
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
                               ),
-                              cirularBorderRadius: 17.0.r,
-                              padding: EdgeInsets.only(
-                                left: 25.0.w,
-                              ),
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -133,9 +143,11 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
     );
   }
 
-  TextStyle _getPhoneNumberTextStyle() {
+  TextStyle _getPhoneNumberTextStyle({Color? color}) {
     return TextStyle(
-      fontSize: 85.sp,
+      fontSize: 90.sp,
+      fontWeight: FontWeight.w500,
+      color: color,
     );
   }
 }
