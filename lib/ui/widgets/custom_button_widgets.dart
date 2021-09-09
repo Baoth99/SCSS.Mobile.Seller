@@ -16,7 +16,7 @@ class CustomButton extends StatelessWidget {
   }) : super(key: key);
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double? width;
   final double? height;
   final double? fontSize;

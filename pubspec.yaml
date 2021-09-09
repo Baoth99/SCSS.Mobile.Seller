@@ -39,6 +39,8 @@ dependencies:
   mapbox_gl: 0.10.0
   flutter_screenutil: ^5.0.0+2
   country_code_picker: ^2.0.2
+  formz: ^0.4.0
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:

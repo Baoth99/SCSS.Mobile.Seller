@@ -28,6 +28,7 @@ class AppColors {
   static const Color greyFF9098B1 = const Color(0xFF9098B1);
   static const Color white = Colors.white;
   static const Color black = Colors.black;
+  static const Color red = Colors.red;
   static const Color greyFFDADADA = const Color(0xFFDADADA);
 }
 
@@ -57,4 +58,5 @@ class PhoneNumberSignupLayoutConstants {
       'Chào mừng bạn! Số điện thoại của bạn là gì?';
   static const String phoneNumberHint = '87654321';
   static const String next = 'Tiếp';
+  static const String errorText = 'Số di động có vẻ không chính xác.';
 }
