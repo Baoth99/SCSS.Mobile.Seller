@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/models/models.dart';
 import 'package:bloc/bloc.dart';
 
@@ -11,10 +12,12 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   @override
   Stream<SignupState> mapEventToState(SignupEvent event) async* {
     if (event is PhoneNumberChanged) {
-      final phoneNumber = PhoneNumber.dirty(event.phoneNumber);
+      final phoneNumber = event.phoneNumber.isEmpty
+          ? PhoneNumber.pure()
+          : PhoneNumber.dirty(event.phoneNumber);
       yield state.copyWith(
-        phoneNumber:
-            event.phoneNumber.isEmpty ? PhoneNumber.pure() : phoneNumber,
+        phoneNumber: phoneNumber,
+        status: Formz.validate([phoneNumber]),
       );
     }
   }

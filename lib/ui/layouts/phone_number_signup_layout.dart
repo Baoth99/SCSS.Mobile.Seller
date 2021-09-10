@@ -7,6 +7,7 @@ import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/utils/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 class PhoneNumberSignupLayout extends StatefulWidget {
   const PhoneNumberSignupLayout({Key? key}) : super(key: key);
@@ -131,7 +132,7 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                         BlocBuilder<SignupBloc, SignupState>(
                           builder: (context, state) => CustomButton(
                             text: PhoneNumberSignupLayoutConstants.next,
-                            onPressed: state.phoneNumber.valid ? () {} : null,
+                            onPressed: state.status.isValid ? () {} : null,
                             fontSize: 55.sp,
                             width: double.infinity,
                             height: 130.0.h,
