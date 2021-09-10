@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_border_text_form_field_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_button_widget.dart';
-import 'package:seller_app/utils/constants.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 
 class LoginLayout extends StatelessWidget {
   const LoginLayout({Key? key}) : super(key: key);
@@ -30,9 +31,10 @@ class LoginLayout extends StatelessWidget {
                 height: 270.h,
               ),
             ),
-            Text(
-              LoginLayoutConstants.loginToContinue,
-              style: TextStyle(color: AppColors.greyFF9098B1, fontSize: 35.sp),
+            CustomText(
+              text: LoginLayoutConstants.loginToContinue,
+              color: AppColors.greyFF9098B1,
+              fontSize: 35.sp,
             ),
             Container(
               child: Column(
@@ -115,12 +117,10 @@ class LoginLayout extends StatelessWidget {
                     margin: EdgeInsets.symmetric(
                       horizontal: 20.w,
                     ),
-                    child: Text(
-                      LoginLayoutConstants.or,
-                      style: TextStyle(
-                        color: AppColors.greyFF9098B1,
-                        fontSize: 33.sp,
-                      ),
+                    child: CustomText(
+                      text: LoginLayoutConstants.or,
+                      color: AppColors.greyFF9098B1,
+                      fontSize: 33.sp,
                     ),
                   ),
                   Expanded(

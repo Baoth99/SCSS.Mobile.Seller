@@ -18,7 +18,7 @@ class SignupState extends Equatable {
 
   @override
   List<Object?> get props => [
-        this.phoneNumber,
-        this.status,
+        phoneNumber,
+        status,
       ];
 }

@@ -7,13 +7,13 @@ part 'events/signup_event.dart';
 part 'states/signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  SignupBloc() : super(SignupState());
+  SignupBloc() : super(const SignupState());
 
   @override
   Stream<SignupState> mapEventToState(SignupEvent event) async* {
     if (event is PhoneNumberChanged) {
       final phoneNumber = event.phoneNumber.isEmpty
-          ? PhoneNumber.pure()
+          ? const PhoneNumber.pure()
           : PhoneNumber.dirty(event.phoneNumber);
       yield state.copyWith(
         phoneNumber: phoneNumber,
@@ -36,7 +36,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         //API
         await Future<void>.delayed(
           const Duration(
-            seconds: 5,
+            seconds: 2,
           ),
         );
         //API

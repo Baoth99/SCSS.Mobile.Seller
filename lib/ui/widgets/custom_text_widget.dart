@@ -18,17 +18,14 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Text(
-        text,
-        style: TextStyle(
-          color: this.color,
-          fontSize: this.fontSize,
-          fontWeight: this.fontWeight,
-        ),
-        textAlign: this.textAlign,
+    return Text(
+      text,
+      style: TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
       ),
+      textAlign: textAlign,
     );
   }
 }

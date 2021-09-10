@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/signup_bloc.dart';
+import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
-import 'package:seller_app/utils/constants.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -28,14 +29,8 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
     return Container(
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              AppIcons.arrowBack,
-              color: AppColors.black,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          leading: const ArrowBackIconButton(
+            color: AppColors.black,
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
@@ -48,20 +43,20 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
               if (state.status.isSubmissionSuccess) {
                 dialogFuture ?? Navigator.pop(context);
                 // navigate to otp code
-
+                Navigator.pushNamed(context, Routes.otpFillSignup);
               }
               if (state.status.isSubmissionInProgress) {
                 dialogFuture = showDialog(
                   context: context,
-                  builder: (_) => ButtonPressedProgressIndicatorDialog(),
+                  builder: (_) => const ButtonPressedProgressIndicatorDialog(),
                 );
               }
             },
             child: Container(
               margin: EdgeInsets.only(
                 bottom: 80.0.h,
-                left: 48.0.w,
-                right: 48.0.w,
+                left: AppConstants.horizontalScaffoldMargin.w,
+                right: AppConstants.horizontalScaffoldMargin.w,
               ),
               child: Column(
                 children: <Widget>[
@@ -127,12 +122,11 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                           builder: (context, state) => Visibility(
                             child: Container(
                               width: double.infinity,
-                              child: Text(
-                                PhoneNumberSignupLayoutConstants.errorText,
-                                style: TextStyle(
-                                  fontSize: 40.sp,
-                                  color: AppColors.red,
-                                ),
+                              child: CustomText(
+                                text:
+                                    PhoneNumberSignupLayoutConstants.errorText,
+                                fontSize: 40.sp,
+                                color: AppColors.red,
                               ),
                             ),
                             visible: state.phoneNumber.invalid,
@@ -206,6 +200,7 @@ class PhoneNumberInput extends StatelessWidget {
     return BlocBuilder<SignupBloc, SignupState>(
       builder: (context, state) {
         return TextFormField(
+          autofocus: true,
           decoration: InputDecoration(
             hintText: PhoneNumberSignupLayoutConstants.phoneNumberHint,
             hintStyle: _getPhoneNumberTextStyle(
@@ -217,7 +212,7 @@ class PhoneNumberInput extends StatelessWidget {
             ),
             border: _getOutLineInputBorder(),
             focusedBorder: _getOutLineInputBorder(
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: AppColors.greyFF9098B1,
               ),
             ),
@@ -234,7 +229,7 @@ class PhoneNumberInput extends StatelessWidget {
           },
           textInputAction: TextInputAction.go,
           onFieldSubmitted: (value) {
-            this.onSubmit?.call(context);
+            onSubmit?.call(context);
           },
         );
       },
@@ -252,7 +247,7 @@ class PhoneNumberInput extends StatelessWidget {
   OutlineInputBorder _getOutLineInputBorder({BorderSide? borderSide}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(17.0.r),
-      borderSide: borderSide ?? BorderSide(),
+      borderSide: borderSide ?? const BorderSide(),
     );
   }
 }
@@ -269,10 +264,10 @@ class ButtonPressedProgressIndicatorDialog extends StatelessWidget {
         ),
         alignment: FractionalOffset.centerLeft,
         height: 200.0.h,
-        child: new Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            CircularProgressIndicator(
+            const CircularProgressIndicator(
               value: null,
               semanticsLabel:
                   PhoneNumberSignupLayoutConstants.progressIndicatorLabel,
@@ -281,12 +276,10 @@ class ButtonPressedProgressIndicatorDialog extends StatelessWidget {
               margin: EdgeInsets.only(
                 left: 50.w,
               ),
-              child: Text(
-                PhoneNumberSignupLayoutConstants.waiting,
-                style: TextStyle(
-                  fontSize: 50.sp,
-                  fontWeight: FontWeight.w400,
-                ),
+              child: CustomText(
+                text: PhoneNumberSignupLayoutConstants.waiting,
+                fontSize: 50.sp,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ],

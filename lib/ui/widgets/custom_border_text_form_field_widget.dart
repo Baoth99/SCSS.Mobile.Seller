@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seller_app/utils/constants.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomBorderTextFormField extends StatefulWidget {
@@ -41,7 +41,7 @@ class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: widget.padding ?? EdgeInsets.all(0),
+      padding: widget.padding ?? const EdgeInsets.all(0),
       child: TextFormField(
         keyboardType: widget.keyboardType,
         obscureText: widget.obscureText,
@@ -67,7 +67,7 @@ class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
               widget.cirularBorderRadius ?? 0.r,
             ),
           ),
-          contentPadding: widget.contentPadding ?? EdgeInsets.all(0),
+          contentPadding: widget.contentPadding,
         ),
       ),
     );

@@ -2,16 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/ui/layouts/login_layout.dart';
+import 'package:seller_app/ui/layouts/otp_fill_signup_layout.dart';
 import 'package:seller_app/ui/layouts/phone_number_signup_layout.dart';
-import '../utils/constants.dart';
+import '../constants/constants.dart';
 
 class SellerApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize:
-          Size(DeviceConstants.logicalWidth, DeviceConstants.logicalHeight),
+      designSize: const Size(
+          DeviceConstants.logicalWidth, DeviceConstants.logicalHeight),
       builder: () => MaterialApp(
         title: AppConstants.appTitle,
         theme: ThemeData(
@@ -24,6 +25,7 @@ class SellerApp extends StatelessWidget {
           Routes.login: (context) => const LoginLayout(),
           Routes.signupAddingPhoneNumber: (context) =>
               const PhoneNumberSignupLayout(),
+          Routes.otpFillSignup: (context) => const OTPFillPhoneNumberLayout(),
         },
       ),
     );
