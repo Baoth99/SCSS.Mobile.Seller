@@ -47,6 +47,8 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
               Future? dialogFuture;
               if (state.status.isSubmissionSuccess) {
                 dialogFuture ?? Navigator.pop(context);
+                // navigate to otp code
+
               }
               if (state.status.isSubmissionInProgress) {
                 dialogFuture = showDialog(
@@ -112,7 +114,9 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                                     padding: EdgeInsets.only(
                                       left: 25.0.w,
                                     ),
-                                    child: PhoneNumberInput(),
+                                    child: PhoneNumberInput(
+                                      onSubmit: _onSubmit,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -142,21 +146,9 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        BlocBuilder<SignupBloc, SignupState>(
-                          builder: (context, state) => CustomButton(
-                            text: PhoneNumberSignupLayoutConstants.next,
-                            onPressed: state.status.isValidated
-                                ? () {
-                                    _onPressedNextButton(context);
-                                  }
-                                : null,
-                            fontSize: 55.sp,
-                            width: double.infinity,
-                            height: 130.0.h,
-                            color: AppColors.greenFF61C53D,
-                            circularBorderRadius: 17.0.r,
-                          ),
-                        ),
+                        NextButton(
+                          onSubmit: _onSubmit,
+                        )
                       ],
                     ),
                   ),
@@ -169,15 +161,45 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
     );
   }
 
-  void _onPressedNextButton(BuildContext context) {
+  void _onSubmit(BuildContext context) {
     context.read<SignupBloc>().add(
           ButtonPressedToGetOTP(),
         );
   }
 }
 
+class NextButton extends StatelessWidget {
+  const NextButton({Key? key, this.onSubmit}) : super(key: key);
+
+  final void Function(BuildContext context)? onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignupBloc, SignupState>(
+      builder: (context, state) => CustomButton(
+        text: PhoneNumberSignupLayoutConstants.next,
+        onPressed: state.status.isValidated
+            ? () {
+                onSubmit?.call(context);
+              }
+            : null,
+        fontSize: 55.sp,
+        width: double.infinity,
+        height: 130.0.h,
+        color: AppColors.greenFF61C53D,
+        circularBorderRadius: 17.0.r,
+      ),
+    );
+  }
+}
+
 class PhoneNumberInput extends StatelessWidget {
-  const PhoneNumberInput({Key? key}) : super(key: key);
+  const PhoneNumberInput({
+    Key? key,
+    this.onSubmit,
+  }) : super(key: key);
+
+  final void Function(BuildContext context)? onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +232,10 @@ class PhoneNumberInput extends StatelessWidget {
                   PhoneNumberChanged(phoneNumber: value),
                 );
           },
-          textInputAction: TextInputAction.done,
+          textInputAction: TextInputAction.go,
+          onFieldSubmitted: (value) {
+            this.onSubmit?.call(context);
+          },
         );
       },
     );
