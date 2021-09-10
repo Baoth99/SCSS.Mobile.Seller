@@ -27,21 +27,34 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(
-                AppIcons.arrowBack,
-                color: AppColors.black,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              AppIcons.arrowBack,
+              color: AppColors.black,
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            elevation: 0,
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          body: BlocProvider(
-            create: (_) => SignupBloc(),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 0,
+        ),
+        body: BlocProvider(
+          create: (_) => SignupBloc(),
+          child: BlocListener<SignupBloc, SignupState>(
+            listener: (context, state) {
+              Future? dialogFuture;
+              if (state.status.isSubmissionSuccess) {
+                dialogFuture ?? Navigator.pop(context);
+              }
+              if (state.status.isSubmissionInProgress) {
+                dialogFuture = showDialog(
+                  context: context,
+                  builder: (_) => ButtonPressedProgressIndicatorDialog(),
+                );
+              }
+            },
             child: Container(
               margin: EdgeInsets.only(
                 bottom: 80.0.h,
@@ -132,7 +145,11 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                         BlocBuilder<SignupBloc, SignupState>(
                           builder: (context, state) => CustomButton(
                             text: PhoneNumberSignupLayoutConstants.next,
-                            onPressed: state.status.isValid ? () {} : null,
+                            onPressed: state.status.isValidated
+                                ? () {
+                                    _onPressedNextButton(context);
+                                  }
+                                : null,
                             fontSize: 55.sp,
                             width: double.infinity,
                             height: 130.0.h,
@@ -146,8 +163,16 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                 ],
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
+  }
+
+  void _onPressedNextButton(BuildContext context) {
+    context.read<SignupBloc>().add(
+          ButtonPressedToGetOTP(),
+        );
   }
 }
 
@@ -203,6 +228,45 @@ class PhoneNumberInput extends StatelessWidget {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(17.0.r),
       borderSide: borderSide ?? BorderSide(),
+    );
+  }
+}
+
+class ButtonPressedProgressIndicatorDialog extends StatelessWidget {
+  const ButtonPressedProgressIndicatorDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        padding: EdgeInsets.only(
+          left: 60.0.w,
+        ),
+        alignment: FractionalOffset.centerLeft,
+        height: 200.0.h,
+        child: new Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CircularProgressIndicator(
+              value: null,
+              semanticsLabel:
+                  PhoneNumberSignupLayoutConstants.progressIndicatorLabel,
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                left: 50.w,
+              ),
+              child: Text(
+                PhoneNumberSignupLayoutConstants.waiting,
+                style: TextStyle(
+                  fontSize: 50.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

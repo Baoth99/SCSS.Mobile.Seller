@@ -59,4 +59,7 @@ class PhoneNumberSignupLayoutConstants {
   static const String phoneNumberHint = '87654321';
   static const String next = 'Tiếp';
   static const String errorText = 'Số di động có vẻ không chính xác.';
+  static const String progressIndicatorLabel =
+      'Progress Indicator for waiting to register Phone Nubmer.';
+  static const String waiting = 'Vui lòng chờ...';
 }

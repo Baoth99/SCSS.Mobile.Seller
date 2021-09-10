@@ -15,3 +15,5 @@ class PhoneNumberChanged extends SignupEvent {
   @override
   List<Object> get props => [this.phoneNumber];
 }
+
+class ButtonPressedToGetOTP extends SignupEvent {}

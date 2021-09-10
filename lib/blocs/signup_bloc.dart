@@ -20,5 +20,31 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         status: Formz.validate([phoneNumber]),
       );
     }
+    if (event is ButtonPressedToGetOTP) {
+      final phoneNumber = PhoneNumber.dirty(state.phoneNumber.value);
+
+      yield state.copyWith(
+        phoneNumber: phoneNumber,
+        status: Formz.validate([phoneNumber]),
+      );
+
+      if (state.status.isValidated) {
+        yield state.copyWith(
+          status: FormzStatus.submissionInProgress,
+        );
+
+        //API
+        await Future<void>.delayed(
+          const Duration(
+            seconds: 5,
+          ),
+        );
+        //API
+
+        yield state.copyWith(
+          status: FormzStatus.submissionSuccess,
+        );
+      }
+    }
   }
 }
