@@ -25,4 +25,9 @@ class Symbols {
   static const String vietnamISOCode = 'VN';
   static const String vietnamCallingCode = '+84';
   static const String empty = '';
+  static const String space = ' ';
+}
+
+class Others {
+  static const int otpLength = 6;
 }

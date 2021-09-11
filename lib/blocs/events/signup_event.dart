@@ -1,10 +1,7 @@
 part of '../signup_bloc.dart';
 
-abstract class SignupEvent extends Equatable {
+abstract class SignupEvent extends AbstractEvent {
   const SignupEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 class PhoneNumberChanged extends SignupEvent {

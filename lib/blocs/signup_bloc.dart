@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/models.dart';
 import 'package:bloc/bloc.dart';
+import 'package:seller_app/utils/common_utils.dart';
 
 part 'events/signup_event.dart';
 part 'states/signup_state.dart';
@@ -19,8 +21,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         phoneNumber: phoneNumber,
         status: Formz.validate([phoneNumber]),
       );
-    }
-    if (event is ButtonPressedToGetOTP) {
+    } else if (event is ButtonPressedToGetOTP) {
       final phoneNumber = PhoneNumber.dirty(state.phoneNumber.value);
 
       yield state.copyWith(
@@ -33,13 +34,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           status: FormzStatus.submissionInProgress,
         );
 
-        //API
-        await Future<void>.delayed(
-          const Duration(
-            seconds: 2,
-          ),
-        );
-        //API
+        //API test
+        await CommonTest.delay();
+        //API test
 
         yield state.copyWith(
           status: FormzStatus.submissionSuccess,

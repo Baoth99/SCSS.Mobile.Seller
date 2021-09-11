@@ -25,7 +25,19 @@ class PhoneNumberSignupLayoutConstants {
 class OTPFillPhoneNumberLayoutConstants {
   static const String title = 'Nhập mã gồm 6 chữ số đã gửi tới';
   static const String notHaveCode = 'Chưa nhận được mã?';
-  static const String requetsNewCode = 'Yêu cầu mã mới trong 00:30';
+
   static const String hintText = '000000';
-  static const int inputLength = 6;
+  static const int inputLength = Others.otpLength;
+  static const int countdown = 30;
+
+  static const String requetsNewCode =
+      'Yêu cầu mã mới trong 00:$replacedSecondVar';
+  static const String replacedSecondVar = '{second}';
+
+  static const String checking = 'Đang kiểm tra.';
+  static const String checkingProgressIndicator = 'Checking Progress Indicator';
+
+  static const String resendOTP = 'Đang gửi lại mã OTP';
+  static const String resendOTPProgressIndicator =
+      'Resend OTP Progress Indicator';
 }

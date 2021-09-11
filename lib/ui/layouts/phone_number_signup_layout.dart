@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
-import 'package:seller_app/blocs/signup_bloc.dart';
+import 'package:seller_app/blocs/blocs.dart';
+import 'package:seller_app/ui/layouts/otp_fill_signup_layout.dart';
 import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -9,6 +10,7 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:seller_app/utils/common_utils.dart';
 
 class PhoneNumberSignupLayout extends StatefulWidget {
   const PhoneNumberSignupLayout({Key? key}) : super(key: key);
@@ -35,20 +37,28 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
         ),
-        body: BlocProvider(
+        body: BlocProvider<SignupBloc>(
           create: (_) => SignupBloc(),
           child: BlocListener<SignupBloc, SignupState>(
             listener: (context, state) {
-              Future? dialogFuture;
               if (state.status.isSubmissionSuccess) {
-                dialogFuture ?? Navigator.pop(context);
+                Navigator.pop(context);
+
                 // navigate to otp code
-                Navigator.pushNamed(context, Routes.otpFillSignup);
+                Navigator.pushNamed(
+                  context,
+                  Routes.otpFillSignup,
+                  arguments: OTPFillPhoneNumberArgument(
+                    state.phoneNumber.value,
+                    Symbols.vietnamCallingCode,
+                  ),
+                );
               }
               if (state.status.isSubmissionInProgress) {
-                dialogFuture = showDialog(
-                  context: context,
-                  builder: (_) => const ButtonPressedProgressIndicatorDialog(),
+                WidgetUtils.showCustomDialog(
+                  context,
+                  PhoneNumberSignupLayoutConstants.waiting,
+                  PhoneNumberSignupLayoutConstants.progressIndicatorLabel,
                 );
               }
             },
@@ -222,11 +232,7 @@ class PhoneNumberInput extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
           ],
           style: _getPhoneNumberTextStyle(),
-          onChanged: (value) {
-            context.read<SignupBloc>().add(
-                  PhoneNumberChanged(phoneNumber: value),
-                );
-          },
+          onChanged: _onChanged(context),
           textInputAction: TextInputAction.go,
           onFieldSubmitted: (value) {
             onSubmit?.call(context);
@@ -234,6 +240,12 @@ class PhoneNumberInput extends StatelessWidget {
         );
       },
     );
+  }
+
+  void Function(String)? _onChanged(BuildContext context) {
+    return (value) => context.read<SignupBloc>().add(
+          PhoneNumberChanged(phoneNumber: value),
+        );
   }
 
   TextStyle _getPhoneNumberTextStyle({Color? color}) {
@@ -248,43 +260,6 @@ class PhoneNumberInput extends StatelessWidget {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(17.0.r),
       borderSide: borderSide ?? const BorderSide(),
-    );
-  }
-}
-
-class ButtonPressedProgressIndicatorDialog extends StatelessWidget {
-  const ButtonPressedProgressIndicatorDialog({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        padding: EdgeInsets.only(
-          left: 60.0.w,
-        ),
-        alignment: FractionalOffset.centerLeft,
-        height: 200.0.h,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const CircularProgressIndicator(
-              value: null,
-              semanticsLabel:
-                  PhoneNumberSignupLayoutConstants.progressIndicatorLabel,
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                left: 50.w,
-              ),
-              child: CustomText(
-                text: PhoneNumberSignupLayoutConstants.waiting,
-                fontSize: 50.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
