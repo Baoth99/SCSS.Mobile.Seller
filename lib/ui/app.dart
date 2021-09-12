@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seller_app/ui/layouts/login_layout.dart';
-import 'package:seller_app/ui/layouts/otp_fill_signup_layout.dart';
-import 'package:seller_app/ui/layouts/phone_number_signup_layout.dart';
+import 'layouts/layouts.dart';
 import '../constants/constants.dart';
 
 class SellerApp extends StatelessWidget {
@@ -23,9 +21,9 @@ class SellerApp extends StatelessWidget {
         initialRoute: Routes.initial,
         routes: {
           Routes.login: (context) => const LoginLayout(),
-          Routes.signupAddingPhoneNumber: (context) =>
-              const PhoneNumberSignupLayout(),
-          Routes.otpFillSignup: (context) => const OTPFillPhoneNumberLayout(),
+          Routes.signupPhoneNumber: (context) =>
+              const SignupPhoneNumberLayout(),
+          Routes.signupOTP: (context) => const SignupOTPLayout(),
         },
       ),
     );

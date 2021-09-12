@@ -8,11 +8,12 @@ import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:formz/formz.dart';
 
-class OTPFillPhoneNumberArgument {
-  OTPFillPhoneNumberArgument(
+class SignupOTPArgument {
+  SignupOTPArgument(
     this.dialingCode,
     this.phoneNumber,
   );
@@ -21,16 +22,20 @@ class OTPFillPhoneNumberArgument {
   final String phoneNumber;
 }
 
-class OTPFillPhoneNumberLayout extends StatelessWidget {
-  const OTPFillPhoneNumberLayout({Key? key}) : super(key: key);
+class SignupOTPLayout extends StatelessWidget {
+  const SignupOTPLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments
-        as OTPFillPhoneNumberArgument?;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as SignupOTPArgument?;
 
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: FunctionalWidgets.buildAppBar(
+        context: context,
+        color: AppColors.black,
+        elevation: 0,
+      ),
       body: BlocProvider<SignupOTPBloc>(
         create: (_) => SignupOTPBloc()
           ..add(
@@ -48,7 +53,7 @@ class OTPFillPhoneNumberLayout extends StatelessWidget {
             }
 
             if (state.status.isSubmissionInProgress) {
-              WidgetUtils.showCustomDialog(
+              FunctionalWidgets.showCustomDialog(
                 context,
                 OTPFillPhoneNumberLayoutConstants.checking,
                 OTPFillPhoneNumberLayoutConstants.checkingProgressIndicator,
@@ -64,7 +69,7 @@ class OTPFillPhoneNumberLayout extends StatelessWidget {
             }
 
             if (state.timerStatus == TimerStatus.processed) {
-              WidgetUtils.showCustomDialog(
+              FunctionalWidgets.showCustomDialog(
                 context,
                 OTPFillPhoneNumberLayoutConstants.resendOTP,
                 OTPFillPhoneNumberLayoutConstants.resendOTPProgressIndicator,
@@ -80,16 +85,6 @@ class OTPFillPhoneNumberLayout extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      leading: const ArrowBackIconButton(
-        color: AppColors.black,
-      ),
-      elevation: 0,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 }
@@ -273,6 +268,8 @@ class _RequestCodeButtonState extends State<RequestCodeButton> {
                 context.read<SignupOTPBloc>().add(OTPResendPressed());
 
                 _start = OTPFillPhoneNumberLayoutConstants.countdown;
+
+                //TODO: check condition pure, valid, failue
                 _startTimer();
               }
             }

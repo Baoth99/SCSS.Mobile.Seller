@@ -61,19 +61,26 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
         );
       }
     } else if (event is OTPResendPressed) {
-      yield state.copyWith(
-        timerStatus: TimerStatus.processed,
-      );
+      //TODO: may be have the "isFailure" after integrate API
+      if (state.status.isInvalid ||
+          state.status.isPure ||
+          state.status.isInvalid) {
+        yield state.copyWith(
+          timerStatus: TimerStatus.processed,
+        );
 
-      //API
-      await CommonTest.delay();
-      //API
+        //TODO: API
+        await CommonTest.delay();
+        //
 
-      var t = state.copyWith(
-        timerStatus: TimerStatus.resent,
-      );
+        yield state.copyWith(
+          timerStatus: TimerStatus.resent,
+        );
 
-      yield t;
+        yield state.copyWith(
+          timerStatus: TimerStatus.nothing,
+        );
+      }
     }
   }
 }

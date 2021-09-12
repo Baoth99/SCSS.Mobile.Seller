@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/blocs.dart';
-import 'package:seller_app/ui/layouts/otp_fill_signup_layout.dart';
+import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -10,17 +10,17 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:seller_app/utils/common_utils.dart';
+import 'package:seller_app/ui/widgets/function_widgets.dart';
 
-class PhoneNumberSignupLayout extends StatefulWidget {
-  const PhoneNumberSignupLayout({Key? key}) : super(key: key);
+class SignupPhoneNumberLayout extends StatefulWidget {
+  const SignupPhoneNumberLayout({Key? key}) : super(key: key);
 
   @override
-  _PhoneNumberSignupLayoutState createState() =>
-      _PhoneNumberSignupLayoutState();
+  _SignupPhoneNumberLayoutState createState() =>
+      _SignupPhoneNumberLayoutState();
 }
 
-class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
+class _SignupPhoneNumberLayoutState extends State<SignupPhoneNumberLayout> {
   @override
   void initState() {
     super.initState();
@@ -30,13 +30,8 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        appBar: AppBar(
-          leading: const ArrowBackIconButton(
-            color: AppColors.black,
-          ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-        ),
+        appBar: FunctionalWidgets.buildAppBar(
+            context: context, color: AppColors.black, elevation: 0),
         body: BlocProvider<SignupBloc>(
           create: (_) => SignupBloc(),
           child: BlocListener<SignupBloc, SignupState>(
@@ -47,15 +42,15 @@ class _PhoneNumberSignupLayoutState extends State<PhoneNumberSignupLayout> {
                 // navigate to otp code
                 Navigator.pushNamed(
                   context,
-                  Routes.otpFillSignup,
-                  arguments: OTPFillPhoneNumberArgument(
+                  Routes.signupOTP,
+                  arguments: SignupOTPArgument(
                     state.phoneNumber.value,
                     Symbols.vietnamCallingCode,
                   ),
                 );
               }
               if (state.status.isSubmissionInProgress) {
-                WidgetUtils.showCustomDialog(
+                FunctionalWidgets.showCustomDialog(
                   context,
                   PhoneNumberSignupLayoutConstants.waiting,
                   PhoneNumberSignupLayoutConstants.progressIndicatorLabel,

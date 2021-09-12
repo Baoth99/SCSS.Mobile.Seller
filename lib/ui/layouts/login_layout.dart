@@ -152,7 +152,7 @@ class LoginLayout extends StatelessWidget {
 
   // Navigate the screen to first screen of signup screen
   void _navigateToSignup(BuildContext context) {
-    Navigator.pushNamed(context, Routes.signupAddingPhoneNumber);
+    Navigator.pushNamed(context, Routes.signupPhoneNumber);
   }
 
   TextStyle _getInputFieldTextStyle() {
