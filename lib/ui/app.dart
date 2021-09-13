@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seller_app/ui/layouts/login_layout.dart';
-import 'package:seller_app/utils/env_util.dart';
-import '../utils/constants.dart';
+import 'layouts/layouts.dart';
+import '../constants/constants.dart';
 
 class SellerApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize:
-          Size(DeviceConstants.logicalWidth, DeviceConstants.logicalHeight),
+      designSize: const Size(
+          DeviceConstants.logicalWidth, DeviceConstants.logicalHeight),
       builder: () => MaterialApp(
         title: AppConstants.appTitle,
         theme: ThemeData(
@@ -21,7 +20,15 @@ class SellerApp extends StatelessWidget {
         ),
         initialRoute: Routes.initial,
         routes: {
+          //login
           Routes.login: (context) => const LoginLayout(),
+
+          //signup
+          Routes.signupPhoneNumber: (context) =>
+              const SignupPhoneNumberLayout(),
+          Routes.signupOTP: (context) => const SignupOTPLayout(),
+          Routes.signupInformation: (context) =>
+              const SignupInformationLayout(),
         },
       ),
     );

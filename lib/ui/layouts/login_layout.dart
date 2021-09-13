@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seller_app/utils/constants.dart';
+import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
+import 'package:seller_app/ui/widgets/custom_border_text_form_field_widget.dart';
+import 'package:seller_app/ui/widgets/custom_text_button_widget.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 
 class LoginLayout extends StatelessWidget {
   const LoginLayout({Key? key}) : super(key: key);
@@ -22,14 +26,15 @@ class LoginLayout extends StatelessWidget {
                 bottom: 100.h,
               ),
               child: Image.asset(
-                LoginWidgetConstants.loginLogoImagePath,
+                LoginLayoutConstants.loginLogoImagePath,
                 fit: BoxFit.contain,
                 height: 270.h,
               ),
             ),
-            Text(
-              LoginWidgetConstants.loginToContinue,
-              style: TextStyle(color: AppColors.greyFF9098B1, fontSize: 35.sp),
+            CustomText(
+              text: LoginLayoutConstants.loginToContinue,
+              color: AppColors.greyFF9098B1,
+              fontSize: 35.sp,
             ),
             Container(
               child: Column(
@@ -38,56 +43,68 @@ class LoginLayout extends StatelessWidget {
                     padding: EdgeInsets.only(
                       top: 55.h,
                     ),
-                    child: InputField(
-                      labelText: LoginWidgetConstants.phoneNumber,
+                    child: CustomBorderTextFormField(
+                      style: _getInputFieldTextStyle(),
+                      labelText: LoginLayoutConstants.phoneNumber,
                       commonColor: AppColors.greenFF61C53D,
                       keyboardType: TextInputType.phone,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
                       ],
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 60.0.w,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 45.0.w,
+                        vertical: 42.0.h,
+                      ),
+                      cirularBorderRadius: 15.0.r,
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(
                       top: 30.h,
                     ),
-                    child: InputField(
-                      labelText: LoginWidgetConstants.password,
+                    child: CustomBorderTextFormField(
+                      style: _getInputFieldTextStyle(),
+                      labelText: LoginLayoutConstants.password,
                       commonColor: AppColors.greenFF61C53D,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 60.0.w,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 45.0.w,
+                        vertical: 42.0.h,
+                      ),
+                      cirularBorderRadius: 15.0.r,
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: 55.h,
+                  CustomButton(
+                    text: LoginLayoutConstants.login,
+                    fontSize: 45.sp,
+                    onPressed: () {},
+                    color: AppColors.greenFF61C53D,
+                    height: 130.h,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 60.w,
+                      vertical: 50.0.h,
                     ),
-                    margin: EdgeInsets.symmetric(horizontal: 37.w),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: AppColors.greenFF61C53D,
-                        minimumSize: Size(
-                          double.infinity,
-                          130.h,
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: Text(LoginWidgetConstants.login),
-                    ),
+                    circularBorderRadius: 15.0.r,
                   ),
                 ],
               ),
             ),
-            TextButton(
+            CustomTextButton(
+              text: LoginLayoutConstants.forgetPassword,
               onPressed: () {},
-              child: Text(
-                LoginWidgetConstants.forgetPassword,
-              ),
             ),
             Container(
               margin: EdgeInsets.symmetric(
                 horizontal: 35.w,
-                vertical: 150.h,
+                vertical: 100.h,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -101,12 +118,10 @@ class LoginLayout extends StatelessWidget {
                     margin: EdgeInsets.symmetric(
                       horizontal: 20.w,
                     ),
-                    child: Text(
-                      LoginWidgetConstants.or,
-                      style: TextStyle(
-                        color: AppColors.greyFF9098B1,
-                        fontSize: 33.sp,
-                      ),
+                    child: CustomText(
+                      text: LoginLayoutConstants.or,
+                      color: AppColors.greyFF9098B1,
+                      fontSize: 33.sp,
                     ),
                   ),
                   Expanded(
@@ -117,73 +132,35 @@ class LoginLayout extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
+            CustomButton(
+              text: LoginLayoutConstants.signup,
+              onPressed: () {
+                _navigateToSignup(context);
+              },
+              fontSize: 44.sp,
+              color: AppColors.orangeFFF5670A,
+              width: double.infinity,
+              height: 100.h,
               padding: EdgeInsets.symmetric(
-                horizontal: 200.w,
+                horizontal: 180.w,
               ),
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text(LoginWidgetConstants.createNewAccount),
-                style: ElevatedButton.styleFrom(
-                  primary: AppColors.orangeFFF5670A,
-                  minimumSize: Size(double.infinity, 80.h),
-                ),
-              ),
+              circularBorderRadius: 15.0.r,
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class InputField extends StatefulWidget {
-  const InputField({
-    Key? key,
-    required this.labelText,
-    required this.commonColor,
-    this.keyboardType = TextInputType.multiline,
-    this.obscureText = false,
-    this.inputFormatters = const [],
-  }) : super(key: key);
-  final String labelText;
-  final Color commonColor;
-  final TextInputType keyboardType;
-  final bool obscureText;
-  final List<TextInputFormatter> inputFormatters;
+  // Navigate the screen to first screen of signup screen
+  void _navigateToSignup(BuildContext context) {
+    Navigator.pushNamed(context, Routes.signupPhoneNumber);
+  }
 
-  @override
-  _InputFieldState createState() => _InputFieldState();
-}
-
-class _InputFieldState extends State<InputField> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 35.0.w,
-      ),
-      child: TextFormField(
-        keyboardType: widget.keyboardType,
-        obscureText: widget.obscureText,
-        inputFormatters: widget.inputFormatters,
-        enableSuggestions: false,
-        autocorrect: false,
-        decoration: InputDecoration(
-          labelText: widget.labelText,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-            15.0.r,
-          )),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: widget.commonColor),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 35.0.w,
-            vertical: 42.0.h,
-          ),
-        ),
-      ),
+  TextStyle _getInputFieldTextStyle() {
+    return TextStyle(
+      fontSize: 52.sp,
+      fontWeight: FontWeight.w400,
     );
   }
 }
