@@ -20,10 +20,15 @@ class SellerApp extends StatelessWidget {
         ),
         initialRoute: Routes.initial,
         routes: {
+          //login
           Routes.login: (context) => const LoginLayout(),
+
+          //signup
           Routes.signupPhoneNumber: (context) =>
               const SignupPhoneNumberLayout(),
           Routes.signupOTP: (context) => const SignupOTPLayout(),
+          Routes.signupInformation: (context) =>
+              const SignupInformationLayout(),
         },
       ),
     );

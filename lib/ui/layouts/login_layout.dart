@@ -83,6 +83,7 @@ class LoginLayout extends StatelessWidget {
                   ),
                   CustomButton(
                     text: LoginLayoutConstants.login,
+                    fontSize: 45.sp,
                     onPressed: () {},
                     color: AppColors.greenFF61C53D,
                     height: 130.h,
@@ -136,11 +137,12 @@ class LoginLayout extends StatelessWidget {
               onPressed: () {
                 _navigateToSignup(context);
               },
+              fontSize: 44.sp,
               color: AppColors.orangeFFF5670A,
               width: double.infinity,
-              height: 80.h,
+              height: 100.h,
               padding: EdgeInsets.symmetric(
-                horizontal: 200.w,
+                horizontal: 180.w,
               ),
               circularBorderRadius: 15.0.r,
             ),

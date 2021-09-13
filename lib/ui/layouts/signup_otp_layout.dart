@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/blocs.dart';
-import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,6 +33,7 @@ class SignupOTPLayout extends StatelessWidget {
       appBar: FunctionalWidgets.buildAppBar(
         context: context,
         color: AppColors.black,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
       ),
       body: BlocProvider<SignupOTPBloc>(
@@ -62,6 +62,10 @@ class SignupOTPLayout extends StatelessWidget {
 
             if (state.status.isSubmissionSuccess) {
               Navigator.pop(context);
+              Navigator.popAndPushNamed(
+                context,
+                Routes.signupInformation,
+              );
             }
 
             if (state.timerStatus == TimerStatus.resent) {
@@ -81,7 +85,7 @@ class SignupOTPLayout extends StatelessWidget {
               horizontal: AppConstants.horizontalScaffoldMargin.w,
               vertical: 50.0.h,
             ),
-            child: const BodyWidget(),
+            child: const _Body(),
           ),
         ),
       ),
@@ -89,8 +93,8 @@ class SignupOTPLayout extends StatelessWidget {
   }
 }
 
-class BodyWidget extends StatelessWidget {
-  const BodyWidget({Key? key}) : super(key: key);
+class _Body extends StatelessWidget {
+  const _Body({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

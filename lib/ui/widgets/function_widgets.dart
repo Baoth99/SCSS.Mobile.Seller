@@ -14,8 +14,7 @@ class FunctionalWidgets {
         color: color,
       ),
       elevation: elevation,
-      backgroundColor:
-          backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: backgroundColor,
     );
   }
 

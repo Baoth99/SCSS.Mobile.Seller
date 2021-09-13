@@ -14,6 +14,8 @@ class AppConstants {
 
 class AppIcons {
   static const IconData arrowBack = Icons.arrow_back_ios_new_outlined;
+  static const IconData visibility = Icons.visibility_outlined;
+  static const IconData visibilityOff = Icons.visibility_off_outlined;
 }
 
 class ImagesPaths {

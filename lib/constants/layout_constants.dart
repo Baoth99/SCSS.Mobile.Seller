@@ -41,3 +41,34 @@ class OTPFillPhoneNumberLayoutConstants {
   static const String resendOTPProgressIndicator =
       'Resend OTP Progress Indicator';
 }
+
+class SignupInformationLayoutConstants {
+  static const String title = 'Hoàn tất đăng ký';
+
+  static const String labelName = 'Họ Tên';
+  static const String hintName = 'Nhập tối thiểu 1 ký tự';
+  static const String errorName = 'Xin hãy nhập tối thiểu 1 ký tự!';
+
+  static const String labelGender = 'Giới tính';
+  static const String male = 'Nam';
+  static const String female = 'Nữ';
+
+  static const String labelPassword = 'Mật khẩu';
+  static const String hintPassword = 'Nhập tối thiểu 1 ký tự';
+  static const String errorPassword = 'Xin hãy nhập tối thiểu 1 ký tự!';
+
+  static const String labelRepeatPassword = 'Nhập lại mật khẩu';
+  static const String hintRepeatPassword = 'Nhập giống với mật khẩu';
+  static const String errorRepeatPassword = 'Xác nhận mật khẩu không khớp!';
+
+  static const String labelSubmmitedButton = 'Xong';
+
+  //input constants
+  static const double circularBorderRadius = 17.0;
+
+  //show dialog
+  static const String waiting = 'Vui lòng đợi...';
+  static const String titleDialog = 'Thông báo';
+  static const String success = 'Bạn đã đăng ký thành công';
+  static const String btnDialogName = 'Xác nhận';
+}
