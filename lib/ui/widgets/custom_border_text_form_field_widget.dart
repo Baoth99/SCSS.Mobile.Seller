@@ -18,6 +18,8 @@ class CustomBorderTextFormField extends StatefulWidget {
     this.contentPadding,
     this.cirularBorderRadius,
     this.style,
+    this.onChanged,
+    this.errorText,
   }) : super(key: key);
   final String? labelText;
   final Color commonColor;
@@ -31,6 +33,8 @@ class CustomBorderTextFormField extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final double? cirularBorderRadius;
   final TextStyle? style;
+  final void Function(String)? onChanged;
+  final String? errorText;
 
   @override
   _CustomBorderTextFormFieldState createState() =>
@@ -43,6 +47,7 @@ class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
     return Container(
       padding: widget.padding ?? const EdgeInsets.all(0),
       child: TextFormField(
+        onChanged: widget.onChanged,
         keyboardType: widget.keyboardType,
         obscureText: widget.obscureText,
         inputFormatters: widget.inputFormatters,
@@ -50,6 +55,7 @@ class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
         autocorrect: false,
         style: widget.style,
         decoration: InputDecoration(
+          errorText: widget.errorText,
           labelText: widget.labelText,
           labelStyle: widget.labelStyle,
           hintText: widget.hintText,

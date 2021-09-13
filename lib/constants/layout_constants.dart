@@ -3,12 +3,21 @@ part of 'constants.dart';
 class LoginLayoutConstants {
   static const String loginLogoImagePath = ImagesPaths.loginLogo;
   static const String loginToContinue = 'Đăng nhập để tiếp tục';
+
+  //Phone number
   static const String phoneNumber = 'Số điện thoại';
+  static const String errorPhoneNumber = 'Hãy nhập số điện thoại';
+
+  //Password
   static const String password = 'Mật khẩu';
+  static const String errorPassword = 'Hãy nhập mật khẩu';
+
   static const String login = 'Đăng nhập';
   static const String forgetPassword = 'Quên mật khẩu?';
   static const String or = 'HOẶC';
   static const String signup = 'Tạo tài khoản mới';
+
+  static const String waiting = 'Vui lòng đợi...';
 }
 
 class PhoneNumberSignupLayoutConstants {

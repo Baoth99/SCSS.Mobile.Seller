@@ -36,7 +36,9 @@ class SignupInformationLayout extends StatelessWidget {
               }
 
               if (state.status.isSubmissionSuccess) {
-                Navigator.pop(context);
+                Navigator.of(context).popUntil(
+                  (route) => route.settings.name == Routes.signupInformation,
+                );
                 CoolAlert.show(
                   context: context,
                   type: CoolAlertType.success,
