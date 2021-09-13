@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seller_app/blocs/blocs.dart';
+import 'package:seller_app/blocs/signup_otp_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,7 +61,9 @@ class SignupOTPLayout extends StatelessWidget {
             }
 
             if (state.status.isSubmissionSuccess) {
-              Navigator.pop(context);
+              Navigator.of(context).popUntil(
+                (route) => route.settings.name == Routes.signupOTP,
+              );
               Navigator.popAndPushNamed(
                 context,
                 Routes.signupInformation,
@@ -69,7 +71,9 @@ class SignupOTPLayout extends StatelessWidget {
             }
 
             if (state.timerStatus == TimerStatus.resent) {
-              Navigator.pop(context);
+              Navigator.of(context).popUntil(
+                (route) => route.settings.name == Routes.signupOTP,
+              );
             }
 
             if (state.timerStatus == TimerStatus.processed) {

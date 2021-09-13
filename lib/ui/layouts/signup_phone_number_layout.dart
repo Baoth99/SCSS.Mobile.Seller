@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
-import 'package:seller_app/blocs/blocs.dart';
+import 'package:seller_app/blocs/signup_bloc.dart';
 import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -28,7 +28,9 @@ class SignupPhoneNumberLayout extends StatelessWidget {
           child: BlocListener<SignupBloc, SignupState>(
             listener: (context, state) {
               if (state.status.isSubmissionSuccess) {
-                Navigator.pop(context);
+                Navigator.of(context).popUntil(
+                  (route) => route.settings.name == Routes.signupPhoneNumber,
+                );
 
                 // navigate to otp code
                 Navigator.pushNamed(

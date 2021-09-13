@@ -4,9 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/models/models.dart';
-import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/utils/common_utils.dart';
-
 part 'states/signup_information_state.dart';
 part 'events/signup_information_event.dart';
 
