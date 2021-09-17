@@ -17,8 +17,8 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
       var newState = state.copyWith(
         phoneNumber: PhoneNumber.pure(
           CommonUtils.concatString(<String>[
-            event.phoneNumber,
             event.dialingCode,
+            event.phoneNumber,
           ]),
         ),
       );

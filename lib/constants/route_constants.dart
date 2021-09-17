@@ -11,4 +11,8 @@ class Routes {
   static const signupPhoneNumber = Symbols.forwardSlash + 'signupPhoneNumber';
   static const signupOTP = 'signupOTP';
   static const signupInformation = 'signupInformation';
+
+  //Booking
+  static const String bookingStart = 'bookingStart';
+  static const String bookingLocationPicker = 'bookingLocationPicker';
 }

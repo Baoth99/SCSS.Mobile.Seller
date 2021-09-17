@@ -5,8 +5,9 @@ class CommonUtils {
     return number.toString().padLeft(width, '0');
   }
 
-  static String concatString(List<String> strs) {
-    return strs.join(Symbols.space);
+  static String concatString(List<String> strs,
+      [String seperator = Symbols.space]) {
+    return strs.join(seperator);
   }
 }
 

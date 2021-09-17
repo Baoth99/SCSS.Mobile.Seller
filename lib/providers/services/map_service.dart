@@ -2,7 +2,7 @@ import 'package:location/location.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:mapbox_gl/mapbox_gl.dart';
 
-Future<LatLng> acquireCurrentLocation() async {
+Future<LatLng?> acquireCurrentLocation() async {
   // Initializes the plugin and starts listening for potential platform events
   Location location = new Location();
 
@@ -28,7 +28,7 @@ Future<LatLng> acquireCurrentLocation() async {
   if (permissionGranted == PermissionStatus.denied) {
     permissionGranted = await location.requestPermission();
     if (permissionGranted != PermissionStatus.granted) {
-      //return null;
+      return null;
     }
   }
 

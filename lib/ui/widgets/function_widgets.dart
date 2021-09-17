@@ -8,6 +8,7 @@ class FunctionalWidgets {
     Color? color,
     Color? backgroundColor,
     double? elevation,
+    List<Widget>? action,
   }) {
     return AppBar(
       leading: ArrowBackIconButton(
@@ -15,6 +16,7 @@ class FunctionalWidgets {
       ),
       elevation: elevation,
       backgroundColor: backgroundColor,
+      actions: action,
     );
   }
 

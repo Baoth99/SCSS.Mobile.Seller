@@ -21,14 +21,17 @@ class SellerApp extends StatelessWidget {
         initialRoute: Routes.initial,
         routes: {
           //login
-          Routes.login: (context) => const LoginLayout(),
+          Routes.login: (_) => const LoginLayout(),
 
           //signup
-          Routes.signupPhoneNumber: (context) =>
-              const SignupPhoneNumberLayout(),
-          Routes.signupOTP: (context) => const SignupOTPLayout(),
-          Routes.signupInformation: (context) =>
-              const SignupInformationLayout(),
+          Routes.signupPhoneNumber: (_) => const SignupPhoneNumberLayout(),
+          Routes.signupOTP: (_) => const SignupOTPLayout(),
+          Routes.signupInformation: (_) => const SignupInformationLayout(),
+
+          //Booking
+          Routes.bookingStart: (_) => const BookingStartLayout(),
+          Routes.bookingLocationPicker: (_) =>
+              const BookingLocationPickerLayout(),
         },
       ),
     );

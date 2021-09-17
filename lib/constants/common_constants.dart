@@ -7,8 +7,8 @@ class DeviceConstants {
 
 class AppConstants {
   static const String appTitle = "Seller";
-  static const Color primaryColor = AppColors.orangeFFF5670A;
-  static const Color accentColor = AppColors.greenFF61C53D;
+  static const Color primaryColor = AppColors.greenFF61C53D;
+  static const Color accentColor = AppColors.orangeFFF5670A;
   static const double horizontalScaffoldMargin = 48.0;
 }
 
@@ -16,6 +16,10 @@ class AppIcons {
   static const IconData arrowBack = Icons.arrow_back_ios_new_outlined;
   static const IconData visibility = Icons.visibility_outlined;
   static const IconData visibilityOff = Icons.visibility_off_outlined;
+  static const IconData place = Icons.place;
+  static const IconData event = Icons.event;
+  static const IconData feedOutlined = Icons.feed_outlined;
+  static const IconData search = Icons.search;
 }
 
 class ImagesPaths {
@@ -28,6 +32,7 @@ class Symbols {
   static const String vietnamCallingCode = '+84';
   static const String empty = '';
   static const String space = ' ';
+  static const String comma = ',';
 }
 
 class Others {

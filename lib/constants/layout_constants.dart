@@ -1,5 +1,11 @@
 part of 'constants.dart';
 
+class WidgetConstants {
+  static const double buttonCommonFrontSize = 50;
+  static const FontWeight buttonCommonFrontWeight = FontWeight.w500;
+  static const double buttonCommonHeight = 120;
+}
+
 class LoginLayoutConstants {
   static const String loginLogoImagePath = ImagesPaths.loginLogo;
   static const String loginToContinue = 'Đăng nhập để tiếp tục';
@@ -73,11 +79,27 @@ class SignupInformationLayoutConstants {
   static const String labelSubmmitedButton = 'Xong';
 
   //input constants
-  static const double circularBorderRadius = 17.0;
+  static const double circularBorderRadius = 15.0;
 
   //show dialog
   static const String waiting = 'Vui lòng đợi...';
   static const String titleDialog = 'Thông báo';
   static const String success = 'Bạn đã đăng ký thành công';
   static const String btnDialogName = 'Xác nhận';
+}
+
+class BookingStartLayoutConstants {
+  //common
+  static const double inputFontSize = 45;
+
+  //first page
+  static const String title = 'Đặt hẹn thu gom';
+  static const String subTitle = 'Chọn địa chỉ và thời gian thu gom mong muốn';
+
+  static const String placeHintText = 'Thu gom ở ...';
+
+  static const String timeHintText = 'Thời gian thu gom';
+
+  static const String noteHintText = 'Ghi chú cho người thu gom';
+  static const String firstButtonTitle = 'Tiếp';
 }

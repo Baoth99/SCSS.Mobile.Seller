@@ -19,6 +19,9 @@ class _GoongMapState extends State<GoongMap> {
         title: Text('Demo Map Seller'),
       ),
       body: MapboxMap(
+        onCameraTrackingDismissed: () {
+          print('moved to the moonshit ');
+        },
         accessToken: EnvMapSettingValue.accessToken,
         styleString: EnvMapSettingValue.mapStype,
         onStyleLoadedCallback: () async {},
