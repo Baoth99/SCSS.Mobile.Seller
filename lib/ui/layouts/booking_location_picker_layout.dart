@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/ui/layouts/booking_map_picker_layout.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
@@ -21,7 +22,15 @@ class BookingLocationPickerLayout extends StatelessWidget {
         elevation: 0,
         action: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) =>
+                      const BookingMapPickerLayout(),
+                ),
+              );
+            },
             icon: Icon(
               Icons.map_outlined,
               size: 60.sp,
@@ -137,8 +146,9 @@ class _MapResult extends StatelessWidget {
               )
             : state.status.isSubmissionInProgress
                 ? getLoadingAnimation()
-                : const Icon(
+                : Icon(
                     Icons.error,
+                    size: 180.sp,
                     color: AppColors.red,
                   );
       },

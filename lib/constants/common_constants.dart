@@ -24,6 +24,7 @@ class AppIcons {
 
 class ImagesPaths {
   static const String loginLogo = 'assets/images/seller_login_logo.png';
+  static const String markerPoint = 'assets/images/marker_point.png';
 }
 
 class Symbols {

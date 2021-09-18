@@ -1,7 +1,9 @@
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/models/request/predict_place_goong_map_request_model.dart';
+import 'package:seller_app/providers/models/request/reverse_geocoding_request_model.dart';
 import 'package:seller_app/providers/models/response/predict_place_goong_map_response_model.dart';
 import 'package:seller_app/providers/networks/goong_map_network.dart';
 import 'package:automap/automap.dart';
@@ -28,5 +30,17 @@ class GoongMapService {
             responseModel);
 
     return listAddressPrediction;
+  }
+
+  Future<String> getPlaceNameByLatlng(double latitude, double longitude) async {
+    //call api by net work
+    var responseModel = await _goongMapNetwork.getReverseGeocoding(
+      ReverseGeocodingRequestModel(latitude: latitude, longitude: longitude),
+    );
+    var firstResult = responseModel.results?[0];
+
+    var result = firstResult?.addressComponents?[0].longName ?? Symbols.empty;
+
+    return result;
   }
 }

@@ -5,3 +5,4 @@ part 'layout_constants.dart';
 part 'route_constants.dart';
 part 'color_constants.dart';
 part 'regex_constants.dart';
+part 'map_constants.dart';

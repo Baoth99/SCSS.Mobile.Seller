@@ -20,8 +20,18 @@ class _GoongMapState extends State<GoongMap> {
       ),
       body: MapboxMap(
         onCameraTrackingDismissed: () {
-          print('moved to the moonshit ');
+          print('onCameraTrackingDismissed');
         },
+        onCameraTrackingChanged: (mode) {
+          print('onCameraTrackingChanged');
+        },
+        onMapClick: (point, coordinates) {
+          print('onMapClick');
+        },
+        onMapLongClick: (point, coordinates) {
+          print('onMapLongClick');
+        },
+        myLocationEnabled: true,
         accessToken: EnvMapSettingValue.accessToken,
         styleString: EnvMapSettingValue.mapStype,
         onStyleLoadedCallback: () async {},

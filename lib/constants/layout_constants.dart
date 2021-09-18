@@ -103,3 +103,8 @@ class BookingStartLayoutConstants {
   static const String noteHintText = 'Ghi chú cho người thu gom';
   static const String firstButtonTitle = 'Tiếp';
 }
+
+class BookingMapPickerLayoutConstants {
+  static const String markerPath = ImagesPaths.markerPoint;
+  static const String submittedButton = 'Xác nhận';
+}
