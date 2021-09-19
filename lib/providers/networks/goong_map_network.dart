@@ -9,7 +9,16 @@ import 'package:seller_app/utils/env_util.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class GoongMapNetwork {
+abstract class GoongMapNetwork {
+  Future<PredictPlaceGoongMapResponseModel> getPredictions(
+      PredictPlaceGoongMapRequestModel requestModel);
+
+  Future<ReverseGeocodingResponseModel> getReverseGeocoding(
+      ReverseGeocodingRequestModel requestModel);
+}
+
+class GoongMapNetworkImpl implements GoongMapNetwork {
+  @override
   Future<PredictPlaceGoongMapResponseModel> getPredictions(
       PredictPlaceGoongMapRequestModel requestModel) async {
     // query string in url
@@ -54,6 +63,7 @@ class GoongMapNetwork {
     return responseModel;
   }
 
+  @override
   Future<ReverseGeocodingResponseModel> getReverseGeocoding(
       ReverseGeocodingRequestModel requestModel) async {
     // query string in url

@@ -8,8 +8,8 @@ void configureDependencies() async {
   getIt.registerSingleton<FirebaseNotification>(FirebaseNotification());
 
   // Network
-  getIt.registerLazySingleton<GoongMapNetwork>(() => GoongMapNetwork());
+  getIt.registerLazySingleton<GoongMapNetwork>(() => GoongMapNetworkImpl());
 
   // Service
-  getIt.registerLazySingleton<GoongMapService>(() => GoongMapService());
+  getIt.registerLazySingleton<GoongMapService>(() => GoongMapServiceImpl());
 }

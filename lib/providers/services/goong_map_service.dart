@@ -9,9 +9,16 @@ import 'package:seller_app/providers/networks/goong_map_network.dart';
 import 'package:automap/automap.dart';
 import 'package:seller_app/providers/services/map_service.dart';
 
-class GoongMapService {
+abstract class GoongMapService {
+  Future<List<AddressPrediction>> getPredictions(String predictionValue);
+
+  Future<String> getPlaceNameByLatlng(double latitude, double longitude);
+}
+
+class GoongMapServiceImpl implements GoongMapService {
   final _goongMapNetwork = getIt.get<GoongMapNetwork>();
 
+  @override
   Future<List<AddressPrediction>> getPredictions(String predictionValue) async {
     final latLng = await acquireCurrentLocation();
 
@@ -32,6 +39,7 @@ class GoongMapService {
     return listAddressPrediction;
   }
 
+  @override
   Future<String> getPlaceNameByLatlng(double latitude, double longitude) async {
     //call api by net work
     var responseModel = await _goongMapNetwork.getReverseGeocoding(
