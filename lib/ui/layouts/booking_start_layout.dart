@@ -624,20 +624,27 @@ class _NoteField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const TextField(
-      keyboardType: TextInputType.multiline,
-      maxLines: null,
-      maxLength: 200,
-      decoration: InputDecoration(
-        hintStyle: TextStyle(
-          color: AppColors.greyFF9098B1,
-        ),
-        isDense: true,
-        contentPadding: EdgeInsets.all(0),
-        border: InputBorder.none,
-        hintText: BookingStartLayoutConstants.noteHintText,
-      ),
-      textInputAction: TextInputAction.done,
+    return BlocBuilder<BookingBloc, BookingState>(
+      builder: (context, state) {
+        return TextField(
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          maxLength: 200,
+          decoration: const InputDecoration(
+            hintStyle: TextStyle(
+              color: AppColors.greyFF9098B1,
+            ),
+            isDense: true,
+            contentPadding: EdgeInsets.all(0),
+            border: InputBorder.none,
+            hintText: BookingStartLayoutConstants.noteHintText,
+          ),
+          textInputAction: TextInputAction.done,
+          onChanged: (value) {
+            context.read<BookingBloc>().add(BookingNoteChanged(value));
+          },
+        );
+      },
     );
   }
 }

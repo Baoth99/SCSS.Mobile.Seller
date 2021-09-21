@@ -47,6 +47,10 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         fromTime: BookingTime.dirty(event.fromTime),
         toTime: BookingTime.dirty(event.toTime),
       );
+    } else if (event is BookingNoteChanged) {
+      yield state.copyWith(
+        note: event.value,
+      );
     } else if (event is BookingStateInitial) {
       yield state.refresh();
     }

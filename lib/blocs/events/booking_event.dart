@@ -49,8 +49,17 @@ class BookingTimePicked extends BookingEvent {
 
   @override
   List<Object> get props => [
-        this.date,
-        this.fromTime,
-        this.toTime,
+        date,
+        fromTime,
+        toTime,
       ];
+}
+
+class BookingNoteChanged extends BookingEvent {
+  const BookingNoteChanged(this.value);
+
+  final String value;
+
+  @override
+  List<String> get props => [value];
 }
