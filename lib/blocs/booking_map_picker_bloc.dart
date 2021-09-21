@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:get_it/get_it.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
-import 'package:seller_app/providers/services/map_service.dart';
 
 part 'states/booking_map_picker_state.dart';
 part 'events/booking_map_picker_event.dart';
@@ -24,11 +23,10 @@ class BookingMapPickerBloc
         try {
           yield state.copyWith(
             status: FormzStatus.submissionInProgress,
-            placeName: 'Đang tải',
           );
 
           //API
-          String result = await goongMapService.getPlaceNameByLatlng(
+          var result = await goongMapService.getPlaceNameByLatlng(
             event.latitude,
             event.longitude,
           );
@@ -38,14 +36,14 @@ class BookingMapPickerBloc
           yield state.copyWith(
             latitude: event.latitude,
             longitude: event.longitude,
-            placeName: result,
+            placeName: result.name,
+            address: result.address,
             status: FormzStatus.submissionSuccess,
           );
         } catch (e) {
           yield state.copyWith(
             latitude: event.latitude,
             longitude: event.longitude,
-            placeName: 'Oops!',
             status: FormzStatus.submissionFailure,
           );
         }

@@ -107,4 +107,6 @@ class BookingStartLayoutConstants {
 class BookingMapPickerLayoutConstants {
   static const String markerPath = ImagesPaths.markerPoint;
   static const String submittedButton = 'Xác nhận';
+
+  static const int minuteInterval = 15;
 }

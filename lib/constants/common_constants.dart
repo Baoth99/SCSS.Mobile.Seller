@@ -28,14 +28,42 @@ class ImagesPaths {
 }
 
 class Symbols {
+  static const String vietnamLanguageCode = 'vi';
   static const String forwardSlash = '/';
   static const String vietnamISOCode = 'VN';
   static const String vietnamCallingCode = '+84';
   static const String empty = '';
   static const String space = ' ';
   static const String comma = ',';
+  static const String minus = '-';
 }
 
 class Others {
   static const int otpLength = 6;
+}
+
+class VietnameseDate {
+  static const today = 'Hôm nay';
+  static const tomorrow = 'Ngày mai';
+  static const weekdayParam = '{weekday}';
+  static const dayParam = '{day}';
+  static const monthParam = '{month}';
+
+  static const pattern = '$weekdayParam, $dayParam thg $monthParam';
+
+  static const weekdayMap = <int, String>{
+    DateTime.monday: 'Th 2',
+    DateTime.tuesday: 'Th 3',
+    DateTime.wednesday: 'Th 4',
+    DateTime.thursday: 'Th 5',
+    DateTime.friday: 'Th 6',
+    DateTime.saturday: 'Th 7',
+    DateTime.sunday: 'CN',
+  };
+}
+
+class CompareConstants {
+  static const equal = 0;
+  static const larger = 1;
+  static const less = -1;
 }

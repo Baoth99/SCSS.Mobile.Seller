@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/blocs/booking_bloc.dart';
+import 'package:seller_app/blocs/booking_time_bloc.dart';
 import 'layouts/layouts.dart';
 import '../constants/constants.dart';
 
@@ -11,28 +15,46 @@ class SellerApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(
           DeviceConstants.logicalWidth, DeviceConstants.logicalHeight),
-      builder: () => MaterialApp(
-        title: AppConstants.appTitle,
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-          primaryColor: AppConstants.primaryColor,
-          accentColor: AppConstants.accentColor,
+      builder: () => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => BookingBloc(),
+          ),
+          BlocProvider(
+            create: (context) => BookingTimeBloc(),
+          ),
+        ],
+        child: MaterialApp(
+          title: AppConstants.appTitle,
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale(Symbols.vietnamLanguageCode),
+          ],
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+            primaryColor: AppConstants.primaryColor,
+            accentColor: AppConstants.accentColor,
+          ),
+          initialRoute: Routes.initial,
+          routes: {
+            //login
+            Routes.login: (_) => const LoginLayout(),
+
+            //signup
+            Routes.signupPhoneNumber: (_) => const SignupPhoneNumberLayout(),
+            Routes.signupOTP: (_) => const SignupOTPLayout(),
+            Routes.signupInformation: (_) => const SignupInformationLayout(),
+
+            //Booking
+            Routes.bookingStart: (_) => const BookingStartLayout(),
+            Routes.bookingLocationPicker: (_) =>
+                const BookingLocationPickerLayout(),
+          },
         ),
-        initialRoute: Routes.initial,
-        routes: {
-          //login
-          Routes.login: (_) => const LoginLayout(),
-
-          //signup
-          Routes.signupPhoneNumber: (_) => const SignupPhoneNumberLayout(),
-          Routes.signupOTP: (_) => const SignupOTPLayout(),
-          Routes.signupInformation: (_) => const SignupInformationLayout(),
-
-          //Booking
-          Routes.bookingStart: (_) => const BookingStartLayout(),
-          Routes.bookingLocationPicker: (_) =>
-              const BookingLocationPickerLayout(),
-        },
       ),
     );
   }

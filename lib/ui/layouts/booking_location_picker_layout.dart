@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/booking_map_picker_layout.dart';
@@ -172,20 +173,43 @@ class _MapResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: 15.h,
-      ),
-      height: 120.h,
-      child: Row(
-        children: <Widget>[
-          _resultTileIcon(),
-          Expanded(
-            child: _resultTileContent(main, sub, context),
+    return BlocBuilder<BookingLocationPickerBloc, BookingLocationPickerState>(
+      builder: (context, state) {
+        return InkWell(
+          onTap: _onItemTap(
+            context,
           ),
-        ],
-      ),
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              vertical: 15.h,
+            ),
+            height: 120.h,
+            child: Row(
+              children: <Widget>[
+                _resultTileIcon(),
+                Expanded(
+                  child: _resultTileContent(main, sub, context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Function()? _onItemTap(BuildContext context) {
+    return () {
+      // add to bloc booking
+      context.read<BookingBloc>().add(
+            BookingAddressTapped(placeId),
+          );
+      //pop
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName(Routes.bookingStart),
+      );
+    };
   }
 
   static Widget _resultTileContent(

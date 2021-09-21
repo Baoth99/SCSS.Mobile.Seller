@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_map_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/services/map_service.dart';
@@ -26,12 +27,18 @@ class BookingMapPickerLayout extends StatelessWidget {
           title: BlocBuilder<BookingMapPickerBloc, BookingMapPickerState>(
             builder: (context, state) {
               return CustomText(
-                text: state.placeName,
+                text: state.status.isSubmissionSuccess
+                    ? state.placeName
+                    : state.status.isSubmissionInProgress
+                        ? 'Đang tải'
+                        : state.status.isSubmissionFailure
+                            ? 'Oops!'
+                            : Symbols.empty,
               );
             },
           ),
         ),
-        body: _Body(),
+        body: const _Body(),
       ),
     );
   }
@@ -46,14 +53,14 @@ class _Body extends StatelessWidget {
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: <Widget>[
-        _Map(),
+        const _Map(),
         Image.asset(
           BookingMapPickerLayoutConstants.markerPath,
           width: 80.w,
         ),
         Positioned(
           bottom: 40.h,
-          child: _SubmittedButton(),
+          child: const _SubmittedButton(),
         ),
       ],
     );
@@ -84,7 +91,7 @@ class __MapState extends State<_Map> {
     return Stack(
       children: <Widget>[
         MapboxMap(
-          initialCameraPosition: CameraPosition(
+          initialCameraPosition: const CameraPosition(
             target: LatLng(
               MapConstants.hoChiMinhLatitude,
               MapConstants.hoChiMinhLongitude,
@@ -124,7 +131,7 @@ class __MapState extends State<_Map> {
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
+                  offset: const Offset(0, 3), // changes position of shadow
                 ),
               ],
               shape: BoxShape.circle,
@@ -193,8 +200,15 @@ class _SubmittedButton extends StatelessWidget {
               WidgetConstants.buttonCommonHeight.h,
             ),
           ),
-          onPressed:
-              state.status.isSubmissionSuccess ? _onPressed(context) : null,
+          onPressed: state.status.isSubmissionSuccess
+              ? _onPressed(
+                  context,
+                  state.latitude,
+                  state.longitude,
+                  state.placeName,
+                  state.address,
+                )
+              : null,
           child: CustomText(
             fontSize: WidgetConstants.buttonCommonFrontSize.sp,
             text: BookingMapPickerLayoutConstants.submittedButton,
@@ -204,7 +218,26 @@ class _SubmittedButton extends StatelessWidget {
     );
   }
 
-  void Function() _onPressed(BuildContext context) {
-    return () {};
+  void Function() _onPressed(
+    BuildContext context,
+    double latitude,
+    double longitude,
+    String name,
+    String address,
+  ) {
+    return () {
+      context.read<BookingBloc>().add(
+            BookingAddressPicked(
+              latitude: latitude,
+              longitude: longitude,
+              name: name,
+              address: address,
+            ),
+          );
+      Navigator.popUntil(
+        context,
+        ModalRoute.withName(Routes.bookingStart),
+      );
+    };
   }
 }
