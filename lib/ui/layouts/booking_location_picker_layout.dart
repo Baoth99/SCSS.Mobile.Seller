@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/ui/layouts/booking_map_picker_layout.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
@@ -24,13 +23,7 @@ class BookingLocationPickerLayout extends StatelessWidget {
         action: <Widget>[
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) =>
-                      const BookingMapPickerLayout(),
-                ),
-              );
+              Navigator.of(context).pushNamed(Routes.bookingMapPicker);
             },
             icon: Icon(
               Icons.map_outlined,

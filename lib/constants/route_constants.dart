@@ -15,4 +15,5 @@ class Routes {
   //Booking
   static const String bookingStart = 'bookingStart';
   static const String bookingLocationPicker = 'bookingLocationPicker';
+  static const bookingMapPicker = 'bookingMapPicker';
 }

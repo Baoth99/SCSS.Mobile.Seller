@@ -53,6 +53,7 @@ class SellerApp extends StatelessWidget {
             Routes.bookingStart: (_) => const BookingStartLayout(),
             Routes.bookingLocationPicker: (_) =>
                 const BookingLocationPickerLayout(),
+            Routes.bookingMapPicker: (_) => const BookingMapPickerLayout(),
           },
         ),
       ),
