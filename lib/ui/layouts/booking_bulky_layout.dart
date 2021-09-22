@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -196,22 +194,23 @@ class RadioButtonInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: groupValue == value ? Colors.green[50] : null,
-      child: ListTile(
-        leading: Radio<YesNo>(
-          activeColor: AppColors.greenFF61C53D,
-          groupValue: groupValue,
-          value: value,
-          onChanged: (value) {
-            context
-                .read<BookingBloc>()
-                .add(BookingBulkyChosen(value ?? YesNo.no));
-          },
-        ),
-        title: CustomText(
-          text: text,
-          fontSize: 45.sp,
+    return GestureDetector(
+      onTap: () {
+        context.read<BookingBloc>().add(BookingBulkyChosen(value));
+      },
+      child: Container(
+        color: groupValue == value ? Colors.green[50] : null,
+        child: ListTile(
+          leading: Radio<YesNo>(
+            activeColor: AppColors.greenFF61C53D,
+            groupValue: groupValue,
+            value: value,
+            onChanged: (value) {},
+          ),
+          title: CustomText(
+            text: text,
+            fontSize: 45.sp,
+          ),
         ),
       ),
     );
