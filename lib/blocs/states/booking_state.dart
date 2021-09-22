@@ -7,6 +7,8 @@ class BookingState extends Equatable {
     this.fromTime = const BookingTime.pure(),
     this.toTime = const BookingTime.pure(),
     this.note = Symbols.empty,
+    this.bulky = YesNo.no,
+    this.imagePath = Symbols.empty,
     this.status = FormzStatus.pure,
   });
 
@@ -15,6 +17,8 @@ class BookingState extends Equatable {
   final BookingTime fromTime;
   final BookingTime toTime;
   final String note;
+  final YesNo bulky;
+  final String imagePath;
   final FormzStatus status;
 
   BookingState copyWith(
@@ -23,6 +27,8 @@ class BookingState extends Equatable {
       BookingTime? fromTime,
       BookingTime? toTime,
       String? note,
+      YesNo? bulky,
+      String? imagePath,
       FormzStatus? status}) {
     return BookingState(
       address: address ?? this.address,
@@ -30,6 +36,8 @@ class BookingState extends Equatable {
       fromTime: fromTime ?? this.fromTime,
       toTime: toTime ?? this.toTime,
       note: note ?? this.note,
+      bulky: bulky ?? this.bulky,
+      imagePath: imagePath ?? this.imagePath,
       status: status ?? this.status,
     );
   }
@@ -45,6 +53,8 @@ class BookingState extends Equatable {
         fromTime,
         toTime,
         note,
+        bulky,
+        imagePath,
         status,
       ];
 }

@@ -16,4 +16,5 @@ class Routes {
   static const String bookingStart = 'bookingStart';
   static const String bookingLocationPicker = 'bookingLocationPicker';
   static const bookingMapPicker = 'bookingMapPicker';
+  static const bookingBulky = 'bookingBulky';
 }

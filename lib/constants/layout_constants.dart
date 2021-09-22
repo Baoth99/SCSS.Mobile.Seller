@@ -110,3 +110,11 @@ class BookingMapPickerLayoutConstants {
 
   static const int minuteInterval = 15;
 }
+
+class BookingBulkyLayoutConstants {
+  static const title =
+      'Yêu cầu thu gom của bạn có bao gồm những vật nặng, cồng kềnh không?';
+  static const exampleText =
+      'Ví dụ: các thiết bị điển tử như tivi, tủ lạnh, lon, chai thủy tinh, giấy số lượng lớn...';
+  static const imageTitle = 'Ảnh ve chai thu gom';
+}

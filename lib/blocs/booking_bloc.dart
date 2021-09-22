@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/booking_model.dart';
+import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
@@ -50,6 +53,18 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     } else if (event is BookingNoteChanged) {
       yield state.copyWith(
         note: event.value,
+      );
+    } else if (event is BookingBulkyChosen) {
+      yield state.copyWith(
+        bulky: event.value,
+      );
+    } else if (event is BookingImageAdded) {
+      yield state.copyWith(
+        imagePath: event.path,
+      );
+    } else if (event is BookingImageDeleted) {
+      yield state.copyWith(
+        imagePath: Symbols.empty,
       );
     } else if (event is BookingStateInitial) {
       yield state.refresh();

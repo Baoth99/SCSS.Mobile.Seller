@@ -8,6 +8,7 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/ui/widgets/map_widget.dart';
+import 'package:seller_app/ui/widgets/sumitted_button.dart';
 import 'package:seller_app/utils/common_utils.dart';
 
 class BookingStartLayout extends StatelessWidget {
@@ -126,7 +127,12 @@ class _Form extends StatelessWidget {
               child: _NoteField(),
               iconData: AppIcons.feedOutlined,
             ),
-            const _SubmittedButton(),
+            SubmittedButton(
+              title: BookingStartLayoutConstants.firstButtonTitle,
+              onPressed: (context) => () {
+                Navigator.of(context).pushNamed(Routes.bookingBulky);
+              },
+            ),
           ],
         );
       },
@@ -501,31 +507,6 @@ class _TimeInputDialog extends StatelessWidget {
   Widget _getDivider() {
     return const Divider(
       thickness: 1,
-    );
-  }
-}
-
-class _SubmittedButton extends StatelessWidget {
-  const _SubmittedButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        textStyle: TextStyle(
-          fontSize: WidgetConstants.buttonCommonFrontSize.sp,
-          fontWeight: WidgetConstants.buttonCommonFrontWeight,
-        ),
-        primary: AppColors.greenFF61C53D,
-        minimumSize: Size(
-          double.infinity,
-          WidgetConstants.buttonCommonHeight.h,
-        ),
-      ),
-      child: const CustomText(
-        text: BookingStartLayoutConstants.firstButtonTitle,
-      ),
     );
   }
 }

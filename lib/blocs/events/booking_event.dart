@@ -63,3 +63,22 @@ class BookingNoteChanged extends BookingEvent {
   @override
   List<String> get props => [value];
 }
+
+class BookingBulkyChosen extends BookingEvent {
+  final YesNo value;
+
+  const BookingBulkyChosen(this.value);
+
+  @override
+  List<YesNo> get props => [value];
+}
+
+class BookingImageAdded extends BookingEvent {
+  final String path;
+  const BookingImageAdded(this.path);
+
+  @override
+  List<String> get props => [path];
+}
+
+class BookingImageDeleted extends BookingEvent {}
