@@ -19,6 +19,19 @@ class _GoongMapState extends State<GoongMap> {
         title: Text('Demo Map Seller'),
       ),
       body: MapboxMap(
+        onCameraTrackingDismissed: () {
+          print('onCameraTrackingDismissed');
+        },
+        onCameraTrackingChanged: (mode) {
+          print('onCameraTrackingChanged');
+        },
+        onMapClick: (point, coordinates) {
+          print('onMapClick');
+        },
+        onMapLongClick: (point, coordinates) {
+          print('onMapLongClick');
+        },
+        myLocationEnabled: true,
         accessToken: EnvMapSettingValue.accessToken,
         styleString: EnvMapSettingValue.mapStype,
         onStyleLoadedCallback: () async {},

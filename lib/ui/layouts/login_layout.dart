@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,10 @@ class LoginLayout extends StatelessWidget {
                 ModalRoute.withName(Routes.login),
               );
 
-              print('login success');
+              Navigator.popAndPushNamed(
+                context,
+                Routes.bookingStart,
+              );
             }
           },
           child: const _Body(),

@@ -37,8 +37,8 @@ class SignupPhoneNumberLayout extends StatelessWidget {
                   context,
                   Routes.signupOTP,
                   arguments: SignupOTPArgument(
-                    state.phoneNumber.value,
                     Symbols.vietnamCallingCode,
+                    state.phoneNumber.value,
                   ),
                 );
               }

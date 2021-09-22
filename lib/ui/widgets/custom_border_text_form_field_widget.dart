@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomBorderTextFormField extends StatefulWidget {
+class CustomBorderTextFormField extends StatelessWidget {
   const CustomBorderTextFormField({
     Key? key,
     this.labelText,
@@ -36,44 +36,37 @@ class CustomBorderTextFormField extends StatefulWidget {
   final void Function(String)? onChanged;
   final String? errorText;
 
-  @override
-  _CustomBorderTextFormFieldState createState() =>
-      _CustomBorderTextFormFieldState();
-}
-
-class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
-  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: widget.padding ?? const EdgeInsets.all(0),
+      padding: padding ?? const EdgeInsets.all(0),
       child: TextFormField(
-        onChanged: widget.onChanged,
-        keyboardType: widget.keyboardType,
-        obscureText: widget.obscureText,
-        inputFormatters: widget.inputFormatters,
+        onChanged: onChanged,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        inputFormatters: inputFormatters,
         enableSuggestions: false,
         autocorrect: false,
-        style: widget.style,
+        style: style,
         decoration: InputDecoration(
-          errorText: widget.errorText,
-          labelText: widget.labelText,
-          labelStyle: widget.labelStyle,
-          hintText: widget.hintText,
-          hintStyle: widget.hintStyle,
+          errorText: errorText,
+          labelText: labelText,
+          labelStyle: labelStyle,
+          hintText: hintText,
+          hintStyle: hintStyle,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(
-              widget.cirularBorderRadius ?? 0.r,
+              cirularBorderRadius ?? 0.r,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: widget.commonColor,
+              color: commonColor,
             ),
             borderRadius: BorderRadius.circular(
-              widget.cirularBorderRadius ?? 0.r,
+              cirularBorderRadius ?? 0.r,
             ),
           ),
-          contentPadding: widget.contentPadding,
+          contentPadding: contentPadding,
         ),
       ),
     );
