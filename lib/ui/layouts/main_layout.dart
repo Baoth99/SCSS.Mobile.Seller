@@ -16,63 +16,67 @@ class MainLayout extends StatelessWidget {
     return BlocProvider<MainBloc>(
       create: (context) => MainBloc()..add(MainInitial()),
       child: Scaffold(
-        bottomNavigationBar: Stack(
-          alignment: const FractionalOffset(.5, 1.0),
-          clipBehavior: Clip.none,
-          children: [
-            BlocBuilder<MainBloc, MainState>(
-              builder: (context, state) {
-                return BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: AppColors.greenFF61C53D,
-                  unselectedFontSize: 23.sp,
-                  selectedFontSize: 26.sp,
-                  currentIndex: state.screenIndex,
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home_outlined),
-                      label: 'Trang chủ',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.notifications_outlined),
-                      label: 'Thông báo',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.history_outlined),
-                      label: 'Hoạt động',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person_outline),
-                      label: 'Tài khoản',
-                    ),
-                  ],
-                  onTap: (value) =>
-                      context.read<MainBloc>().add(MainBarItemTapped(value)),
-                );
-              },
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 130.h),
-              child: FloatingActionButton(
-                backgroundColor: AppColors.greenFF61C53D,
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(Routes.bookingStart),
-                child: const Icon(Icons.add),
-              ),
-            ),
-          ],
+        extendBody: true,
+        bottomNavigationBar: BottomAppBar(
+          shape: const CircularNotchedRectangle(),
+          child: BlocBuilder<MainBloc, MainState>(
+            builder: (context, state) {
+              return BottomNavigationBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: AppColors.greenFF61C53D,
+                unselectedFontSize: 23.sp,
+                selectedFontSize: 26.sp,
+                currentIndex: state.screenIndex,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    label: 'Trang chủ',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.notifications_outlined),
+                    label: 'Thông báo',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(null),
+                    label: Symbols.empty,
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.history_outlined),
+                    label: 'Hoạt động',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person_outline),
+                    label: 'Tài khoản',
+                  ),
+                ],
+                onTap: (value) {
+                  if (MainLayoutConstants.mainTabs.contains(value)) {
+                    context.read<MainBloc>().add(MainBarItemTapped(value));
+                  }
+                },
+              );
+            },
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: AppColors.greenFF61C53D,
+          onPressed: () => Navigator.of(context).pushNamed(Routes.bookingStart),
+          child: const Icon(Icons.add),
         ),
         body: BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {
             int index = state.screenIndex;
             switch (index) {
-              case 0:
+              case MainLayoutConstants.home:
                 return const HomeLayout();
-              case 1:
+              case MainLayoutConstants.notification:
                 return const NotificationLayout();
-              case 2:
+              case MainLayoutConstants.activity:
                 return const ActivityLayout();
-              case 3:
+              case MainLayoutConstants.account:
                 return const AccountLayout();
               default:
                 return Container();
