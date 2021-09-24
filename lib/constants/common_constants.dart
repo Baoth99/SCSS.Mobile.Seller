@@ -70,3 +70,13 @@ class CompareConstants {
   static const larger = 1;
   static const less = -1;
 }
+
+class NetworkConstants {
+  static const contentType = 'Content-Type';
+  static const urlencoded = 'application/x-www-form-urlencoded';
+  static const postType = 'POST';
+
+  // status code
+  static const ok200 = 200;
+  static const badRequest400 = 400;
+}

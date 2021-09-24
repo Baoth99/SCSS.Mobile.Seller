@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/login_bloc.dart';
+import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_border_text_form_field_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_button_widget.dart';
@@ -27,6 +28,15 @@ class LoginLayout extends StatelessWidget {
               FunctionalWidgets.showCustomDialog(
                 context,
                 LoginLayoutConstants.waiting,
+              );
+            }
+
+            if (state.status.isInvalid &&
+                state.phoneNumber.pure &&
+                state.password.pure) {
+              Navigator.popUntil(
+                context,
+                ModalRoute.withName(Routes.login),
               );
             }
 
@@ -152,6 +162,10 @@ class _Form extends StatelessWidget {
               buildWhen: (p, c) => p.phoneNumber.status != c.phoneNumber.status,
               builder: (context, state) {
                 return CustomBorderTextFormField(
+                  empty: state.status.isInvalid &&
+                      state.phoneNumber.pure &&
+                      state.password.pure,
+                  autofocus: true,
                   onChanged: _onPhoneNumberChanged(context),
                   style: _getInputFieldTextStyle(),
                   labelText: LoginLayoutConstants.phoneNumber,
@@ -183,6 +197,9 @@ class _Form extends StatelessWidget {
               buildWhen: (p, c) => p.password.status != c.password.status,
               builder: (context, state) {
                 return CustomBorderTextFormField(
+                  empty: state.status.isInvalid &&
+                      state.phoneNumber.pure &&
+                      state.password.pure,
                   onChanged: _onPasswordChanged(context),
                   style: _getInputFieldTextStyle(),
                   labelText: LoginLayoutConstants.password,
@@ -203,6 +220,38 @@ class _Form extends StatelessWidget {
                 );
               },
             ),
+          ),
+          BlocBuilder<LoginBloc, LoginState>(
+            builder: (context, state) {
+              if (state.status.isInvalid &&
+                  state.phoneNumber.pure &&
+                  state.password.pure) {
+                return CommonMarginContainer(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 20.h,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.error,
+                          color: Colors.red,
+                          size: 50.sp,
+                        ),
+                        const CustomText(
+                          text:
+                              'Số điện thoại hoặc mật khẩu của bạn không đúng.',
+                          color: Colors.red,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            },
           ),
           CustomButton(
             text: LoginLayoutConstants.login,

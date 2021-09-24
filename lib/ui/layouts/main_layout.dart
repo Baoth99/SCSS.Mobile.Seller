@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/account_layout.dart';
 import 'package:seller_app/ui/layouts/activity_layout.dart';
 import 'package:seller_app/ui/layouts/home_layout.dart';
 import 'package:seller_app/ui/layouts/notification_layout.dart';
+import 'package:seller_app/utils/common_utils.dart';
 
 class MainLayout extends StatelessWidget {
   const MainLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SharedPreferenceUtils.getString(APIKeyConstants.accessToken)
+        .then((value) => print(value));
+    SharedPreferenceUtils.getString(APIKeyConstants.refreshToken)
+        .then((value) => print(value));
     return BlocProvider<MainBloc>(
       create: (context) => MainBloc()..add(MainInitial()),
       child: Scaffold(

@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonUtils {
   static String toStringPadleft(int number, int width) {
@@ -72,6 +76,27 @@ class CommonUtils {
   }
 }
 
+class NetworkUtils {
+  static Future<http.StreamedResponse> postNetworkUrlencoded(
+      String uri, Map<String, String> body) async {
+    var headers = {NetworkConstants.contentType: NetworkConstants.urlencoded};
+    var request = http.Request(
+      NetworkConstants.postType,
+      Uri.parse(uri),
+    );
+    request.bodyFields = body;
+
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> getMapFromResponse(
+      http.StreamedResponse response) async {
+    return jsonDecode(await response.stream.bytesToString());
+  }
+}
+
 class CommonTest {
   static Future<void> delay() async {
     return await Future<void>.delayed(
@@ -79,5 +104,18 @@ class CommonTest {
         seconds: 2,
       ),
     );
+  }
+}
+
+class SharedPreferenceUtils {
+  static Future<bool> setString(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return await prefs.setString(key, value);
+  }
+
+  static Future<String?> getString(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key);
   }
 }
