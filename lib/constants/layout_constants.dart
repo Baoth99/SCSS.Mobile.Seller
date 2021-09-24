@@ -118,3 +118,23 @@ class BookingBulkyLayoutConstants {
       'Ví dụ: các thiết bị điển tử như tivi, tủ lạnh, lon, chai thủy tinh, giấy số lượng lớn...';
   static const imageTitle = 'Ảnh ve chai thu gom';
 }
+
+class MainLayoutConstants {
+  static const home = 0;
+  static const notification = 1;
+  static const noneIndexTabbar = 2;
+  static const activity = 3;
+  static const account = 4;
+
+  static const mainTabs = [
+    home,
+    notification,
+    activity,
+    account,
+  ];
+}
+
+class ActivityLayoutConstants {
+  static const bulkyImage = ImagesPaths.bulky;
+  static const notBulkyImage = ImagesPaths.notBulky;
+}

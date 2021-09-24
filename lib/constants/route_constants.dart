@@ -7,6 +7,9 @@ class Routes {
   //login
   static const login = Symbols.forwardSlash + 'loginRoute';
 
+  //main
+  static const main = 'main';
+
   //signup
   static const signupPhoneNumber = Symbols.forwardSlash + 'signupPhoneNumber';
   static const signupOTP = 'signupOTP';

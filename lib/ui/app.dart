@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_time_bloc.dart';
+import 'package:seller_app/ui/layouts/main_layout.dart';
 import 'layouts/layouts.dart';
 import '../constants/constants.dart';
 
@@ -43,6 +44,9 @@ class SellerApp extends StatelessWidget {
           routes: {
             //login
             Routes.login: (_) => const LoginLayout(),
+
+            //main
+            Routes.main: (_) => const MainLayout(),
 
             //signup
             Routes.signupPhoneNumber: (_) => const SignupPhoneNumberLayout(),

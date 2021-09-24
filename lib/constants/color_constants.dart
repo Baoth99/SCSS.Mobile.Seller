@@ -3,6 +3,7 @@ part of 'constants.dart';
 class AppColors {
   // Green
   static const Color greenFF61C53D = Color(0xFF61C53D);
+  static const Color greenFF66D095 = Color(0xFF66D095);
 
   // Grey
   static const Color greyFF9098B1 = Color(0xFF9098B1);
@@ -21,4 +22,7 @@ class AppColors {
 
   //Red
   static const Color red = Colors.red;
+
+  //Yellow
+  static const Color yellowFFF3F09A = Color(0xFFF3F09A);
 }

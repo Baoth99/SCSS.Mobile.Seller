@@ -23,8 +23,11 @@ class AppIcons {
 }
 
 class ImagesPaths {
-  static const String loginLogo = 'assets/images/seller_login_logo.png';
-  static const String markerPoint = 'assets/images/marker_point.png';
+  static const String imagePath = 'assets/images';
+  static const String loginLogo = '$imagePath/seller_login_logo.png';
+  static const String markerPoint = '$imagePath/marker_point.png';
+  static const String notBulky = '$imagePath/not_bulky.png';
+  static const String bulky = '$imagePath/bulky.png';
 }
 
 class Symbols {

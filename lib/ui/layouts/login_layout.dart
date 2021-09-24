@@ -37,7 +37,7 @@ class LoginLayout extends StatelessWidget {
 
               Navigator.popAndPushNamed(
                 context,
-                Routes.bookingStart,
+                Routes.main,
               );
             }
           },
