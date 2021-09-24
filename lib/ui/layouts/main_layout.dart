@@ -15,10 +15,6 @@ class MainLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SharedPreferenceUtils.getString(APIKeyConstants.accessToken)
-        .then((value) => print(value));
-    SharedPreferenceUtils.getString(APIKeyConstants.refreshToken)
-        .then((value) => print(value));
     return BlocProvider<MainBloc>(
       create: (context) => MainBloc()..add(MainInitial()),
       child: Scaffold(
