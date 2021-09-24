@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomBorderTextFormField extends StatelessWidget {
+class CustomBorderTextFormField extends StatefulWidget {
   const CustomBorderTextFormField({
     Key? key,
     this.labelText,
@@ -20,6 +20,8 @@ class CustomBorderTextFormField extends StatelessWidget {
     this.style,
     this.onChanged,
     this.errorText,
+    this.empty = false,
+    this.autofocus = false,
   }) : super(key: key);
   final String? labelText;
   final Color commonColor;
@@ -35,38 +37,71 @@ class CustomBorderTextFormField extends StatelessWidget {
   final TextStyle? style;
   final void Function(String)? onChanged;
   final String? errorText;
+  final bool empty;
+  final bool autofocus;
 
+  @override
+  _CustomBorderTextFormFieldState createState() =>
+      _CustomBorderTextFormFieldState();
+}
+
+class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
+  final fieldText = TextEditingController();
+  final focusNode = FocusNode();
+
+  @override
+  void didUpdateWidget(covariant CustomBorderTextFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.empty) {
+      fieldText.clear();
+      if (widget.autofocus) {
+        focusNode.requestFocus();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    fieldText.dispose();
+    focusNode.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const EdgeInsets.all(0),
+      padding: widget.padding ?? const EdgeInsets.all(0),
       child: TextFormField(
-        onChanged: onChanged,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        inputFormatters: inputFormatters,
+        focusNode: focusNode,
+        controller: fieldText,
+        onChanged: widget.onChanged,
+        keyboardType: widget.keyboardType,
+        obscureText: widget.obscureText,
+        inputFormatters: widget.inputFormatters,
         enableSuggestions: false,
         autocorrect: false,
-        style: style,
+        style: widget.style,
         decoration: InputDecoration(
-          errorText: errorText,
-          labelText: labelText,
-          labelStyle: labelStyle,
-          hintText: hintText,
-          hintStyle: hintStyle,
+          errorText: widget.errorText,
+          labelText: widget.labelText,
+          labelStyle: widget.labelStyle,
+          hintText: widget.hintText,
+          hintStyle: widget.hintStyle,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(
-              cirularBorderRadius ?? 0.r,
+              widget.cirularBorderRadius ?? 0.r,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: commonColor,
+              color: widget.commonColor,
             ),
             borderRadius: BorderRadius.circular(
-              cirularBorderRadius ?? 0.r,
+              widget.cirularBorderRadius ?? 0.r,
             ),
           ),
-          contentPadding: contentPadding,
+          contentPadding: widget.contentPadding,
         ),
       ),
     );
