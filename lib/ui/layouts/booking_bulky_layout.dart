@@ -120,14 +120,14 @@ class BookingBulkyLayoutImageInput extends StatelessWidget {
           fontSize: 45.sp,
           fontWeight: FontWeight.w500,
         ),
-        Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 40.h,
-            ),
-            constraints: BoxConstraints(maxHeight: 600.h, minHeight: 400.h),
-            child: BlocBuilder<BookingBloc, BookingState>(
-              builder: (context, state) => state.imagePath.isNotEmpty
+        BlocBuilder<BookingBloc, BookingState>(
+          builder: (context, state) => Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                vertical: 40.h,
+              ),
+              constraints: BoxConstraints(maxHeight: 600.h, minHeight: 400.h),
+              child: state.imagePath.isNotEmpty
                   ? Stack(
                       children: <Widget>[
                         ClipRRect(

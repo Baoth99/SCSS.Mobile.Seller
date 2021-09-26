@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_time_bloc.dart';
+import 'package:seller_app/ui/layouts/booking_detail_layout.dart';
 import 'package:seller_app/ui/layouts/main_layout.dart';
 import 'layouts/layouts.dart';
 import '../constants/constants.dart';
@@ -59,6 +60,9 @@ class SellerApp extends StatelessWidget {
                 const BookingLocationPickerLayout(),
             Routes.bookingMapPicker: (_) => const BookingMapPickerLayout(),
             Routes.bookingBulky: (_) => const BookingBulkyLayout(),
+
+            //Booking Detail
+            Routes.bookingDetail: (_) => const BookingDetailLayout(),
           },
         ),
       ),
