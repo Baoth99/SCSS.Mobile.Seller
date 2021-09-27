@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
-import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/account_layout.dart';
 import 'package:seller_app/ui/layouts/activity_layout.dart';
 import 'package:seller_app/ui/layouts/home_layout.dart';
 import 'package:seller_app/ui/layouts/notification_layout.dart';
-import 'package:seller_app/utils/common_utils.dart';
 
 class MainLayout extends StatelessWidget {
   const MainLayout({Key? key}) : super(key: key);
@@ -64,9 +62,11 @@ class MainLayout extends StatelessWidget {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-          backgroundColor: AppColors.greenFF61C53D,
           onPressed: () => Navigator.of(context).pushNamed(Routes.bookingStart),
-          child: const Icon(Icons.add),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
         body: BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {

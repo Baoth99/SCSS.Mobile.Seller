@@ -20,4 +20,7 @@ class Routes {
   static const String bookingLocationPicker = 'bookingLocationPicker';
   static const bookingMapPicker = 'bookingMapPicker';
   static const bookingBulky = 'bookingBulky';
+
+  //Booking Detail
+  static const bookingDetail = 'bookingDetail';
 }

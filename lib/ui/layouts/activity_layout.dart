@@ -3,6 +3,7 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'booking_detail_layout.dart';
 
 class ActivityLayout extends StatelessWidget {
   const ActivityLayout({Key? key}) : super(key: key);
@@ -18,6 +19,7 @@ class ActivityLayout extends StatelessWidget {
           title: CustomText(
             text: 'Hoạt động của tôi',
             fontSize: 80.sp,
+            color: Colors.black87,
           ),
           bottom: TabBar(
             indicatorColor: Colors.green[600],
@@ -67,7 +69,7 @@ class ActivityList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) => CurrentActivity(
-        code: 'fsdfsdfsdfsdfsdfsd',
+        bookingId: 'suck may dick',
         time: '21 thg8, 2021 09:41 AM',
         placeName:
             'Công viên tao đànfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -84,7 +86,7 @@ class ActivityList extends StatelessWidget {
 class CurrentActivity extends StatelessWidget {
   const CurrentActivity({
     Key? key,
-    required this.code,
+    required this.bookingId,
     required this.time,
     required this.placeName,
     required this.bulky,
@@ -92,7 +94,7 @@ class CurrentActivity extends StatelessWidget {
     this.extraInfo,
   }) : super(key: key);
 
-  final String code;
+  final String bookingId;
   final String time;
   final String placeName;
   final bool bulky;
@@ -112,79 +114,91 @@ class CurrentActivity extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(30.0.r),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30.0.r),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.w,
-                ),
-                child: Image.asset(
-                  bulky
-                      ? ActivityLayoutConstants.bulkyImage
-                      : ActivityLayoutConstants.notBulkyImage,
-                  width: 90.w,
-                ),
-                decoration: BoxDecoration(
-                  color: bulky
-                      ? AppColors.yellowFFF3F09A
-                      : AppColors.greenFF66D095,
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 20.w,
+      child: InkWell(
+        onTap: _onTap(context),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0.r),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 30.w,
                   ),
-                  constraints: BoxConstraints(minHeight: 130.h),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _getContainerColumn(
-                        CustomText(
-                          text: time,
-                          color: Colors.green[600],
-                          fontSize: 42.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      _getContainerColumn(
-                        CustomText(
-                          text: placeName,
-                          fontSize: 42.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                  child: Image.asset(
+                    bulky
+                        ? ActivityLayoutConstants.bulkyImage
+                        : ActivityLayoutConstants.notBulkyImage,
+                    width: 90.w,
+                  ),
+                  decoration: BoxDecoration(
+                    color: bulky
+                        ? AppColors.yellowFFF3F09A
+                        : AppColors.greenFF66D095,
                   ),
                 ),
-              ),
-              isCompleted != null && isCompleted!
-                  ? Container(
-                      // constraints: BoxConstraints(
-                      //   minWidth: 100.w,
-                      // ),
-                      width: 270.w,
-                      child: CustomText(
-                        text: extraInfo ?? Symbols.empty,
-                        color: isCompleted!
-                            ? Colors.green[600]
-                            : AppColors.orangeFFF5670A,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      alignment: Alignment.center,
-                    )
-                  : Container(),
-            ],
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                    ),
+                    constraints: BoxConstraints(minHeight: 130.h),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _getContainerColumn(
+                          CustomText(
+                            text: time,
+                            color: Colors.green[600],
+                            fontSize: 42.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        _getContainerColumn(
+                          CustomText(
+                            text: placeName,
+                            fontSize: 42.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                isCompleted != null && isCompleted!
+                    ? Container(
+                        // constraints: BoxConstraints(
+                        //   minWidth: 100.w,
+                        // ),
+                        width: 270.w,
+                        child: CustomText(
+                          text: extraInfo ?? Symbols.empty,
+                          color: isCompleted!
+                              ? Colors.green[600]
+                              : AppColors.orangeFFF5670A,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        alignment: Alignment.center,
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void Function() _onTap(BuildContext context) {
+    return () {
+      Navigator.of(context).pushNamed(
+        Routes.bookingDetail,
+        arguments: BookingDetailArguments(bookingId: bookingId),
+      );
+    };
   }
 
   Widget _getContainerColumn(Widget child) {
