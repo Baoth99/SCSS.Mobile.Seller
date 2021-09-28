@@ -23,4 +23,7 @@ class Routes {
 
   //Booking Detail
   static const bookingDetail = 'bookingDetail';
+
+  //activity
+  static const profileEdit = 'profileEdit';
 }

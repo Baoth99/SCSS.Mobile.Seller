@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
+import 'package:seller_app/ui/widgets/common_scaffold_title.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'booking_detail_layout.dart';
@@ -16,11 +17,7 @@ class ActivityLayout extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: CustomText(
-            text: 'Hoạt động của tôi',
-            fontSize: 80.sp,
-            color: Colors.black87,
-          ),
+          title: const CommonScaffoldTitle('Hoạt động của tôi'),
           bottom: TabBar(
             indicatorColor: Colors.green[600],
             isScrollable: true,
@@ -44,15 +41,15 @@ class ActivityLayout extends StatelessWidget {
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-            const CommonMarginContainer(
+            CommonMarginContainer(
               child: ActivityList(),
             ),
-            const CommonMarginContainer(
+            CommonMarginContainer(
               child: ActivityList(),
             ),
-            const CommonMarginContainer(
+            CommonMarginContainer(
               child: ActivityList(),
             ),
           ],

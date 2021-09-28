@@ -17,6 +17,7 @@ class MainLayout extends StatelessWidget {
       create: (context) => MainBloc()..add(MainInitial()),
       child: Scaffold(
         extendBody: true,
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: BottomAppBar(
           shape: const CircularNotchedRectangle(),
           child: BlocBuilder<MainBloc, MainState>(
