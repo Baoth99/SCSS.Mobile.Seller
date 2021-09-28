@@ -74,12 +74,17 @@ class CommonUtils {
 
     return TimeOfDay(hour: h, minute: m);
   }
+
+  static String convertToBase64(String str) {
+    return base64Encode(utf8.encode(str));
+  }
 }
 
 class NetworkUtils {
   static Future<http.StreamedResponse> postNetworkUrlencoded(
-      String uri, Map<String, String> body) async {
-    var headers = {NetworkConstants.contentType: NetworkConstants.urlencoded};
+      String uri, Map<String, String> header, Map<String, String> body) async {
+    var headers = {HttpHeaders.contentTypeHeader: NetworkConstants.urlencoded}
+      ..addAll(header);
     var request = http.Request(
       NetworkConstants.postType,
       Uri.parse(uri),
@@ -94,6 +99,14 @@ class NetworkUtils {
   static Future<Map<String, dynamic>> getMapFromResponse(
       http.StreamedResponse response) async {
     return jsonDecode(await response.stream.bytesToString());
+  }
+
+  static String getBasicAuth() {
+    return NetworkConstants.basicAuth.replaceFirst(
+      NetworkConstants.base64Data,
+      CommonUtils.convertToBase64(
+          '${EnvID4AppSettingValue.clientId}:${EnvID4AppSettingValue.clientSeret}'),
+    );
   }
 }
 
@@ -117,5 +130,10 @@ class SharedPreferenceUtils {
   static Future<String?> getString(String key) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(key);
+  }
+
+  static Future<bool> remove(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.remove(key);
   }
 }
