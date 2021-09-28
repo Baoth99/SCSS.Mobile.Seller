@@ -26,4 +26,5 @@ class Routes {
 
   //activity
   static const profileEdit = 'profileEdit';
+  static const profilePasswordEdit = 'profilePasswordEdit';
 }

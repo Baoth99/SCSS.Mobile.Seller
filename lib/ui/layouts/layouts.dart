@@ -14,3 +14,4 @@ export 'booking_bulky_layout.dart';
 
 //profile
 export 'profile_edit_layout.dart';
+export 'profile_password_edit_layout.dart';
