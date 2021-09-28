@@ -1,12 +1,14 @@
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
+import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
 import 'package:seller_app/providers/services/models/get_token_service_model.dart';
 
 abstract class IdentityServerService {
   Future<GetTokenServiceModel> getToken(String username, String password);
+  Future<bool> connectRevocation(String token, String tokenTypeHint);
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -41,5 +43,12 @@ class IdentityServerServiceImpl implements IdentityServerService {
       }
     }
     return serviceModel;
+  }
+
+  @override
+  Future<bool> connectRevocation(String token, String tokenTypeHint) async {
+    return await identityServerNetwork.connectRevocation(
+      ConnectRevocationRequestModel(token: token, tokenTypeHint: tokenTypeHint),
+    );
   }
 }

@@ -74,11 +74,14 @@ class CompareConstants {
 }
 
 class NetworkConstants {
-  static const contentType = 'Content-Type';
   static const urlencoded = 'application/x-www-form-urlencoded';
   static const postType = 'POST';
 
   // status code
   static const ok200 = 200;
   static const badRequest400 = 400;
+
+  // pattern
+  static const base64Data = '{base64Data}';
+  static const basicAuth = 'Basic $base64Data';
 }

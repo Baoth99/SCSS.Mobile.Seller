@@ -17,6 +17,8 @@ class GoongMapAPIConstants {
 class IdentityAPIConstants {
   //URL
   static final urlConnectToken = '${EnvID4AppSettingValue.apiUrl}connect/token';
+  static final urlConnectRevocation =
+      '${EnvID4AppSettingValue.apiUrl}connect/revocation';
 
   //Query parameter name
   static const clientIdParamName = 'client_id';
@@ -25,6 +27,12 @@ class IdentityAPIConstants {
   static const scopeParamName = 'scope';
   static const usernameParamName = 'username';
   static const passwordParamName = 'password';
+  static const token = 'token';
+  static const tokenTypeHint = 'token_type_hint';
+
+  //value
+  static const accessToken = 'access_token';
+  static const refreshToken = 'refresh_token';
 }
 
 class APIKeyConstants {

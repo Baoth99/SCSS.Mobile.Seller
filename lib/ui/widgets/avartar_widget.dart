@@ -6,18 +6,19 @@ class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
     required this.imagePath,
     required this.isMale,
+    this.width = 450,
     Key? key,
   }) : super(key: key);
   final String imagePath;
   final bool isMale;
-
+  final double width;
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 450.w,
+      width: width.w,
       child: CircleAvatar(
         onForegroundImageError: (exception, stackTrace) {},
-        radius: 225.r,
+        radius: (width / 2).r,
         foregroundImage: imagePath.isNotEmpty
             ? NetworkImage(
                 imagePath,
