@@ -63,6 +63,9 @@ class SellerApp extends StatelessWidget {
 
             //Booking Detail
             Routes.bookingDetail: (_) => const BookingDetailLayout(),
+
+            //profile
+            Routes.profileEdit: (_) => const ProfileEditLayout(),
           },
         ),
       ),

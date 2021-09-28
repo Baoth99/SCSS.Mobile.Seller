@@ -8,15 +8,17 @@ class SubmittedButton extends StatelessWidget {
     Key? key,
     required this.title,
     required this.onPressed,
+    this.activated = true,
   }) : super(key: key);
 
   final String title;
   final void Function() Function(BuildContext) onPressed;
+  final bool activated;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed(context),
+      onPressed: activated ? onPressed(context) : null,
       style: ElevatedButton.styleFrom(
         textStyle: TextStyle(
           fontSize: WidgetConstants.buttonCommonFrontSize.sp,

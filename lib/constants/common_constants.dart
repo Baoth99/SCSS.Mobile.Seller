@@ -28,6 +28,8 @@ class ImagesPaths {
   static const String markerPoint = '$imagePath/marker_point.png';
   static const String notBulky = '$imagePath/not_bulky.png';
   static const String bulky = '$imagePath/bulky.png';
+  static const String maleProfile = '$imagePath/male_profile.png';
+  static const String femaleProfile = '$imagePath/female_profile.png';
 }
 
 class Symbols {
