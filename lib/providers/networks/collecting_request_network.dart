@@ -33,9 +33,8 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
     var responseModel = RemainingDaysResponseModel(resData: []);
 
     var response = await NetworkUtils.getNetworkWithBearer(
-      APIServiceURI.collectingRequestRemainingDays,
-      {},
-      client,
+      uri: APIServiceURI.collectingRequestRemainingDays,
+      client: client,
     );
     // get model
     responseModel = await NetworkUtils

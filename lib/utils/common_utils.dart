@@ -127,14 +127,19 @@ class NetworkUtils {
     return jsonDecode(response.body);
   }
 
-  static Future<http.Response> getNetwork(
-    String uri,
-    Map<String, String> headers,
-    http.Client client,
-  ) async {
+  static Future<http.Response> getNetwork({
+    required String uri,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queries,
+    required http.Client client,
+  }) async {
+    var url = Uri.parse(uri).replace(
+      queryParameters: queries,
+    );
+
     //create request
     var response = await client.get(
-      Uri.parse(uri),
+      url,
       headers: headers,
     );
 
@@ -143,19 +148,21 @@ class NetworkUtils {
     return response;
   }
 
-  static Future<http.Response> getNetworkWithBearer(
-    String uri,
-    Map<String, String> headers,
-    http.Client client,
-  ) async {
+  static Future<http.Response> getNetworkWithBearer({
+    required String uri,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queries,
+    required http.Client client,
+  }) async {
     var newHeaders = <String, String>{
       HttpHeaders.authorizationHeader: await getBearerToken(),
-    }..addAll(headers);
+    }..addAll(headers ?? {});
 
     return await getNetwork(
-      uri,
-      newHeaders,
-      client,
+      uri: uri,
+      headers: newHeaders,
+      client: client,
+      queries: queries,
     );
   }
 
