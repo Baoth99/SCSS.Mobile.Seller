@@ -5,9 +5,9 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ViewImageLayout extends StatelessWidget {
-  const ViewImageLayout(this.path, {Key? key}) : super(key: key);
+  const ViewImageLayout(this.file, {Key? key}) : super(key: key);
 
-  final String path;
+  final File file;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class ViewImageLayout extends StatelessWidget {
         children: <Widget>[
           Center(
             child: Image.file(
-              File(path),
+              file,
             ),
           ),
           Positioned(

@@ -5,15 +5,17 @@ import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
-import 'package:seller_app/ui/layouts/account_layout.dart';
 import 'package:seller_app/utils/common_utils.dart';
 part 'events/account_event.dart';
 part 'states/account_state.dart';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
-  AccountBloc() : super(const AccountState());
-
-  final _identityService = getIt.get<IdentityServerService>();
+  late IdentityServerService _identityServerService;
+  AccountBloc({IdentityServerService? identityServerService})
+      : super(const AccountState()) {
+    _identityServerService =
+        identityServerService ?? getIt.get<IdentityServerService>();
+  }
 
   @override
   Stream<AccountState> mapEventToState(AccountEvent event) async* {
@@ -23,33 +25,19 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           status: FormzStatus.submissionInProgress,
         );
 
-        var accessToken =
-            await SharedPreferenceUtils.getString(APIKeyConstants.accessToken);
-        var refreshToken =
-            await SharedPreferenceUtils.getString(APIKeyConstants.refreshToken);
-        if (accessToken != null &&
-            accessToken.isNotEmpty &&
-            refreshToken != null &&
-            refreshToken.isNotEmpty) {
-          var futureRevokeAccess = _identityService.connectRevocation(
-              accessToken, IdentityAPIConstants.accessToken);
-          var futureRevokeRefresh = _identityService.connectRevocation(
-              refreshToken, IdentityAPIConstants.refreshToken);
+        var result = await _identityServerService.connectRevocation();
 
-          if (await futureRevokeAccess && await futureRevokeRefresh) {
-            if (await SharedPreferenceUtils.remove(
-                    APIKeyConstants.accessToken) &&
-                await SharedPreferenceUtils.remove(
-                    APIKeyConstants.accessToken)) {
-              yield state.copyWith(
-                status: FormzStatus.submissionSuccess,
-              );
-            } else {
-              throw Exception();
-            }
+        if (result) {
+          if (await SharedPreferenceUtils.remove(APIKeyConstants.accessToken) &&
+              await SharedPreferenceUtils.remove(APIKeyConstants.accessToken)) {
+            yield state.copyWith(
+              status: FormzStatus.submissionSuccess,
+            );
           } else {
             throw Exception();
           }
+        } else {
+          throw Exception();
         }
       } catch (e) {
         yield state.copyWith(

@@ -5,10 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/ui/layouts/booking_map_picker_layout.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+class BookingLocationPickerArguments {
+  final String intialValue;
+  const BookingLocationPickerArguments(this.intialValue);
+}
 
 class BookingLocationPickerLayout extends StatelessWidget {
   const BookingLocationPickerLayout({Key? key}) : super(key: key);
@@ -21,15 +27,25 @@ class BookingLocationPickerLayout extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         action: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(Routes.bookingMapPicker);
+          BlocBuilder<BookingBloc, BookingState>(
+            builder: (context, state) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    Routes.bookingMapPicker,
+                    arguments: BookingMapPickerArgument(
+                      lat: state.address.value.latitude,
+                      log: state.address.value.longitude,
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.map_outlined,
+                  size: 60.sp,
+                ),
+              );
             },
-            icon: Icon(
-              Icons.map_outlined,
-              size: 60.sp,
-            ),
-          ),
+          )
         ],
       ),
       body: BlocProvider<BookingLocationPickerBloc>(
@@ -76,7 +92,10 @@ class __SearchFieldState extends State<_SearchField> {
   Timer? _debounce;
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    final args = ModalRoute.of(context)!.settings.arguments
+        as BookingLocationPickerArguments;
+    return TextFormField(
+      initialValue: args.intialValue,
       autofocus: true,
       style: TextStyle(
         fontSize: 60.sp,
@@ -91,6 +110,12 @@ class __SearchFieldState extends State<_SearchField> {
         hintText: 'Đặt hẹn ở đâu?',
       ),
       onChanged: _onChanged(context),
+      textInputAction: TextInputAction.search,
+      onFieldSubmitted: (value) {
+        context.read<BookingLocationPickerBloc>().add(
+              BookingLocationPickerSearchChanged(value),
+            );
+      },
     );
   }
 

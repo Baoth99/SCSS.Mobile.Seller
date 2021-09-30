@@ -39,3 +39,12 @@ class APIKeyConstants {
   static const accessToken = 'vechaixanh_seller_access_token';
   static const refreshToken = 'vechaixanh_seller_refresh_token';
 }
+
+class APIServiceURI {
+  static final collectingRequestRemainingDays =
+      '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/remaining-days';
+  static final collectingRequestUploadImg =
+      '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/upload-img';
+  static final collectingRequestRequest =
+      '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/request';
+}

@@ -5,29 +5,68 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/booking_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/ui/layouts/booking_location_picker_layout.dart';
+import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/ui/widgets/map_widget.dart';
 import 'package:seller_app/ui/widgets/sumitted_button.dart';
 import 'package:seller_app/utils/common_utils.dart';
+import 'package:seller_app/utils/extension_methods.dart';
+import 'package:formz/formz.dart';
 
 class BookingStartLayout extends StatelessWidget {
   const BookingStartLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: FunctionalWidgets.buildAppBar(
-        context: context,
-        elevation: 0,
-        color: AppColors.black,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      body: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: AppConstants.horizontalScaffoldMargin.w,
+    return BlocProvider.value(
+      value: BlocProvider.of<BookingBloc>(context)
+        ..add(
+          BookingStateInitial(),
+        )
+        ..add(
+          BookingAddressInitial(),
         ),
-        child: const _Body(),
+      child: BlocProvider.value(
+        value: BlocProvider.of<BookingTimeBloc>(context)
+          ..add(
+            BookingTimeInitial(),
+          ),
+        child: BlocListener<BookingTimeBloc, BookingTimeState>(
+          listener: (context, state) {
+            if (state.blocStatus.isSubmissionInProgress) {
+              showDialog(
+                context: context,
+                builder: (context) => const CustomProgressIndicatorDialog(),
+              );
+            }
+            if (state.blocStatus.isSubmissionSuccess) {
+              Navigator.of(context).popUntil(
+                ModalRoute.withName(Routes.bookingStart),
+              );
+            }
+            if (state.blocStatus.isSubmissionFailure) {
+              Navigator.of(context).popUntil(
+                ModalRoute.withName(Routes.bookingStart),
+              );
+            }
+          },
+          child: Scaffold(
+            appBar: FunctionalWidgets.buildAppBar(
+              context: context,
+              elevation: 0,
+              color: AppColors.black,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            ),
+            body: Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: AppConstants.horizontalScaffoldMargin.w,
+              ),
+              child: const _Body(),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -64,7 +103,10 @@ class _Form extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             GestureDetector(
-              onTap: _onPlaceInputTapped(context),
+              onTap: _onPlaceInputTapped(
+                context,
+                state.address.value.name ?? Symbols.empty,
+              ),
               child: _InputContainer(
                 child: state.address.valid
                     ? Column(
@@ -99,14 +141,14 @@ class _Form extends StatelessWidget {
               child: _InputContainer(
                 child: BlocBuilder<BookingBloc, BookingState>(
                   builder: (context, state) {
-                    return state.date.valid &&
-                            state.fromTime.valid &&
-                            state.toTime.valid
+                    return state.date != null &&
+                            state.fromTime != null &&
+                            state.toTime != null
                         ? CustomText(
                             text: CommonUtils.combineDateToTime(
-                                state.date.value!,
-                                state.fromTime.value!.format(context),
-                                state.toTime.value!.format(context)),
+                                state.date!,
+                                state.fromTime!.format(context),
+                                state.toTime!.format(context)),
                             color: AppColors.black,
                             fontWeight: FontWeight.w500,
                             fontSize:
@@ -127,12 +169,17 @@ class _Form extends StatelessWidget {
               child: _NoteField(),
               iconData: AppIcons.feedOutlined,
             ),
-            SubmittedButton(
-              title: BookingStartLayoutConstants.firstButtonTitle,
-              onPressed: (context) => () {
-                Navigator.of(context).pushNamed(Routes.bookingBulky);
+            BlocBuilder<BookingBloc, BookingState>(
+              builder: (context, state) {
+                return SubmittedButton(
+                  title: BookingStartLayoutConstants.firstButtonTitle,
+                  onPressed: (context) => () {
+                    Navigator.of(context).pushNamed(Routes.bookingBulky);
+                  },
+                  activated: state.status.isValid,
+                );
               },
-            ),
+            )
           ],
         );
       },
@@ -145,9 +192,13 @@ class _Form extends StatelessWidget {
     };
   }
 
-  Function()? _onPlaceInputTapped(BuildContext context) {
+  Function()? _onPlaceInputTapped(BuildContext context, String value) {
     return () {
-      Navigator.pushNamed(context, Routes.bookingLocationPicker);
+      Navigator.pushNamed(
+        context,
+        Routes.bookingLocationPicker,
+        arguments: BookingLocationPickerArguments(value),
+      );
     };
   }
 
@@ -160,10 +211,12 @@ class _Form extends StatelessWidget {
       builder: (context) {
         return BlocBuilder<BookingTimeBloc, BookingTimeState>(
           builder: (context, state) {
-            date = state.date.value;
-            fromTime = state.fromTime.value;
-            toTime = state.toTime.value;
-            return const _TimeInputDialog();
+            date = state.date;
+            fromTime = state.fromTime;
+            toTime = state.toTime;
+            return _TimeInputDialog(
+              onPressedActivated: state.status == BookingTimeStatus.valid,
+            );
           },
         );
       },
@@ -183,8 +236,13 @@ class _Form extends StatelessWidget {
 }
 
 class _AlertDialog extends StatelessWidget {
-  const _AlertDialog({Key? key, required this.content}) : super(key: key);
+  const _AlertDialog({
+    Key? key,
+    required this.content,
+    this.onPressedActived = true,
+  }) : super(key: key);
   final Widget content;
+  final bool onPressedActived;
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +250,12 @@ class _AlertDialog extends StatelessWidget {
       content: content,
       actions: <Widget>[
         _getButton('HỦY', false, context),
-        _getButton('XÁC NHẬN', true, context),
+        _getButton(
+          'XÁC NHẬN',
+          true,
+          context,
+          onPressedActivated: onPressedActived,
+        ),
       ],
     );
   }
@@ -205,20 +268,32 @@ class _AlertDialog extends StatelessWidget {
     );
   }
 
-  Widget _getButton(String name, bool value, BuildContext context) {
+  Widget _getButton(
+    String name,
+    bool value,
+    BuildContext context, {
+    bool onPressedActivated = true,
+  }) {
     return TextButton(
-      onPressed: () => Navigator.of(context).pop(value),
+      onPressed:
+          onPressedActivated ? () => Navigator.of(context).pop(value) : null,
       child: _getText(name),
     );
   }
 }
 
 class _TimeInputDialog extends StatelessWidget {
-  const _TimeInputDialog({Key? key}) : super(key: key);
+  const _TimeInputDialog({
+    this.onPressedActivated = true,
+    Key? key,
+  }) : super(key: key);
+
+  final bool onPressedActivated;
 
   @override
   Widget build(BuildContext context) {
     return _AlertDialog(
+      onPressedActived: onPressedActivated,
       content: Container(
         width: 800.w,
         child: Column(
@@ -245,9 +320,9 @@ class _TimeInputDialog extends StatelessWidget {
                           builder: (context, state) {
                             return _getText(
                               CommonUtils.combineDateToTime(
-                                  state.date.value!,
-                                  state.fromTime.value!.format(context),
-                                  state.toTime.value!.format(context)),
+                                  state.date,
+                                  state.fromTime.format(context),
+                                  state.toTime.format(context)),
                             );
                           },
                         )
@@ -261,8 +336,7 @@ class _TimeInputDialog extends StatelessWidget {
             BlocBuilder<BookingTimeBloc, BookingTimeState>(
               builder: (context, state) {
                 return InkWell(
-                  onTap:
-                      _onDateTap(context, state.date.value ?? DateTime.now()),
+                  onTap: _onDateTap(context, state.date, state.chosableDates),
                   child: _container(
                     Row(
                       children: <Widget>[
@@ -274,7 +348,7 @@ class _TimeInputDialog extends StatelessWidget {
                             builder: (context, state) {
                               return _getText(
                                 CommonUtils.convertDateTimeToVietnamese(
-                                  state.date.value,
+                                  state.date,
                                 ),
                               );
                             },
@@ -299,10 +373,10 @@ class _TimeInputDialog extends StatelessWidget {
                         BlocBuilder<BookingTimeBloc, BookingTimeState>(
                           builder: (context, state) {
                             return InkWell(
-                              onTap: _onTimeTap(context, state.fromTime.value!,
-                                  _onFromTimeEvent),
+                              onTap: _onTimeTap(
+                                  context, state.fromTime, _onFromTimeEvent),
                               child: _getTimeText(
-                                state.fromTime.value!.format(context),
+                                state.fromTime.format(context),
                               ),
                             );
                           },
@@ -317,9 +391,9 @@ class _TimeInputDialog extends StatelessWidget {
                           builder: (context, state) {
                             return InkWell(
                               onTap: _onTimeTap(
-                                  context, state.toTime.value!, _onToTimeEvent),
+                                  context, state.toTime, _onToTimeEvent),
                               child: _getTimeText(
-                                state.toTime.value!.format(context),
+                                state.toTime.format(context),
                               ),
                             );
                           },
@@ -330,10 +404,62 @@ class _TimeInputDialog extends StatelessWidget {
                 ],
               ),
             ),
+            BlocBuilder<BookingTimeBloc, BookingTimeState>(
+              builder: (context, state) {
+                return _getErrorTimeInput(state.status);
+              },
+            )
           ],
         ),
       ),
     );
+  }
+
+  Widget _getErrorTimeInput(BookingTimeStatus status) {
+    String text = '';
+
+    switch (status) {
+      case BookingTimeStatus.lessThanNow:
+        text =
+            'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
+        break;
+      case BookingTimeStatus.notenough15fromtime:
+        text =
+            'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
+        break;
+      case BookingTimeStatus.rangeTimeBetweenTwonotenough:
+        text = 'Khoảng thời gian phải tối thiểu 15 phút';
+        break;
+      default:
+    }
+
+    return text.isEmpty
+        ? const SizedBox.shrink()
+        : Container(
+            margin: EdgeInsets.only(
+              top: 40.h,
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.error,
+                  color: AppColors.red,
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: 40.w,
+                    ),
+                    child: CustomText(
+                      text: text,
+                      color: AppColors.red,
+                      fontSize: 40.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 
   Function() _onCloseIconPressed(BuildContext context) {
@@ -344,15 +470,28 @@ class _TimeInputDialog extends StatelessWidget {
     };
   }
 
-  Function() _onDateTap(BuildContext context, DateTime init) {
+  bool Function(DateTime) _validateDate(List<DateTime> chosenDates) {
+    return (date) {
+      for (var eachdate in chosenDates) {
+        if (eachdate.isSameDate(date)) {
+          return true;
+        }
+      }
+      return false;
+    };
+  }
+
+  Function() _onDateTap(
+      BuildContext context, DateTime init, List<DateTime> chosableDates) {
     return () async {
       var now = DateTime.now();
       var result = await showDatePicker(
         context: context,
         initialDate: init,
         firstDate: now,
+        selectableDayPredicate: _validateDate(chosableDates),
         lastDate: now.add(
-          const Duration(days: 7),
+          const Duration(days: 6),
         ),
         locale: const Locale(
           Symbols.vietnamLanguageCode,
@@ -361,10 +500,11 @@ class _TimeInputDialog extends StatelessWidget {
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         confirmText: 'XÁC NHẬN',
       );
-
-      context.read<BookingTimeBloc>().add(
-            BookingTimeDatePicked(result ?? DateTime.now()),
-          );
+      if (result != null) {
+        context.read<BookingTimeBloc>().add(
+              BookingTimeDatePicked(result),
+            );
+      }
     };
   }
 

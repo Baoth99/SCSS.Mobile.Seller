@@ -11,6 +11,13 @@ import 'package:seller_app/utils/env_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 
+class BookingMapPickerArgument {
+  final double? lat;
+  final double? log;
+
+  const BookingMapPickerArgument({this.lat, this.log});
+}
+
 class BookingMapPickerLayout extends StatelessWidget {
   const BookingMapPickerLayout({Key? key}) : super(key: key);
 
@@ -143,9 +150,18 @@ class __MapState extends State<_Map> {
   }
 
   void Function(MapboxMapController) _onMapCreated(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as BookingMapPickerArgument;
+
     return (MapboxMapController controller) {
       _mapController = controller;
-      _animateCrurentLocation();
+      if (args.lat != null && args.log != null) {
+        _animateLocation(
+          LatLng(args.lat, args.log),
+        );
+      } else {
+        _animateCrurentLocation();
+      }
 
       _mapController?.addListener(_onMapChanged);
     };
@@ -153,10 +169,14 @@ class __MapState extends State<_Map> {
 
   void _animateCrurentLocation() async {
     final latlng = await acquireCurrentLocation();
+    await _animateLocation(latlng);
+  }
+
+  Future<void> _animateLocation(LatLng? latlng) async {
     if (latlng != null) {
       await _mapController?.animateCamera(
         CameraUpdate.newLatLng(
-          LatLng(latlng.latitude, latlng.longitude),
+          latlng,
         ),
       );
       await _mapController?.animateCamera(

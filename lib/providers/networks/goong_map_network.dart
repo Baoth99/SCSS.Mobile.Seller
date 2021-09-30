@@ -13,19 +13,27 @@ import 'package:http/http.dart' as http;
 
 abstract class GoongMapNetwork {
   Future<PredictPlaceGoongMapResponseModel> getPredictions(
-      PredictPlaceGoongMapRequestModel requestModel);
+    PredictPlaceGoongMapRequestModel requestModel,
+    http.Client client,
+  );
 
   Future<ReverseGeocodingResponseModel> getReverseGeocoding(
-      ReverseGeocodingRequestModel requestModel);
+    ReverseGeocodingRequestModel requestModel,
+    http.Client client,
+  );
 
   Future<PlaceDetailByPlaceIdResponseModel> getPlaceDetailByPlaceId(
-      PlaceDetailByPlaceIdRequestModel requestModel);
+    PlaceDetailByPlaceIdRequestModel requestModel,
+    http.Client client,
+  );
 }
 
 class GoongMapNetworkImpl implements GoongMapNetwork {
   @override
   Future<PredictPlaceGoongMapResponseModel> getPredictions(
-      PredictPlaceGoongMapRequestModel requestModel) async {
+    PredictPlaceGoongMapRequestModel requestModel,
+    http.Client client,
+  ) async {
     // query string in url
     final queryParameters;
 
@@ -58,7 +66,7 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
     );
 
     // call api
-    var response = await http.get(uri);
+    var response = await client.get(uri);
 
     //convert json to responseModel
     var responseModel = PredictPlaceGoongMapResponseModel.fromJson(
@@ -70,7 +78,9 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
 
   @override
   Future<ReverseGeocodingResponseModel> getReverseGeocoding(
-      ReverseGeocodingRequestModel requestModel) async {
+    ReverseGeocodingRequestModel requestModel,
+    http.Client client,
+  ) async {
     // query string in url
     final latlng = CommonUtils.concatString(
       [
@@ -94,7 +104,7 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
     );
 
     // call api
-    final response = await http.get(uri);
+    final response = await client.get(uri);
 
     //convert json to responseModel
     final responseModel = ReverseGeocodingResponseModel.fromJson(
@@ -106,7 +116,9 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
 
   @override
   Future<PlaceDetailByPlaceIdResponseModel> getPlaceDetailByPlaceId(
-      PlaceDetailByPlaceIdRequestModel requestModel) async {
+    PlaceDetailByPlaceIdRequestModel requestModel,
+    http.Client client,
+  ) async {
     // create query param
     final queryParameters = {
       GoongMapAPIConstants.placeIdParamName: requestModel.placeId,
@@ -121,7 +133,7 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
     );
 
     // call api
-    final response = await http.get(uri);
+    final response = await client.get(uri);
 
     //convert json to responseModel
     final responseModel = PlaceDetailByPlaceIdResponseModel.fromJson(

@@ -5,7 +5,7 @@ import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 class CustomProgressIndicatorDialog extends StatelessWidget {
   const CustomProgressIndicatorDialog({
     Key? key,
-    required this.text,
+    this.text = 'Vui lòng đợi...',
     this.semanticLabel,
   }) : super(key: key);
 

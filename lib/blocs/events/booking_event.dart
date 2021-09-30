@@ -74,11 +74,15 @@ class BookingBulkyChosen extends BookingEvent {
 }
 
 class BookingImageAdded extends BookingEvent {
-  final String path;
-  const BookingImageAdded(this.path);
+  final File image;
+  const BookingImageAdded(this.image);
 
   @override
-  List<String> get props => [path];
+  List<File> get props => [image];
 }
 
 class BookingImageDeleted extends BookingEvent {}
+
+class BookingAddressInitial extends BookingEvent {}
+
+class RequestSummited extends BookingEvent {}

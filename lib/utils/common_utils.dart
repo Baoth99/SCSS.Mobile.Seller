@@ -1,11 +1,24 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:seller_app/exceptions/custom_exceptions.dart';
+import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
+import 'package:seller_app/utils/env_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonUtils {
+  static List<int> convertImageToBasae64(File file) {
+    return file.readAsBytesSync().toList();
+  }
+
+  static String convertTimeToString(TimeOfDay timeOfDay) {
+    return '${timeOfDay.hour}:${timeOfDay.minute}';
+  }
+
   static String toStringPadleft(int number, int width) {
     return number.toString().padLeft(width, '0');
   }
@@ -15,8 +28,8 @@ class CommonUtils {
     return strs.join(seperator);
   }
 
-  static DateTime getNearDateTime(int minuteInterval) {
-    var now = DateTime.now();
+  static DateTime getNearDateTime(int minuteInterval, [DateTime? now]) {
+    now ??= DateTime.now();
     var nowMinute = now.minute;
     var dividedNumber = nowMinute ~/ minuteInterval;
 
@@ -26,6 +39,10 @@ class CommonUtils {
       Duration(minutes: minuteAdded),
     );
     return result;
+  }
+
+  static TimeOfDay getNearMinute(int minuteInterval) {
+    return TimeOfDay.fromDateTime(getNearDateTime(minuteInterval));
   }
 
   static int compareTwoTimeOfDays(TimeOfDay time1, TimeOfDay time2) {
@@ -42,6 +59,12 @@ class CommonUtils {
       DateTime date, String fromtime, String totime) {
     String strDate = convertDateTimeToVietnamese(date);
     return '$strDate${Symbols.comma} $fromtime ${Symbols.minus} $totime';
+  }
+
+  static double differenceTwoTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
+    double timeNum1 = convertTimeOfDayToDouble(time1);
+    double timeNum2 = convertTimeOfDayToDouble(time2);
+    return (timeNum2 - timeNum1).abs() * TimeOfDay.minutesPerHour;
   }
 
   static String convertDateTimeToVietnamese(DateTime? date) {
@@ -81,32 +104,170 @@ class CommonUtils {
 }
 
 class NetworkUtils {
-  static Future<http.StreamedResponse> postNetworkUrlencoded(
-      String uri, Map<String, String> header, Map<String, String> body) async {
-    var headers = {HttpHeaders.contentTypeHeader: NetworkConstants.urlencoded}
-      ..addAll(header);
-    var request = http.Request(
-      NetworkConstants.postType,
-      Uri.parse(uri),
+  static Future<T>
+      checkSuccessStatusCodeAPIMainResponseModel<T extends BaseResponseModel>(
+    http.Response response,
+    T Function(String) convertJson,
+  ) async {
+    var responseModel = await NetworkUtils.getModelOfResponseMainAPI<T>(
+      response,
+      convertJson,
     );
-    request.bodyFields = body;
 
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    return response;
+    if (responseModel.statusCode == NetworkConstants.ok200 &&
+        responseModel.isSuccess != null &&
+        responseModel.isSuccess!) return responseModel;
+
+    //
+    throw Exception();
   }
 
   static Future<Map<String, dynamic>> getMapFromResponse(
-      http.StreamedResponse response) async {
-    return jsonDecode(await response.stream.bytesToString());
+      http.Response response) async {
+    return jsonDecode(response.body);
+  }
+
+  static Future<http.Response> getNetwork(
+    String uri,
+    Map<String, String> headers,
+    http.Client client,
+  ) async {
+    //create request
+    var response = await client.get(
+      Uri.parse(uri),
+      headers: headers,
+    );
+
+    //add header
+
+    return response;
+  }
+
+  static Future<http.Response> getNetworkWithBearer(
+    String uri,
+    Map<String, String> headers,
+    http.Client client,
+  ) async {
+    var newHeaders = <String, String>{
+      HttpHeaders.authorizationHeader: await getBearerToken(),
+    }..addAll(headers);
+
+    return await getNetwork(
+      uri,
+      newHeaders,
+      client,
+    );
+  }
+
+  static Future<String> getBearerToken() async {
+    String accessToken =
+        await SharedPreferenceUtils.getString(APIKeyConstants.accessToken) ??
+            Symbols.empty;
+    accessToken = NetworkConstants.bearerPattern
+        .replaceFirst(NetworkConstants.data, accessToken);
+
+    return accessToken;
   }
 
   static String getBasicAuth() {
     return NetworkConstants.basicAuth.replaceFirst(
-      NetworkConstants.base64Data,
+      NetworkConstants.data,
       CommonUtils.convertToBase64(
           '${EnvID4AppSettingValue.clientId}:${EnvID4AppSettingValue.clientSeret}'),
     );
+  }
+
+  static Future<http.Response> postMultipart(
+    String uri,
+    Map<String, String> headers,
+    http.MultipartFile multipartFile,
+    http.Client client,
+  ) async {
+    var header = {
+      HttpHeaders.authorizationHeader: await getBearerToken(),
+    }..addAll(headers);
+
+    var request = http.MultipartRequest(
+      NetworkConstants.postType,
+      Uri.parse(uri),
+    );
+    request.files.add(multipartFile);
+    request.headers.addAll(header);
+    http.StreamedResponse response = await client.send(request);
+    var result = await http.Response.fromStream(response);
+    return result;
+  }
+
+  static Future<http.Response> postBodyWithBearerAuth({
+    required String uri,
+    Map<String, String>? headers,
+    Object? body,
+    required http.Client client,
+  }) async {
+    var mainHeader = <String, String>{
+      HttpHeaders.authorizationHeader: await getBearerToken(),
+    };
+
+    if (headers != null) {
+      mainHeader.addAll(headers);
+    }
+
+    return await postBody(
+      uri: uri,
+      headers: mainHeader,
+      body: body,
+      client: client,
+    );
+  }
+
+  static Future<http.Response> postBody({
+    required String uri,
+    Map<String, String>? headers,
+    Object? body,
+    required http.Client client,
+  }) async {
+    var response = client.post(
+      Uri.parse(
+        uri,
+      ),
+      body: body,
+      headers: headers,
+    );
+    return response;
+  }
+
+  // static Future<Map<String, dynamic>> getMapOfStreamResponse(
+  //     http.Response response) async {
+  //   switch (response.statusCode) {
+  //     case NetworkConstants.ok200:
+  //       var responseMap = await NetworkUtils.getMapFromResponse(response);
+  //       //get statusCode
+  //       var statusCode = responseMap[NetworkConstants.statusCode];
+  //       var isSucess = responseMap[NetworkConstants.isSuccess];
+  //       if (statusCode is int &&
+  //           statusCode == NetworkConstants.ok200 &&
+  //           isSucess) {
+  //         return responseMap;
+  //       }
+  //       throw Exception();
+  //     case NetworkConstants.unauthorized401:
+  //       throw UnauthorizedException();
+  //     default:
+  //       throw Exception();
+  //   }
+  // }
+
+  static Future<T> getModelOfResponseMainAPI<T>(
+      http.Response response, T Function(String) convert) async {
+    switch (response.statusCode) {
+      case NetworkConstants.ok200:
+        T model = convert(response.body);
+        return model;
+      case NetworkConstants.unauthorized401:
+        throw UnauthorizedException();
+      default:
+        throw Exception();
+    }
   }
 }
 

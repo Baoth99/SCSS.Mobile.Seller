@@ -39,7 +39,8 @@ class SignupInformationLayout extends StatelessWidget {
                 Navigator.of(context).popUntil(
                   (route) => route.settings.name == Routes.signupInformation,
                 );
-                CoolAlert.show(
+
+                FunctionalWidgets.showCoolAlert(
                   context: context,
                   type: CoolAlertType.success,
                   title: SignupInformationLayoutConstants.titleDialog,
@@ -47,10 +48,7 @@ class SignupInformationLayout extends StatelessWidget {
                   confirmBtnColor: AppColors.greenFF61C53D,
                   confirmBtnText:
                       SignupInformationLayoutConstants.btnDialogName,
-                  onConfirmBtnTap: () => Navigator.popUntil(
-                    context,
-                    (route) => route.settings.name == Routes.login,
-                  ),
+                  confirmBtnTapRoute: Routes.login,
                 );
               }
             },

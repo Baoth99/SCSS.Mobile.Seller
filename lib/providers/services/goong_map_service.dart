@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
@@ -23,20 +24,28 @@ abstract class GoongMapService {
 }
 
 class GoongMapServiceImpl implements GoongMapService {
-  final _goongMapNetwork = getIt.get<GoongMapNetwork>();
+  GoongMapServiceImpl({GoongMapNetwork? goongMapNetwork}) {
+    _goongMapNetwork = goongMapNetwork ?? getIt.get<GoongMapNetwork>();
+  }
+
+  late GoongMapNetwork _goongMapNetwork;
 
   @override
   Future<List<AddressPrediction>> getPredictions(String predictionValue) async {
     final latLng = await acquireCurrentLocation();
 
     //call api by network
-    var responseModel = await _goongMapNetwork.getPredictions(
-      PredictPlaceGoongMapRequestModel(
-        predictValue: predictionValue,
-        latitude: latLng?.latitude,
-        longitude: latLng?.longitude,
-      ),
-    );
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .getPredictions(
+          PredictPlaceGoongMapRequestModel(
+            predictValue: predictionValue,
+            latitude: (latLng?.latitude) ?? MapConstants.hoChiMinhLatitude,
+            longitude: (latLng?.longitude) ?? MapConstants.hoChiMinhLongitude,
+          ),
+          client,
+        )
+        .whenComplete(() => client.close());
 
     //map responseModel to List<AddressPrediction>
     var listAddressPrediction = AutoMapper.I
@@ -50,9 +59,14 @@ class GoongMapServiceImpl implements GoongMapService {
   Future<PlaceNameByLatlngServiceModel> getPlaceNameByLatlng(
       double latitude, double longitude) async {
     //call api by net work
-    var responseModel = await _goongMapNetwork.getReverseGeocoding(
-      ReverseGeocodingRequestModel(latitude: latitude, longitude: longitude),
-    );
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .getReverseGeocoding(
+          ReverseGeocodingRequestModel(
+              latitude: latitude, longitude: longitude),
+          client,
+        )
+        .whenComplete(() => client.close());
     var firstResult = responseModel.results?[0];
 
     var addressComponents = firstResult?.addressComponents;
@@ -76,9 +90,13 @@ class GoongMapServiceImpl implements GoongMapService {
 
   @override
   Future<PlaceDetailServiceModel> getPlaceDetail(String placeId) async {
-    var responseModel = await _goongMapNetwork.getPlaceDetailByPlaceId(
-      PlaceDetailByPlaceIdRequestModel(placeId),
-    );
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .getPlaceDetailByPlaceId(
+          PlaceDetailByPlaceIdRequestModel(placeId),
+          client,
+        )
+        .whenComplete(() => client.close());
 
     var result = AutoMapper.I
         .map<PlaceDetailByPlaceIdResponseModel, PlaceDetailServiceModel>(
