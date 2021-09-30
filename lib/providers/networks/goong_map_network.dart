@@ -57,16 +57,12 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
         GoongMapAPIConstants.inputParamName: requestModel.predictValue,
       };
     }
-
-    // create uri
-    final uri = Uri.https(
-      EnvMapSettingValue.apiUrl,
-      GoongMapAPIConstants.urlPlacesSearchByKeywordURL,
-      queryParameters,
-    );
-
     // call api
-    var response = await client.get(uri);
+    var response = await NetworkUtils.getNetwork(
+      uri: GoongMapAPIConstants.urlPlacesSearchByKeywordURL,
+      client: client,
+      queries: queryParameters,
+    );
 
     //convert json to responseModel
     var responseModel = PredictPlaceGoongMapResponseModel.fromJson(
@@ -96,16 +92,12 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
       GoongMapAPIConstants.apiKeyParamName: EnvMapSettingValue.apiKey,
     };
 
-    // create uri
-    final uri = Uri.https(
-      EnvMapSettingValue.apiUrl,
-      GoongMapAPIConstants.urlReverseGeocoding,
-      queryParameters,
-    );
-
     // call api
-    final response = await client.get(uri);
-
+    var response = await NetworkUtils.getNetwork(
+      uri: GoongMapAPIConstants.urlReverseGeocoding,
+      client: client,
+      queries: queryParameters,
+    );
     //convert json to responseModel
     final responseModel = ReverseGeocodingResponseModel.fromJson(
       jsonDecode(response.body),
@@ -125,15 +117,12 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
       GoongMapAPIConstants.apiKeyParamName: EnvMapSettingValue.apiKey,
     };
 
-    // create uri
-    final uri = Uri.https(
-      EnvMapSettingValue.apiUrl,
-      GoongMapAPIConstants.urlGetPlaceDetailById,
-      queryParameters,
-    );
-
     // call api
-    final response = await client.get(uri);
+    var response = await NetworkUtils.getNetwork(
+      uri: GoongMapAPIConstants.urlGetPlaceDetailById,
+      client: client,
+      queries: queryParameters,
+    );
 
     //convert json to responseModel
     final responseModel = PlaceDetailByPlaceIdResponseModel.fromJson(
