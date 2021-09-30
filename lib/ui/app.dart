@@ -66,6 +66,8 @@ class SellerApp extends StatelessWidget {
 
             //profile
             Routes.profileEdit: (_) => const ProfileEditLayout(),
+            Routes.profilePasswordEdit: (_) =>
+                const ProfilePasswordEditLayout(),
           },
         ),
       ),

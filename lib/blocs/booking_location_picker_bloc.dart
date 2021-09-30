@@ -10,9 +10,11 @@ part 'states/booking_location_picker_state.dart';
 
 class BookingLocationPickerBloc
     extends Bloc<BookingLocationPickerEvent, BookingLocationPickerState> {
-  BookingLocationPickerBloc() : super(const BookingLocationPickerState());
-
-  final _goongMapService = getIt.get<GoongMapService>();
+  late GoongMapService _goongMapService;
+  BookingLocationPickerBloc({GoongMapService? goongMapService})
+      : super(const BookingLocationPickerState()) {
+    _goongMapService = goongMapService ?? getIt.get<GoongMapService>();
+  }
 
   @override
   Stream<BookingLocationPickerState> mapEventToState(

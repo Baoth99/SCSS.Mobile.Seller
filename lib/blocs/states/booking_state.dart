@@ -3,32 +3,32 @@ part of '../booking_bloc.dart';
 class BookingState extends Equatable {
   const BookingState({
     this.address = const BookingAddress.pure(),
-    this.date = const BookingDate.pure(),
-    this.fromTime = const BookingTime.pure(),
-    this.toTime = const BookingTime.pure(),
+    this.date,
+    this.fromTime,
+    this.toTime,
     this.note = Symbols.empty,
     this.bulky = YesNo.no,
-    this.imagePath = Symbols.empty,
+    required this.imageFile,
     this.status = FormzStatus.pure,
   });
 
   final BookingAddress address;
-  final BookingDate date;
-  final BookingTime fromTime;
-  final BookingTime toTime;
+  final DateTime? date;
+  final TimeOfDay? fromTime;
+  final TimeOfDay? toTime;
   final String note;
   final YesNo bulky;
-  final String imagePath;
+  final File imageFile;
   final FormzStatus status;
 
   BookingState copyWith(
       {BookingAddress? address,
-      BookingDate? date,
-      BookingTime? fromTime,
-      BookingTime? toTime,
+      DateTime? date,
+      TimeOfDay? fromTime,
+      TimeOfDay? toTime,
       String? note,
       YesNo? bulky,
-      String? imagePath,
+      File? imageFile,
       FormzStatus? status}) {
     return BookingState(
       address: address ?? this.address,
@@ -37,24 +37,26 @@ class BookingState extends Equatable {
       toTime: toTime ?? this.toTime,
       note: note ?? this.note,
       bulky: bulky ?? this.bulky,
-      imagePath: imagePath ?? this.imagePath,
+      imageFile: imageFile ?? this.imageFile,
       status: status ?? this.status,
     );
   }
 
   BookingState refresh() {
-    return const BookingState();
+    return BookingState(
+      imageFile: Others.emptyFile,
+    );
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         address,
         date,
         fromTime,
         toTime,
         note,
         bulky,
-        imagePath,
+        imageFile,
         status,
       ];
 }

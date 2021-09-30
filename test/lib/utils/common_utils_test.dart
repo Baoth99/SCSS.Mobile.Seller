@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,9 +7,76 @@ import 'package:seller_app/utils/common_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
+  group('differenceTwoTimeOfDay', () {
+    test('15', () {
+      var time1 = TimeOfDay(hour: 15, minute: 15);
+      var time2 = TimeOfDay(hour: 15, minute: 00);
+
+      expect(CommonUtils.differenceTwoTimeOfDay(time1, time2), 15);
+    });
+
+    test('75', () {
+      var time1 = TimeOfDay(hour: 15, minute: 15);
+      var time2 = TimeOfDay(hour: 16, minute: 30);
+
+      expect(CommonUtils.differenceTwoTimeOfDay(time1, time2), 75);
+    });
+
+    test('15', () {
+      var time1 = TimeOfDay(hour: 17, minute: 30);
+      var time2 = TimeOfDay(hour: 16, minute: 15);
+
+      expect(CommonUtils.differenceTwoTimeOfDay(time1, time2), 75);
+    });
+
+    test('15', () {
+      var time1 = TimeOfDay(hour: 12, minute: 15);
+      var time2 = TimeOfDay(hour: 14, minute: 00);
+
+      expect(CommonUtils.differenceTwoTimeOfDay(time1, time2), 105);
+    });
+  });
+
+  group('getNearDateTime', () {
+    test('near new day', () {
+      DateTime matcher = DateTime(2021, 12, 13);
+      var a = matcher.toIso8601String();
+
+      var actual =
+          CommonUtils.getNearDateTime(15, DateTime(2021, 12, 12, 23, 46));
+      expect(actual, matcher);
+    });
+
+    test('near new day', () {
+      DateTime matcher = DateTime(2021, 12, 13, 0, 0);
+
+      var actual =
+          CommonUtils.getNearDateTime(15, DateTime(2021, 12, 12, 23, 44));
+      expect(actual, matcher);
+    });
+
+    // test('near new day', () {
+    //   DateTime matcher = DateTime(2021, 9, 27, 17, 15);
+
+    //   var actual = CommonUtils.getNearDateTime(
+    //     15,
+    //   );
+    //   expect(actual, matcher);
+    // });
+  });
+
+  group('fsdfsdsdfd', () {
+    test('description', () {
+      // Map<String, String?> name = {};
+      // String string = name['432423'];
+      // print(string);
+    });
+  });
+
   group('addTimeOfDay', () {
     test('15', () {
       var matcher = TimeOfDay(hour: 20, minute: 29);
+      var str = matcher.toString();
 
       var actual =
           CommonUtils.addTimeOfDay(TimeOfDay(hour: 20, minute: 14), 15);

@@ -13,7 +13,7 @@ class BookingTimeDatePicked extends BookingTimeEvent {
   List<DateTime> get props => [date];
 }
 
-// class BookingTimeInitial extends BookingTimeEvent {}
+class BookingTimeInitial extends BookingTimeEvent {}
 
 class BookingTimeTimeFromPicked extends BookingTimeEvent {
   const BookingTimeTimeFromPicked(this.time);

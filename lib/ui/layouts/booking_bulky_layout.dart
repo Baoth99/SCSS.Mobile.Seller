@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,28 +7,64 @@ import 'package:seller_app/blocs/booking_bloc.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
+import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/ui/widgets/sumitted_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:seller_app/ui/widgets/view_image_layour.dart';
+import 'package:seller_app/ui/widgets/view_image_layout.dart';
+import 'package:formz/formz.dart';
 
 class BookingBulkyLayout extends StatelessWidget {
   const BookingBulkyLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: FunctionalWidgets.buildAppBar(
-        context: context,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      body: ListView(
-        children: [
-          const BookingBulkyLayoutBody(),
-        ],
+    return BlocListener<BookingBloc, BookingState>(
+      listener: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          showDialog(
+            context: context,
+            builder: (context) => const CustomProgressIndicatorDialog(),
+          );
+        }
+
+        if (state.status.isSubmissionSuccess) {
+          FunctionalWidgets.showCoolAlert(
+            context: context,
+            confirmBtnTapRoute: Routes.main,
+            type: CoolAlertType.success,
+            title: 'Thông Báo',
+            text: 'Tạo yêu cầu thành công!',
+            confirmBtnColor: AppColors.greenFF61C53D,
+            confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
+          );
+        }
+
+        if (state.status.isSubmissionFailure) {
+          FunctionalWidgets.showCoolAlert(
+            context: context,
+            type: CoolAlertType.error,
+            title: 'Thông Báo',
+            text: 'Có lỗi đến từ hệ thống',
+            confirmBtnColor: AppColors.greenFF61C53D,
+            confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
+            confirmBtnTapRoute: Routes.main,
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: FunctionalWidgets.buildAppBar(
+          context: context,
+          elevation: 0,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        body: ListView(
+          children: [
+            const BookingBulkyLayoutBody(),
+          ],
+        ),
       ),
     );
   }
@@ -53,7 +90,9 @@ class BookingBulkyLayoutBody extends StatelessWidget {
   }
 
   void Function() _onPressed(BuildContext context) {
-    return () {};
+    return () {
+      context.read<BookingBloc>().add(RequestSummited());
+    };
   }
 }
 
@@ -127,12 +166,12 @@ class BookingBulkyLayoutImageInput extends StatelessWidget {
                 vertical: 40.h,
               ),
               constraints: BoxConstraints(maxHeight: 600.h, minHeight: 400.h),
-              child: state.imagePath.isNotEmpty
+              child: state.imageFile.path.isNotEmpty
                   ? Stack(
                       children: <Widget>[
                         ClipRRect(
                           borderRadius: BorderRadius.circular(20.0.r),
-                          child: Image.file(File(state.imagePath)),
+                          child: Image.file(state.imageFile),
                         ),
                         Positioned.fill(
                           child: Container(
@@ -205,7 +244,11 @@ class RadioButtonInput extends StatelessWidget {
             activeColor: AppColors.greenFF61C53D,
             groupValue: groupValue,
             value: value,
-            onChanged: (value) {},
+            onChanged: (value) {
+              context
+                  .read<BookingBloc>()
+                  .add(BookingBulkyChosen(value ?? YesNo.yes));
+            },
           ),
           title: CustomText(
             text: text,
@@ -233,7 +276,7 @@ class ExistedPhotoDialog extends StatelessWidget {
                   context,
                   MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        ViewImageLayout(state.imagePath),
+                        ViewImageLayout(state.imageFile),
                   ),
                 );
               },
@@ -250,7 +293,9 @@ class ExistedPhotoDialog extends StatelessWidget {
           onPressed: () {
             context.read<BookingBloc>().add(BookingImageDeleted());
             Navigator.popUntil(
-                context, ModalRoute.withName(Routes.bookingBulky));
+              context,
+              ModalRoute.withName(Routes.bookingBulky),
+            );
           },
           child: ListTile(
             title: CustomText(
@@ -307,7 +352,9 @@ class PhotoDialog extends StatelessWidget {
   void _addImage(BuildContext context, XFile? photo) {
     if (photo != null && photo.path.isNotEmpty) {
       context.read<BookingBloc>().add(
-            BookingImageAdded(photo.path),
+            BookingImageAdded(
+              File(photo.path),
+            ),
           );
     }
     Navigator.popUntil(context, ModalRoute.withName(Routes.bookingBulky));

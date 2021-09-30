@@ -10,9 +10,12 @@ part 'events/booking_map_picker_event.dart';
 
 class BookingMapPickerBloc
     extends Bloc<BookingMapPickerEvent, BookingMapPickerState> {
-  BookingMapPickerBloc() : super(const BookingMapPickerState());
-
-  final goongMapService = getIt.get<GoongMapService>();
+  late GoongMapService _goongMapService;
+  BookingMapPickerBloc({
+    GoongMapService? goongMapService,
+  }) : super(const BookingMapPickerState()) {
+    _goongMapService = goongMapService ?? getIt.get<GoongMapService>();
+  }
 
   @override
   Stream<BookingMapPickerState> mapEventToState(
@@ -26,7 +29,7 @@ class BookingMapPickerBloc
           );
 
           //API
-          var result = await goongMapService.getPlaceNameByLatlng(
+          var result = await _goongMapService.getPlaceNameByLatlng(
             event.latitude,
             event.longitude,
           );

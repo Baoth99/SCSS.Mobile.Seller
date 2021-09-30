@@ -17,7 +17,9 @@ Future<LatLng?> acquireCurrentLocation() async {
   serviceEnabled = await location.serviceEnabled();
   if (!serviceEnabled) {
     serviceEnabled = await location.requestService();
-    if (!serviceEnabled) {}
+    if (!serviceEnabled) {
+      return null;
+    }
   }
 
   // Check for location permissions; similar to the workflow in Android apps,

@@ -45,6 +45,8 @@ class Symbols {
 
 class Others {
   static const int otpLength = 6;
+
+  static final emptyFile = File(Symbols.empty);
 }
 
 class VietnameseDate {
@@ -75,13 +77,19 @@ class CompareConstants {
 
 class NetworkConstants {
   static const urlencoded = 'application/x-www-form-urlencoded';
+  static const applicationJson = 'application/json';
   static const postType = 'POST';
+  static const getType = 'GET';
 
   // status code
   static const ok200 = 200;
   static const badRequest400 = 400;
+  static const unauthorized401 = 401;
+  static const statusCode = 'statusCode';
+  static const isSuccess = 'isSuccess';
 
   // pattern
-  static const base64Data = '{base64Data}';
-  static const basicAuth = 'Basic $base64Data';
+  static const data = '{data}';
+  static const basicAuth = 'Basic $data';
+  static const bearerPattern = 'Bearer $data';
 }

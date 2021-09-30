@@ -12,9 +12,14 @@ part 'states/login_state.dart';
 part 'events/login_event.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final _identityServerService = getIt.get<IdentityServerService>();
+  late IdentityServerService _identityServerService =
+      getIt.get<IdentityServerService>();
 
-  LoginBloc() : super(const LoginState());
+  LoginBloc({IdentityServerService? identityServerService})
+      : super(const LoginState()) {
+    _identityServerService =
+        identityServerService ?? getIt.get<IdentityServerService>();
+  }
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -106,7 +111,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             throw Exception();
           }
         } catch (e) {
-          print(e);
           yield state.copyWith(
             status: FormzStatus.submissionFailure,
           );

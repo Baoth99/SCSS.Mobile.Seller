@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cool_alert/cool_alert.dart';
 
 class FunctionalWidgets {
   static AppBar buildAppBar({
@@ -110,6 +112,31 @@ class FunctionalWidgets {
       ),
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+    );
+  }
+
+  static Future<dynamic> showCoolAlert({
+    required BuildContext context,
+    CoolAlertType type = CoolAlertType.info,
+    String? title = Symbols.empty,
+    String? text = Symbols.empty,
+    Color? confirmBtnColor,
+    String? confirmBtnText,
+    required String confirmBtnTapRoute,
+  }) {
+    return CoolAlert.show(
+      context: context,
+      type: type,
+      title: title,
+      text: text,
+      confirmBtnColor: confirmBtnColor,
+      confirmBtnText: confirmBtnText,
+      onConfirmBtnTap: () => Navigator.popUntil(
+        context,
+        ModalRoute.withName(
+          confirmBtnTapRoute,
+        ),
+      ),
     );
   }
 }
