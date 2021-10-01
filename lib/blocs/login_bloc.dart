@@ -7,6 +7,7 @@ import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
+import 'package:seller_app/utils/common_function.dart';
 import 'package:seller_app/utils/common_utils.dart';
 part 'states/login_state.dart';
 part 'events/login_event.dart';
@@ -116,6 +117,29 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           );
         }
       }
+    } else if (event is LoginRefreshTokenConnected) {
+      try {
+        yield state.copyWith(
+          status: FormzStatus.submissionInProgress,
+        );
+
+        var resultRefreshToken = await futureAppDuration<bool>(
+            _identityServerService.refreshToken());
+
+        if (resultRefreshToken) {
+          yield state.copyWith(
+            status: FormzStatus.submissionSuccess,
+          );
+        } else {
+          throw Exception();
+        }
+      } on Exception {
+        yield state.copyWith(
+          status: FormzStatus.pure,
+        );
+      }
+    } else if (event is LoginIntial) {
+      add(LoginRefreshTokenConnected());
     }
   }
 }

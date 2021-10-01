@@ -29,7 +29,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
         if (result) {
           if (await SharedPreferenceUtils.remove(APIKeyConstants.accessToken) &&
-              await SharedPreferenceUtils.remove(APIKeyConstants.accessToken)) {
+              await SharedPreferenceUtils.remove(
+                  APIKeyConstants.refreshToken)) {
             yield state.copyWith(
               status: FormzStatus.submissionSuccess,
             );
