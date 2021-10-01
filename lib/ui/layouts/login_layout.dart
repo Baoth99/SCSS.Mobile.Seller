@@ -21,13 +21,22 @@ class LoginLayout extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc(),
+        create: (context) => LoginBloc()..add(LoginIntial()),
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state.status.isSubmissionInProgress) {
               FunctionalWidgets.showCustomDialog(
                 context,
                 LoginLayoutConstants.waiting,
+              );
+            }
+
+            if (state.status.isPure) {
+              Navigator.popUntil(
+                context,
+                ModalRoute.withName(
+                  Routes.login,
+                ),
               );
             }
 

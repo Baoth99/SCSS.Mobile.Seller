@@ -127,17 +127,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           state.toTime,
         ).isValid) {
           //post data
-          bool result = await _sendRequest(state).catchError(
-            (value) async {
-              var refreshTokenresult =
-                  await _identityServerService.refreshToken();
-              if (refreshTokenresult) {
-                return await _sendRequest(state);
-              }
-              return false;
-            },
-            test: (error) => error is UnauthorizedException,
-          ).timeout(
+          bool result = await _sendRequest(state).timeout(
             const Duration(minutes: 10),
             onTimeout: () => throw Exception(),
           );

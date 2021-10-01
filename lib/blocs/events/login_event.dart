@@ -22,3 +22,7 @@ class LoginPasswordChanged extends LoginEvent {
 }
 
 class LoginButtonSubmmited extends LoginEvent {}
+
+class LoginRefreshTokenConnected extends LoginEvent {}
+
+class LoginIntial extends LoginEvent {}
