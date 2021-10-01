@@ -4,7 +4,7 @@ import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/common_scaffold_title.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'booking_detail_layout.dart';
+import 'request_detail_layout.dart';
 
 class ActivityLayout extends StatelessWidget {
   const ActivityLayout({Key? key}) : super(key: key);
@@ -66,13 +66,13 @@ class ActivityList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) => CurrentActivity(
-        bookingId: 'suck may dick',
-        time: '21 thg8, 2021 09:41 AM',
-        placeName:
-            'Công viên tao đànfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        requestId: 'suck may dick',
+        time: 'Th3, 24 thg8, 2021, 09:45 - 10:00',
+        placeName: 'Công viên tao đàng',
         bulky: true,
         isCompleted: true,
-        extraInfo: '100.000 ₫',
+        extraInfo: 'Hoàn thành',
+        price: '500.000đ',
       ),
       separatorBuilder: (context, index) => Container(),
       itemCount: 20,
@@ -83,20 +83,22 @@ class ActivityList extends StatelessWidget {
 class CurrentActivity extends StatelessWidget {
   const CurrentActivity({
     Key? key,
-    required this.bookingId,
+    required this.requestId,
     required this.time,
     required this.placeName,
     required this.bulky,
     this.isCompleted,
     this.extraInfo,
+    this.price,
   }) : super(key: key);
 
-  final String bookingId;
+  final String requestId;
   final String time;
   final String placeName;
   final bool bulky;
   final bool? isCompleted;
   final String? extraInfo;
+  final String? price;
 
   @override
   Widget build(BuildContext context) {
@@ -121,13 +123,13 @@ class CurrentActivity extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 30.w,
+                    horizontal: 25.w,
                   ),
                   child: Image.asset(
                     bulky
                         ? ActivityLayoutConstants.bulkyImage
                         : ActivityLayoutConstants.notBulkyImage,
-                    width: 90.w,
+                    width: 65.w,
                   ),
                   decoration: BoxDecoration(
                     color: bulky
@@ -148,19 +150,27 @@ class CurrentActivity extends StatelessWidget {
                       children: [
                         _getContainerColumn(
                           CustomText(
-                            text: time,
-                            color: Colors.green[600],
+                            text: placeName,
                             fontSize: 42.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         _getContainerColumn(
                           CustomText(
-                            text: placeName,
-                            fontSize: 42.sp,
+                            text: time,
+                            color: Colors.green[600],
+                            fontSize: 37.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
+                        price != null
+                            ? _getContainerColumn(
+                                CustomText(
+                                  text: 'Tổng cộng: $price',
+                                  fontSize: 40.sp,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -170,16 +180,20 @@ class CurrentActivity extends StatelessWidget {
                         // constraints: BoxConstraints(
                         //   minWidth: 100.w,
                         // ),
-                        width: 270.w,
+                        padding: EdgeInsets.only(
+                          top: 15.h,
+                          right: 20.w,
+                        ),
+                        width: 200.w,
                         child: CustomText(
                           text: extraInfo ?? Symbols.empty,
                           color: isCompleted!
                               ? Colors.green[600]
                               : AppColors.orangeFFF5670A,
                           fontWeight: FontWeight.w500,
+                          fontSize: 30.sp,
                         ),
-                        alignment: Alignment.center,
-                      )
+                        alignment: Alignment.topRight)
                     : Container(),
               ],
             ),
@@ -192,8 +206,8 @@ class CurrentActivity extends StatelessWidget {
   void Function() _onTap(BuildContext context) {
     return () {
       Navigator.of(context).pushNamed(
-        Routes.bookingDetail,
-        arguments: BookingDetailArguments(bookingId: bookingId),
+        Routes.requestDetail,
+        arguments: RequestDetailArguments(requestId: requestId),
       );
     };
   }
@@ -201,7 +215,7 @@ class CurrentActivity extends StatelessWidget {
   Widget _getContainerColumn(Widget child) {
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 15.h,
+        vertical: 10.h,
       ),
       child: child,
     );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
-import 'package:seller_app/blocs/booking_bloc.dart';
-import 'package:seller_app/blocs/booking_map_picker_bloc.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
+import 'package:seller_app/blocs/request_map_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/services/map_service.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -11,27 +11,27 @@ import 'package:seller_app/utils/env_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 
-class BookingMapPickerArgument {
+class RequestMapPickerArgument {
   final double? lat;
   final double? log;
 
-  const BookingMapPickerArgument({this.lat, this.log});
+  const RequestMapPickerArgument({this.lat, this.log});
 }
 
-class BookingMapPickerLayout extends StatelessWidget {
-  const BookingMapPickerLayout({Key? key}) : super(key: key);
+class RequestMapPickerLayout extends StatelessWidget {
+  const RequestMapPickerLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BookingMapPickerBloc(),
+      create: (context) => RequestMapPickerBloc(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: FunctionalWidgets.buildAppBar(
           context: context,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
-          title: BlocBuilder<BookingMapPickerBloc, BookingMapPickerState>(
+          title: BlocBuilder<RequestMapPickerBloc, RequestMapPickerState>(
             builder: (context, state) {
               return CustomText(
                 text: state.status.isSubmissionSuccess
@@ -62,7 +62,7 @@ class _Body extends StatelessWidget {
       children: <Widget>[
         const _Map(),
         Image.asset(
-          BookingMapPickerLayoutConstants.markerPath,
+          RequestMapPickerLayoutConstants.markerPath,
           width: 80.w,
         ),
         Positioned(
@@ -151,7 +151,7 @@ class __MapState extends State<_Map> {
 
   void Function(MapboxMapController) _onMapCreated(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as BookingMapPickerArgument;
+        ModalRoute.of(context)!.settings.arguments as RequestMapPickerArgument;
 
     return (MapboxMapController controller) {
       _mapController = controller;
@@ -189,8 +189,8 @@ class __MapState extends State<_Map> {
     return () {
       var latLng = _cameraPosition?.target;
       if (latLng != null) {
-        context.read<BookingMapPickerBloc>().add(
-              BookingMapPickerMapChanged(
+        context.read<RequestMapPickerBloc>().add(
+              RequestMapPickerMapChanged(
                 latLng.latitude,
                 latLng.longitude,
               ),
@@ -209,7 +209,7 @@ class _SubmittedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookingMapPickerBloc, BookingMapPickerState>(
+    return BlocBuilder<RequestMapPickerBloc, RequestMapPickerState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return ElevatedButton(
@@ -231,7 +231,7 @@ class _SubmittedButton extends StatelessWidget {
               : null,
           child: CustomText(
             fontSize: WidgetConstants.buttonCommonFrontSize.sp,
-            text: BookingMapPickerLayoutConstants.submittedButton,
+            text: RequestMapPickerLayoutConstants.submittedButton,
           ),
         );
       },
@@ -246,8 +246,8 @@ class _SubmittedButton extends StatelessWidget {
     String address,
   ) {
     return () {
-      context.read<BookingBloc>().add(
-            BookingAddressPicked(
+      context.read<RequestBloc>().add(
+            RequestAddressPicked(
               latitude: latitude,
               longitude: longitude,
               name: name,
@@ -256,7 +256,7 @@ class _SubmittedButton extends StatelessWidget {
           );
       Navigator.popUntil(
         context,
-        ModalRoute.withName(Routes.bookingStart),
+        ModalRoute.withName(Routes.requestStart),
       );
     };
   }

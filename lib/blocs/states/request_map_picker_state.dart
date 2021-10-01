@@ -1,7 +1,7 @@
-part of '../booking_map_picker_bloc.dart';
+part of '../request_map_picker_bloc.dart';
 
-class BookingMapPickerState extends Equatable {
-  const BookingMapPickerState({
+class RequestMapPickerState extends Equatable {
+  const RequestMapPickerState({
     this.latitude = 0,
     this.longitude = 0,
     this.placeName = Symbols.empty,
@@ -15,14 +15,14 @@ class BookingMapPickerState extends Equatable {
   final String address;
   final FormzStatus status;
 
-  BookingMapPickerState copyWith({
+  RequestMapPickerState copyWith({
     double? latitude,
     double? longitude,
     String? placeName,
     String? address,
     FormzStatus? status,
   }) {
-    return BookingMapPickerState(
+    return RequestMapPickerState(
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       placeName: placeName ?? this.placeName,

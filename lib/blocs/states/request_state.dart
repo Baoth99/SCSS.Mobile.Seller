@@ -1,8 +1,8 @@
-part of '../booking_bloc.dart';
+part of '../request_bloc.dart';
 
-class BookingState extends Equatable {
-  const BookingState({
-    this.address = const BookingAddress.pure(),
+class RequestState extends Equatable {
+  const RequestState({
+    this.address = const RequestAddress.pure(),
     this.date,
     this.fromTime,
     this.toTime,
@@ -12,7 +12,7 @@ class BookingState extends Equatable {
     this.status = FormzStatus.pure,
   });
 
-  final BookingAddress address;
+  final RequestAddress address;
   final DateTime? date;
   final TimeOfDay? fromTime;
   final TimeOfDay? toTime;
@@ -21,8 +21,8 @@ class BookingState extends Equatable {
   final File imageFile;
   final FormzStatus status;
 
-  BookingState copyWith(
-      {BookingAddress? address,
+  RequestState copyWith(
+      {RequestAddress? address,
       DateTime? date,
       TimeOfDay? fromTime,
       TimeOfDay? toTime,
@@ -30,7 +30,7 @@ class BookingState extends Equatable {
       YesNo? bulky,
       File? imageFile,
       FormzStatus? status}) {
-    return BookingState(
+    return RequestState(
       address: address ?? this.address,
       date: date ?? this.date,
       fromTime: fromTime ?? this.fromTime,
@@ -42,8 +42,8 @@ class BookingState extends Equatable {
     );
   }
 
-  BookingState refresh() {
-    return BookingState(
+  RequestState refresh() {
+    return RequestState(
       imageFile: Others.emptyFile,
     );
   }

@@ -15,14 +15,14 @@ class Routes {
   static const signupOTP = 'signupOTP';
   static const signupInformation = 'signupInformation';
 
-  //Booking
-  static const String bookingStart = 'bookingStart';
-  static const String bookingLocationPicker = 'bookingLocationPicker';
-  static const bookingMapPicker = 'bookingMapPicker';
-  static const bookingBulky = 'bookingBulky';
+  //Request
+  static const String requestStart = 'requestStart';
+  static const String requestLocationPicker = 'requestLocationPicker';
+  static const requestMapPicker = 'requestMapPicker';
+  static const requestBulky = 'requestBulky';
 
-  //Booking Detail
-  static const bookingDetail = 'bookingDetail';
+  //Request Detail
+  static const requestDetail = 'requestDetail';
 
   //activity
   static const profileEdit = 'profileEdit';

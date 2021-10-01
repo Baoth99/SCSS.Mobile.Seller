@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seller_app/blocs/booking_bloc.dart';
-import 'package:seller_app/blocs/booking_time_bloc.dart';
-import 'package:seller_app/ui/layouts/booking_detail_layout.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
+import 'package:seller_app/blocs/request_time_bloc.dart';
+import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/ui/layouts/main_layout.dart';
 import 'layouts/layouts.dart';
 import '../constants/constants.dart';
@@ -20,10 +20,10 @@ class SellerApp extends StatelessWidget {
       builder: () => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => BookingBloc(),
+            create: (context) => RequestBloc(),
           ),
           BlocProvider(
-            create: (context) => BookingTimeBloc(),
+            create: (context) => RequestTimeBloc(),
           ),
         ],
         child: MaterialApp(
@@ -54,15 +54,15 @@ class SellerApp extends StatelessWidget {
             Routes.signupOTP: (_) => const SignupOTPLayout(),
             Routes.signupInformation: (_) => const SignupInformationLayout(),
 
-            //Booking
-            Routes.bookingStart: (_) => const BookingStartLayout(),
-            Routes.bookingLocationPicker: (_) =>
-                const BookingLocationPickerLayout(),
-            Routes.bookingMapPicker: (_) => const BookingMapPickerLayout(),
-            Routes.bookingBulky: (_) => const BookingBulkyLayout(),
+            //Request
+            Routes.requestStart: (_) => const RequestStartLayout(),
+            Routes.requestLocationPicker: (_) =>
+                const RequestLocationPickerLayout(),
+            Routes.requestMapPicker: (_) => const RequestMapPickerLayout(),
+            Routes.requestBulky: (_) => const RequestBulkyLayout(),
 
-            //Booking Detail
-            Routes.bookingDetail: (_) => const BookingDetailLayout(),
+            //Request Detail
+            Routes.requestDetail: (_) => const RequestDetailLayout(),
 
             //profile
             Routes.profileEdit: (_) => const ProfileEditLayout(),

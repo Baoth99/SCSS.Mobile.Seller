@@ -8,10 +8,10 @@ import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/extension_methods.dart';
-part 'states/booking_time_state.dart';
-part 'events/booking_time_event.dart';
+part 'states/request_time_state.dart';
+part 'events/request_time_event.dart';
 
-enum BookingTimeStatus {
+enum RequestTimeStatus {
   valid,
   lessThanNow,
   notenough15fromtime,
@@ -19,42 +19,42 @@ enum BookingTimeStatus {
   pure,
 }
 
-class BookingTimeBloc extends Bloc<BookingTimeEvent, BookingTimeState> {
-  BookingTimeBloc()
+class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
+  RequestTimeBloc()
       : super(
-          BookingTimeState(
+          RequestTimeState(
             date: DateTime.now(),
             fromTime: CommonUtils.getNearMinute(
-                BookingMapPickerLayoutConstants.minuteInterval),
+                RequestMapPickerLayoutConstants.minuteInterval),
             toTime: CommonUtils.addTimeOfDay(
                 CommonUtils.getNearMinute(
-                    BookingMapPickerLayoutConstants.minuteInterval),
-                BookingMapPickerLayoutConstants.minuteInterval),
+                    RequestMapPickerLayoutConstants.minuteInterval),
+                RequestMapPickerLayoutConstants.minuteInterval),
           ),
         );
 
   final _collectingRequestService = getIt.get<CollectingRequestService>();
 
   @override
-  Stream<BookingTimeState> mapEventToState(BookingTimeEvent event) async* {
-    if (event is BookingTimeDatePicked) {
+  Stream<RequestTimeState> mapEventToState(RequestTimeEvent event) async* {
+    if (event is RequestTimeDatePicked) {
       yield state.copyWith(
         date: event.date,
         status: validate(event.date, state.fromTime, state.toTime),
       );
-    } else if (event is BookingTimeTimeFromPicked) {
+    } else if (event is RequestTimeTimeFromPicked) {
       final fromTime = TimeOfDay.fromDateTime(event.time);
       yield state.copyWith(
         fromTime: fromTime,
         status: validate(state.date, fromTime, state.toTime),
       );
-    } else if (event is BookingTimeTimeToPicked) {
+    } else if (event is RequestTimeTimeToPicked) {
       final toTime = TimeOfDay.fromDateTime(event.time);
       yield state.copyWith(
         toTime: toTime,
         status: validate(state.date, state.fromTime, toTime),
       );
-    } else if (event is BookingTimeInitial) {
+    } else if (event is RequestTimeInitial) {
       try {
         //start prgoressive
         yield state.copyWith(
@@ -66,14 +66,14 @@ class BookingTimeBloc extends Bloc<BookingTimeEvent, BookingTimeState> {
 
         // check currentTime
         var nearestTime = CommonUtils.getNearDateTime(
-            BookingMapPickerLayoutConstants.minuteInterval);
+            RequestMapPickerLayoutConstants.minuteInterval);
         if (CommonUtils.compareTwoTimeOfDays(
                 TimeOfDay.fromDateTime(nearestTime),
                 const TimeOfDay(hour: 23, minute: 45)) ==
             CompareConstants.equal) {
           nearestTime = nearestTime.add(
             const Duration(
-                minutes: BookingMapPickerLayoutConstants.minuteInterval),
+                minutes: RequestMapPickerLayoutConstants.minuteInterval),
           );
         }
 
@@ -83,7 +83,7 @@ class BookingTimeBloc extends Bloc<BookingTimeEvent, BookingTimeState> {
             final toTime = TimeOfDay.fromDateTime(
               nearestTime.add(
                 const Duration(
-                  minutes: BookingMapPickerLayoutConstants.minuteInterval,
+                  minutes: RequestMapPickerLayoutConstants.minuteInterval,
                 ),
               ),
             );
@@ -123,26 +123,26 @@ class BookingTimeBloc extends Bloc<BookingTimeEvent, BookingTimeState> {
         blocStatus: FormzStatus.pure,
       );
     }
-    // else if (event is BookingTimeInitial) {
+    // else if (event is RequestTimeInitial) {
     //   yield state.copyWith(
-    //     date: BookingDate.dirty(DateTime.now()),
-    //     fromTime: BookingTime.dirty(
+    //     date: RequestDate.dirty(DateTime.now()),
+    //     fromTime: RequestTime.dirty(
     //       TimeOfDay.fromDateTime(
     //         CommonUtils.getNearDateTime(
-    //             BookingMapPickerLayoutConstants.minuteInterval),
+    //             RequestMapPickerLayoutConstants.minuteInterval),
     //       ),
     //     ),
-    //     toTime: BookingTime.dirty(
+    //     toTime: RequestTime.dirty(
     //       TimeOfDay.fromDateTime(
     //         CommonUtils.getNearDateTime(
-    //             BookingMapPickerLayoutConstants.minuteInterval),
+    //             RequestMapPickerLayoutConstants.minuteInterval),
     //       ),
     //     ),
     //   );
     // }
   }
 
-  BookingTimeStatus validate(
+  RequestTimeStatus validate(
       DateTime date, TimeOfDay fromTime, TimeOfDay toTime,
       [TimeOfDay? nowtime, DateTime? now]) {
     nowtime ??= TimeOfDay.now();
@@ -150,16 +150,16 @@ class BookingTimeBloc extends Bloc<BookingTimeEvent, BookingTimeState> {
 
     if (date.isSameDate(now)) {
       if (CommonUtils.compareTwoTimeOfDays(fromTime, nowtime) <= 0) {
-        return BookingTimeStatus.lessThanNow;
+        return RequestTimeStatus.lessThanNow;
       } else if (CommonUtils.differenceTwoTimeOfDay(fromTime, nowtime) <= 15) {
-        return BookingTimeStatus.notenough15fromtime;
+        return RequestTimeStatus.notenough15fromtime;
       }
     }
 
     if (CommonUtils.compareTwoTimeOfDays(fromTime, toTime) >= 0) {
-      return BookingTimeStatus.rangeTimeBetweenTwonotenough;
+      return RequestTimeStatus.rangeTimeBetweenTwonotenough;
     }
 
-    return BookingTimeStatus.valid;
+    return RequestTimeStatus.valid;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:http/http.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
-import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
+import 'package:seller_app/blocs/request_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/goong_map_network.dart';

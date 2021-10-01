@@ -5,22 +5,22 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
 
-part 'states/booking_map_picker_state.dart';
-part 'events/booking_map_picker_event.dart';
+part 'states/request_map_picker_state.dart';
+part 'events/request_map_picker_event.dart';
 
-class BookingMapPickerBloc
-    extends Bloc<BookingMapPickerEvent, BookingMapPickerState> {
+class RequestMapPickerBloc
+    extends Bloc<RequestMapPickerEvent, RequestMapPickerState> {
   late GoongMapService _goongMapService;
-  BookingMapPickerBloc({
+  RequestMapPickerBloc({
     GoongMapService? goongMapService,
-  }) : super(const BookingMapPickerState()) {
+  }) : super(const RequestMapPickerState()) {
     _goongMapService = goongMapService ?? getIt.get<GoongMapService>();
   }
 
   @override
-  Stream<BookingMapPickerState> mapEventToState(
-      BookingMapPickerEvent event) async* {
-    if (event is BookingMapPickerMapChanged) {
+  Stream<RequestMapPickerState> mapEventToState(
+      RequestMapPickerEvent event) async* {
+    if (event is RequestMapPickerMapChanged) {
       if (state.latitude != event.latitude ||
           state.longitude != event.longitude) {
         try {
@@ -52,7 +52,7 @@ class BookingMapPickerBloc
         }
       }
     }
-    // else if (event is BookingMapPickerMapInitial) {
+    // else if (event is RequestMapPickerMapInitial) {
     //   var latlnd = await acquireCurrentLocation();
     //   if (latlnd != null) {
     //     yield state.copyWith(

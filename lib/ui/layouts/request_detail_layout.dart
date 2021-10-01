@@ -7,27 +7,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class BookingDetailArguments {
-  final String bookingId;
-  const BookingDetailArguments({required this.bookingId});
+class RequestDetailArguments {
+  final String requestId;
+  const RequestDetailArguments({
+    required this.requestId,
+  });
 }
 
-class BookingDetailLayout extends StatelessWidget {
-  const BookingDetailLayout({Key? key}) : super(key: key);
+class RequestDetailLayout extends StatelessWidget {
+  const RequestDetailLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as BookingDetailArguments;
+        ModalRoute.of(context)!.settings.arguments as RequestDetailArguments;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: FunctionalWidgets.buildAppBar(
         context: context,
         title: CustomText(
-          text: '21 thg8, 2021 09:41 AM',
+          text: 'Chi tiết yêu cầu',
           color: AppColors.white,
-          fontSize: 45.sp,
+          fontSize: 43.sp,
         ),
         color: AppColors.white,
         centerTitle: true,
@@ -35,15 +37,17 @@ class BookingDetailLayout extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          const BookingDetailHeader(),
-          const BookingDetailDivider(),
-          const BookingDetailRating(),
-          const BookingDetailDivider(),
-          const BookingDetailCollectorInfo(),
-          const BookingDetailDivider(),
-          const BookingDetailBody(),
-          const BookingDetailDivider(),
-          const BookingDetailBill(),
+          const RequestDetailHeader(),
+          const RequestDetailDivider(),
+          const RequestDetailRating(),
+          const RequestDetailDivider(),
+          const RequestDetailCollectorInfo(),
+          const RequestDetailDivider(),
+          const RequestDetailBody(),
+          const RequestDetailDivider(),
+          const RequestDetailBill(),
+          const RequestDetailDivider(),
+          const RequestDetailTime(),
           _getCancelButton(context),
         ],
       ),
@@ -82,7 +86,7 @@ class BookingDetailLayout extends StatelessWidget {
         context: context,
         child: _getCancelWidget(context),
         title: 'Hủy Đơn Hẹn',
-        routeClosed: Routes.bookingDetail,
+        routeClosed: Routes.requestDetail,
       );
     };
   }
@@ -165,8 +169,49 @@ class BookingDetailLayout extends StatelessWidget {
   }
 }
 
-class BookingDetailRating extends StatelessWidget {
-  const BookingDetailRating({Key? key}) : super(key: key);
+class RequestDetailTime extends StatelessWidget {
+  const RequestDetailTime({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonMarginContainer(
+      child: Column(
+        children: [
+          _getDataRow('Thời gian đặt', '08-08-2021 00:23'),
+          _getDataRow('Thời gian được xác nhận', '10-08-2021 08:23'),
+          _getDataRow('Thời gian thu gom', '01-10-2021 07:23'),
+        ],
+      ),
+    );
+  }
+
+  Widget _getDataRow(String key, String value) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: 9.h,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _getCustomText(key),
+          ),
+          _getCustomText(value),
+        ],
+      ),
+    );
+  }
+
+  Widget _getCustomText(String text) {
+    return CustomText(
+      text: text,
+      fontSize: 38.sp,
+      color: Colors.grey[700],
+    );
+  }
+}
+
+class RequestDetailRating extends StatelessWidget {
+  const RequestDetailRating({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +231,7 @@ class BookingDetailRating extends StatelessWidget {
                   '0979637678',
                   rating,
                 ),
-                routeClosed: Routes.bookingDetail,
+                routeClosed: Routes.requestDetail,
                 title: 'Đánh giá dịch vụ',
               );
             },
@@ -332,8 +377,8 @@ class BookingDetailRating extends StatelessWidget {
   }
 }
 
-class BookingDetailBill extends StatelessWidget {
-  const BookingDetailBill({Key? key}) : super(key: key);
+class RequestDetailBill extends StatelessWidget {
+  const RequestDetailBill({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -342,24 +387,11 @@ class BookingDetailBill extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(
-            text: 'Thông tin thu gom',
-            fontSize: 40.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          BookingDetailElementPattern(
-            icon: Icons.event,
-            title: 'Thời gian thu gom',
-            child: CustomText(
-              text: 'Th 3, 24 thg 8, 09:58',
-              fontSize: 47.sp,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          BookingDetailElementPattern(
+          RequestDetailElementPattern(
             icon: Icons.receipt_outlined,
             title: 'Thông tin đơn hàng',
             child: _bodyBill(),
+            contentLeftMargin: 0.w,
           )
         ],
       ),
@@ -444,7 +476,7 @@ class BookingDetailBill extends StatelessWidget {
 
   _getDivider() {
     return Divider(
-      thickness: 3.h,
+      thickness: 2.5.h,
     );
   }
 
@@ -468,13 +500,18 @@ class BookingDetailBill extends StatelessWidget {
   }
 
   Widget _getSubInfoItem(String name, String value) {
-    return Row(
-      children: [
-        Expanded(
-          child: _getSubInfoItemText(name),
-        ),
-        _getSubInfoItemText(value),
-      ],
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: 8.h,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _getSubInfoItemText(name),
+          ),
+          _getSubInfoItemText(value),
+        ],
+      ),
     );
   }
 
@@ -486,8 +523,8 @@ class BookingDetailBill extends StatelessWidget {
   }
 }
 
-class BookingDetailCollectorInfo extends StatelessWidget {
-  const BookingDetailCollectorInfo({Key? key}) : super(key: key);
+class RequestDetailCollectorInfo extends StatelessWidget {
+  const RequestDetailCollectorInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -542,8 +579,8 @@ class BookingDetailCollectorInfo extends StatelessWidget {
   }
 }
 
-class BookingDetailBody extends StatelessWidget {
-  const BookingDetailBody({Key? key}) : super(key: key);
+class RequestDetailBody extends StatelessWidget {
+  const RequestDetailBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -560,7 +597,7 @@ class BookingDetailBody extends StatelessWidget {
           Container(
             child: Column(
               children: [
-                BookingDetailElementPattern(
+                RequestDetailElementPattern(
                   icon: Icons.place,
                   title: 'Địa chỉ thu gom',
                   child: Column(
@@ -584,7 +621,7 @@ class BookingDetailBody extends StatelessWidget {
                     ],
                   ),
                 ),
-                BookingDetailElementPattern(
+                RequestDetailElementPattern(
                   icon: AppIcons.event,
                   title: 'Thời gian hẹn thu gom',
                   child: CustomText(
@@ -593,7 +630,7 @@ class BookingDetailBody extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                BookingDetailElementPattern(
+                RequestDetailElementPattern(
                   icon: Icons.kitchen,
                   title: 'Có đồ cồng kềnh',
                   child: CustomText(
@@ -602,12 +639,12 @@ class BookingDetailBody extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                BookingDetailElementPattern(
+                RequestDetailElementPattern(
                   icon: Icons.image_outlined,
                   title: 'Ảnh ve chai',
                   child: _image(context),
                 ),
-                BookingDetailElementPattern(
+                RequestDetailElementPattern(
                   icon: Icons.notes,
                   title: 'Ghi chú',
                   child: CustomText(
@@ -682,17 +719,22 @@ class BookingDetailBody extends StatelessWidget {
   }
 }
 
-class BookingDetailElementPattern extends StatelessWidget {
-  const BookingDetailElementPattern({
+// ignore: must_be_immutable
+class RequestDetailElementPattern extends StatelessWidget {
+  RequestDetailElementPattern({
     Key? key,
     required this.icon,
     required this.title,
     required this.child,
-  }) : super(key: key);
+    double? contentLeftMargin,
+  }) : super(key: key) {
+    this.contentLeftMargin = contentLeftMargin ?? 80.w;
+  }
 
   final IconData icon;
   final String title;
   final Widget child;
+  late double contentLeftMargin;
 
   @override
   Widget build(BuildContext context) {
@@ -700,36 +742,37 @@ class BookingDetailElementPattern extends StatelessWidget {
       margin: EdgeInsets.symmetric(
         vertical: 25.h,
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: AppColors.greenFF61C53D,
-          ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(
-                left: 20.w,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                color: AppColors.greenFF61C53D,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomText(
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(
+                    left: 20.w,
+                  ),
+                  child: CustomText(
                     text: title,
                     fontSize: 36.sp,
                     color: Colors.grey[600],
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 20.h,
-                    ),
-                    child: child,
-                  ),
-                ],
+                ),
               ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 20.h,
+              left: contentLeftMargin,
             ),
+            child: child,
           ),
         ],
       ),
@@ -737,8 +780,8 @@ class BookingDetailElementPattern extends StatelessWidget {
   }
 }
 
-class BookingDetailHeader extends StatelessWidget {
-  const BookingDetailHeader({Key? key}) : super(key: key);
+class RequestDetailHeader extends StatelessWidget {
+  const RequestDetailHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -749,7 +792,7 @@ class BookingDetailHeader extends StatelessWidget {
         ),
         child: Column(
           children: <Widget>[
-            _bookingId(context),
+            _requestId(context),
             _getStepper(context),
           ],
         ),
@@ -757,7 +800,7 @@ class BookingDetailHeader extends StatelessWidget {
     );
   }
 
-  Widget _bookingId(BuildContext context) {
+  Widget _requestId(BuildContext context) {
     return Row(
       children: <Widget>[
         const Icon(
@@ -780,7 +823,7 @@ class BookingDetailHeader extends StatelessWidget {
             FunctionalWidgets.showCustomModalBottomSheet<String>(
               context: context,
               child: _getQrCode(),
-              routeClosed: Routes.bookingDetail,
+              routeClosed: Routes.requestDetail,
             );
           },
           icon: Icon(
@@ -878,13 +921,14 @@ class BookingDetailHeader extends StatelessWidget {
   }
 }
 
-class BookingDetailDivider extends StatelessWidget {
-  const BookingDetailDivider({Key? key}) : super(key: key);
+class RequestDetailDivider extends StatelessWidget {
+  const RequestDetailDivider({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Divider(
-      thickness: 8.h,
+      thickness: 4.h,
+      height: 100.h,
     );
   }
 }

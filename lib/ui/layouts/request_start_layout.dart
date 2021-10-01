@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seller_app/blocs/booking_bloc.dart';
-import 'package:seller_app/blocs/booking_time_bloc.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
+import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/ui/layouts/booking_location_picker_layout.dart';
+import 'package:seller_app/ui/layouts/request_location_picker_layout.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
@@ -15,25 +15,25 @@ import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/extension_methods.dart';
 import 'package:formz/formz.dart';
 
-class BookingStartLayout extends StatelessWidget {
-  const BookingStartLayout({Key? key}) : super(key: key);
+class RequestStartLayout extends StatelessWidget {
+  const RequestStartLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: BlocProvider.of<BookingBloc>(context)
+      value: BlocProvider.of<RequestBloc>(context)
         ..add(
-          BookingStateInitial(),
+          RequestStateInitial(),
         )
         ..add(
-          BookingAddressInitial(),
+          RequestAddressInitial(),
         ),
       child: BlocProvider.value(
-        value: BlocProvider.of<BookingTimeBloc>(context)
+        value: BlocProvider.of<RequestTimeBloc>(context)
           ..add(
-            BookingTimeInitial(),
+            RequestTimeInitial(),
           ),
-        child: BlocListener<BookingTimeBloc, BookingTimeState>(
+        child: BlocListener<RequestTimeBloc, RequestTimeState>(
           listener: (context, state) {
             if (state.blocStatus.isSubmissionInProgress) {
               showDialog(
@@ -43,12 +43,12 @@ class BookingStartLayout extends StatelessWidget {
             }
             if (state.blocStatus.isSubmissionSuccess) {
               Navigator.of(context).popUntil(
-                ModalRoute.withName(Routes.bookingStart),
+                ModalRoute.withName(Routes.requestStart),
               );
             }
             if (state.blocStatus.isSubmissionFailure) {
               Navigator.of(context).popUntil(
-                ModalRoute.withName(Routes.bookingStart),
+                ModalRoute.withName(Routes.requestStart),
               );
             }
           },
@@ -97,7 +97,7 @@ class _Form extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookingBloc, BookingState>(
+    return BlocBuilder<RequestBloc, RequestState>(
       builder: (context, state) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -129,9 +129,9 @@ class _Form extends StatelessWidget {
                         ],
                       )
                     : CustomText(
-                        text: BookingStartLayoutConstants.placeHintText,
+                        text: RequestStartLayoutConstants.placeHintText,
                         color: AppColors.greyFF9098B1,
-                        fontSize: BookingStartLayoutConstants.inputFontSize.sp,
+                        fontSize: RequestStartLayoutConstants.inputFontSize.sp,
                       ),
                 iconData: AppIcons.place,
               ),
@@ -139,7 +139,7 @@ class _Form extends StatelessWidget {
             GestureDetector(
               onTap: _onTimeInputTapped(context),
               child: _InputContainer(
-                child: BlocBuilder<BookingBloc, BookingState>(
+                child: BlocBuilder<RequestBloc, RequestState>(
                   builder: (context, state) {
                     return state.date != null &&
                             state.fromTime != null &&
@@ -152,13 +152,13 @@ class _Form extends StatelessWidget {
                             color: AppColors.black,
                             fontWeight: FontWeight.w500,
                             fontSize:
-                                BookingStartLayoutConstants.inputFontSize.sp,
+                                RequestStartLayoutConstants.inputFontSize.sp,
                           )
                         : CustomText(
-                            text: BookingStartLayoutConstants.timeHintText,
+                            text: RequestStartLayoutConstants.timeHintText,
                             color: AppColors.greyFF9098B1,
                             fontSize:
-                                BookingStartLayoutConstants.inputFontSize.sp,
+                                RequestStartLayoutConstants.inputFontSize.sp,
                           );
                   },
                 ),
@@ -169,12 +169,12 @@ class _Form extends StatelessWidget {
               child: _NoteField(),
               iconData: AppIcons.feedOutlined,
             ),
-            BlocBuilder<BookingBloc, BookingState>(
+            BlocBuilder<RequestBloc, RequestState>(
               builder: (context, state) {
                 return SubmittedButton(
-                  title: BookingStartLayoutConstants.firstButtonTitle,
+                  title: RequestStartLayoutConstants.firstButtonTitle,
                   onPressed: (context) => () {
-                    Navigator.of(context).pushNamed(Routes.bookingBulky);
+                    Navigator.of(context).pushNamed(Routes.requestBulky);
                   },
                   activated: state.status.isValid,
                 );
@@ -196,8 +196,8 @@ class _Form extends StatelessWidget {
     return () {
       Navigator.pushNamed(
         context,
-        Routes.bookingLocationPicker,
-        arguments: BookingLocationPickerArguments(value),
+        Routes.requestLocationPicker,
+        arguments: RequestLocationPickerArguments(value),
       );
     };
   }
@@ -209,13 +209,13 @@ class _Form extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return BlocBuilder<BookingTimeBloc, BookingTimeState>(
+        return BlocBuilder<RequestTimeBloc, RequestTimeState>(
           builder: (context, state) {
             date = state.date;
             fromTime = state.fromTime;
             toTime = state.toTime;
             return _TimeInputDialog(
-              onPressedActivated: state.status == BookingTimeStatus.valid,
+              onPressedActivated: state.status == RequestTimeStatus.valid,
             );
           },
         );
@@ -223,8 +223,8 @@ class _Form extends StatelessWidget {
     ).then((value) {
       if (value == null) return;
       if (value) {
-        context.read<BookingBloc>().add(
-              BookingTimePicked(
+        context.read<RequestBloc>().add(
+              RequestTimePicked(
                 date: date ?? DateTime.now(),
                 toTime: toTime ?? TimeOfDay.now(),
                 fromTime: fromTime ?? TimeOfDay.now(),
@@ -316,7 +316,7 @@ class _TimeInputDialog extends StatelessWidget {
                           text: 'Đặt hẹn lúc',
                           color: Colors.grey.shade600,
                         ),
-                        BlocBuilder<BookingTimeBloc, BookingTimeState>(
+                        BlocBuilder<RequestTimeBloc, RequestTimeState>(
                           builder: (context, state) {
                             return _getText(
                               CommonUtils.combineDateToTime(
@@ -333,7 +333,7 @@ class _TimeInputDialog extends StatelessWidget {
               ),
             ),
             _getDivider(),
-            BlocBuilder<BookingTimeBloc, BookingTimeState>(
+            BlocBuilder<RequestTimeBloc, RequestTimeState>(
               builder: (context, state) {
                 return InkWell(
                   onTap: _onDateTap(context, state.date, state.chosableDates),
@@ -344,7 +344,7 @@ class _TimeInputDialog extends StatelessWidget {
                           Icons.date_range_outlined,
                         ),
                         Expanded(
-                          child: BlocBuilder<BookingTimeBloc, BookingTimeState>(
+                          child: BlocBuilder<RequestTimeBloc, RequestTimeState>(
                             builder: (context, state) {
                               return _getText(
                                 CommonUtils.convertDateTimeToVietnamese(
@@ -370,7 +370,7 @@ class _TimeInputDialog extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: <Widget>[
-                        BlocBuilder<BookingTimeBloc, BookingTimeState>(
+                        BlocBuilder<RequestTimeBloc, RequestTimeState>(
                           builder: (context, state) {
                             return InkWell(
                               onTap: _onTimeTap(
@@ -387,7 +387,7 @@ class _TimeInputDialog extends StatelessWidget {
                           ),
                           child: _getText('-'),
                         ),
-                        BlocBuilder<BookingTimeBloc, BookingTimeState>(
+                        BlocBuilder<RequestTimeBloc, RequestTimeState>(
                           builder: (context, state) {
                             return InkWell(
                               onTap: _onTimeTap(
@@ -404,7 +404,7 @@ class _TimeInputDialog extends StatelessWidget {
                 ],
               ),
             ),
-            BlocBuilder<BookingTimeBloc, BookingTimeState>(
+            BlocBuilder<RequestTimeBloc, RequestTimeState>(
               builder: (context, state) {
                 return _getErrorTimeInput(state.status);
               },
@@ -415,19 +415,19 @@ class _TimeInputDialog extends StatelessWidget {
     );
   }
 
-  Widget _getErrorTimeInput(BookingTimeStatus status) {
+  Widget _getErrorTimeInput(RequestTimeStatus status) {
     String text = '';
 
     switch (status) {
-      case BookingTimeStatus.lessThanNow:
+      case RequestTimeStatus.lessThanNow:
         text =
             'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
         break;
-      case BookingTimeStatus.notenough15fromtime:
+      case RequestTimeStatus.notenough15fromtime:
         text =
             'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
         break;
-      case BookingTimeStatus.rangeTimeBetweenTwonotenough:
+      case RequestTimeStatus.rangeTimeBetweenTwonotenough:
         text = 'Khoảng thời gian phải tối thiểu 15 phút';
         break;
       default:
@@ -465,7 +465,7 @@ class _TimeInputDialog extends StatelessWidget {
   Function() _onCloseIconPressed(BuildContext context) {
     return () {
       Navigator.of(context).popUntil(
-        ModalRoute.withName(Routes.bookingStart),
+        ModalRoute.withName(Routes.requestStart),
       );
     };
   }
@@ -501,19 +501,19 @@ class _TimeInputDialog extends StatelessWidget {
         confirmText: 'XÁC NHẬN',
       );
       if (result != null) {
-        context.read<BookingTimeBloc>().add(
-              BookingTimeDatePicked(result),
+        context.read<RequestTimeBloc>().add(
+              RequestTimeDatePicked(result),
             );
       }
     };
   }
 
   void _onFromTimeEvent(BuildContext context, DateTime dateTime) {
-    context.read<BookingTimeBloc>().add(BookingTimeTimeFromPicked(dateTime));
+    context.read<RequestTimeBloc>().add(RequestTimeTimeFromPicked(dateTime));
   }
 
   void _onToTimeEvent(BuildContext context, DateTime dateTime) {
-    context.read<BookingTimeBloc>().add(BookingTimeTimeToPicked(dateTime));
+    context.read<RequestTimeBloc>().add(RequestTimeTimeToPicked(dateTime));
   }
 
   Function() _onTimeTap(BuildContext context, TimeOfDay init,
@@ -532,7 +532,7 @@ class _TimeInputDialog extends StatelessWidget {
                 },
                 use24hFormat: false,
                 mode: CupertinoDatePickerMode.time,
-                minuteInterval: BookingMapPickerLayoutConstants.minuteInterval,
+                minuteInterval: RequestMapPickerLayoutConstants.minuteInterval,
                 initialDateTime: DateTime(0, 0, 0, init.hour, init.minute),
               ),
             ),
@@ -745,7 +745,7 @@ class _NoteField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookingBloc, BookingState>(
+    return BlocBuilder<RequestBloc, RequestState>(
       builder: (context, state) {
         return TextField(
           keyboardType: TextInputType.multiline,
@@ -758,11 +758,11 @@ class _NoteField extends StatelessWidget {
             isDense: true,
             contentPadding: EdgeInsets.all(0),
             border: InputBorder.none,
-            hintText: BookingStartLayoutConstants.noteHintText,
+            hintText: RequestStartLayoutConstants.noteHintText,
           ),
           textInputAction: TextInputAction.done,
           onChanged: (value) {
-            context.read<BookingBloc>().add(BookingNoteChanged(value));
+            context.read<RequestBloc>().add(RequestNoteChanged(value));
           },
         );
       },
@@ -785,12 +785,12 @@ class _Title extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           CustomText(
-            text: BookingStartLayoutConstants.title,
+            text: RequestStartLayoutConstants.title,
             fontSize: 65.sp,
             fontWeight: FontWeight.w500,
           ),
           const CustomText(
-            text: BookingStartLayoutConstants.subTitle,
+            text: RequestStartLayoutConstants.subTitle,
           ),
         ],
       ),
