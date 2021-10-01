@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
-import 'package:seller_app/blocs/models/booking_model.dart';
+import 'package:seller_app/blocs/models/request_model.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/exceptions/custom_exceptions.dart';
@@ -14,19 +14,19 @@ import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/providers/services/map_service.dart';
-part 'events/booking_event.dart';
-part 'states/booking_state.dart';
+part 'events/request_event.dart';
+part 'states/request_state.dart';
 
-class BookingBloc extends Bloc<BookingEvent, BookingState> {
+class RequestBloc extends Bloc<RequestEvent, RequestState> {
   late GoongMapService _goongMapService;
   late CollectingRequestService _collectingRequestService;
   late IdentityServerService _identityServerService;
 
-  BookingBloc({
+  RequestBloc({
     GoongMapService? goongMapService,
     CollectingRequestService? collectingRequestService,
     IdentityServerService? identityServerService,
-  }) : super(BookingState(imageFile: Others.emptyFile)) {
+  }) : super(RequestState(imageFile: Others.emptyFile)) {
     _goongMapService = goongMapService ?? getIt.get<GoongMapService>();
     _collectingRequestService =
         collectingRequestService ?? getIt.get<CollectingRequestService>();
@@ -35,10 +35,10 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   }
 
   @override
-  Stream<BookingState> mapEventToState(BookingEvent event) async* {
-    if (event is BookingAddressPicked) {
-      var address = BookingAddress.dirty(
-        BookingAddressInfo(
+  Stream<RequestState> mapEventToState(RequestEvent event) async* {
+    if (event is RequestAddressPicked) {
+      var address = RequestAddress.dirty(
+        RequestAddressInfo(
           latitude: event.latitude,
           longitude: event.longitude,
           name: event.name,
@@ -50,11 +50,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         address: address,
         status: validate(address, state.date, state.fromTime, state.toTime),
       );
-    } else if (event is BookingAddressTapped) {
+    } else if (event is RequestAddressTapped) {
       var response = await _goongMapService.getPlaceDetail(event.placeId);
 
-      var address = BookingAddress.dirty(
-        BookingAddressInfo(
+      var address = RequestAddress.dirty(
+        RequestAddressInfo(
           latitude: response.latitude,
           longitude: response.longitude,
           name: response.name,
@@ -65,7 +65,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         address: address,
         status: validate(address, state.date, state.fromTime, state.toTime),
       );
-    } else if (event is BookingTimePicked) {
+    } else if (event is RequestTimePicked) {
       yield state.copyWith(
         date: event.date,
         fromTime: event.fromTime,
@@ -73,32 +73,32 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         status:
             validate(state.address, event.date, event.fromTime, event.toTime),
       );
-    } else if (event is BookingNoteChanged) {
+    } else if (event is RequestNoteChanged) {
       yield state.copyWith(
         note: event.value,
       );
-    } else if (event is BookingBulkyChosen) {
+    } else if (event is RequestBulkyChosen) {
       yield state.copyWith(
         bulky: event.value,
       );
-    } else if (event is BookingImageAdded) {
+    } else if (event is RequestImageAdded) {
       yield state.copyWith(
         imageFile: event.image,
       );
-    } else if (event is BookingImageDeleted) {
+    } else if (event is RequestImageDeleted) {
       yield state.copyWith(
         imageFile: Others.emptyFile,
       );
-    } else if (event is BookingStateInitial) {
+    } else if (event is RequestStateInitial) {
       yield state.refresh();
-    } else if (event is BookingAddressInitial) {
+    } else if (event is RequestAddressInitial) {
       final currentLatLng = await acquireCurrentLocation();
       if (currentLatLng != null) {
         final model = await _goongMapService.getPlaceNameByLatlng(
             currentLatLng.latitude, currentLatLng.longitude);
 
-        var address = BookingAddress.dirty(
-          BookingAddressInfo(
+        var address = RequestAddress.dirty(
+          RequestAddressInfo(
             address: model.address,
             name: model.name,
             latitude: currentLatLng.latitude,
@@ -145,7 +145,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           //success
           if (result) {
             //refresh
-            add(BookingStateInitial());
+            add(RequestStateInitial());
 
             //
             yield state.copyWith(
@@ -167,7 +167,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     }
   }
 
-  Future<bool> _sendRequest(BookingState state) async {
+  Future<bool> _sendRequest(RequestState state) async {
     return _collectingRequestService.sendRequest(
       state.address.value.name!,
       state.address.value.address!,
@@ -183,7 +183,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   }
 
   FormzStatus validate(
-    BookingAddress address,
+    RequestAddress address,
     DateTime? date,
     TimeOfDay? fromTime,
     TimeOfDay? toTime,

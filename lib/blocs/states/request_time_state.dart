@@ -1,12 +1,12 @@
-part of '../booking_time_bloc.dart';
+part of '../request_time_bloc.dart';
 
-class BookingTimeState extends Equatable {
-  const BookingTimeState({
+class RequestTimeState extends Equatable {
+  const RequestTimeState({
     required this.date,
     required this.fromTime,
     required this.toTime,
     this.chosableDates = const [],
-    this.status = BookingTimeStatus.pure,
+    this.status = RequestTimeStatus.pure,
     this.blocStatus = FormzStatus.pure,
   });
 
@@ -14,18 +14,18 @@ class BookingTimeState extends Equatable {
   final TimeOfDay fromTime;
   final TimeOfDay toTime;
   final List<DateTime> chosableDates;
-  final BookingTimeStatus status;
+  final RequestTimeStatus status;
   final FormzStatus blocStatus;
 
-  BookingTimeState copyWith({
+  RequestTimeState copyWith({
     DateTime? date,
     TimeOfDay? fromTime,
     TimeOfDay? toTime,
     List<DateTime>? chosableDates,
-    BookingTimeStatus? status,
+    RequestTimeStatus? status,
     FormzStatus? blocStatus,
   }) {
-    return BookingTimeState(
+    return RequestTimeState(
       date: date ?? this.date,
       fromTime: fromTime ?? this.fromTime,
       toTime: toTime ?? this.toTime,

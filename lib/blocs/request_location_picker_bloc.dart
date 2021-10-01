@@ -5,21 +5,21 @@ import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
 
-part 'events/booking_location_picker_event.dart';
-part 'states/booking_location_picker_state.dart';
+part 'events/request_location_picker_event.dart';
+part 'states/request_location_picker_state.dart';
 
-class BookingLocationPickerBloc
-    extends Bloc<BookingLocationPickerEvent, BookingLocationPickerState> {
+class RequestLocationPickerBloc
+    extends Bloc<RequestLocationPickerEvent, RequestLocationPickerState> {
   late GoongMapService _goongMapService;
-  BookingLocationPickerBloc({GoongMapService? goongMapService})
-      : super(const BookingLocationPickerState()) {
+  RequestLocationPickerBloc({GoongMapService? goongMapService})
+      : super(const RequestLocationPickerState()) {
     _goongMapService = goongMapService ?? getIt.get<GoongMapService>();
   }
 
   @override
-  Stream<BookingLocationPickerState> mapEventToState(
-      BookingLocationPickerEvent event) async* {
-    if (event is BookingLocationPickerSearchChanged) {
+  Stream<RequestLocationPickerState> mapEventToState(
+      RequestLocationPickerEvent event) async* {
+    if (event is RequestLocationPickerSearchChanged) {
       if (event.searchValue.isEmpty) {
         yield state.copyWith(
           predictions: const [],

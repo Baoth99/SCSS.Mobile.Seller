@@ -2,22 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seller_app/blocs/booking_bloc.dart';
-import 'package:seller_app/blocs/booking_location_picker_bloc.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
+import 'package:seller_app/blocs/request_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/ui/layouts/booking_map_picker_layout.dart';
+import 'package:seller_app/ui/layouts/request_map_picker_layout.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class BookingLocationPickerArguments {
+class RequestLocationPickerArguments {
   final String intialValue;
-  const BookingLocationPickerArguments(this.intialValue);
+  const RequestLocationPickerArguments(this.intialValue);
 }
 
-class BookingLocationPickerLayout extends StatelessWidget {
-  const BookingLocationPickerLayout({Key? key}) : super(key: key);
+class RequestLocationPickerLayout extends StatelessWidget {
+  const RequestLocationPickerLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,13 @@ class BookingLocationPickerLayout extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         action: <Widget>[
-          BlocBuilder<BookingBloc, BookingState>(
+          BlocBuilder<RequestBloc, RequestState>(
             builder: (context, state) {
               return IconButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed(
-                    Routes.bookingMapPicker,
-                    arguments: BookingMapPickerArgument(
+                    Routes.requestMapPicker,
+                    arguments: RequestMapPickerArgument(
                       lat: state.address.value.latitude,
                       log: state.address.value.longitude,
                     ),
@@ -48,8 +48,8 @@ class BookingLocationPickerLayout extends StatelessWidget {
           )
         ],
       ),
-      body: BlocProvider<BookingLocationPickerBloc>(
-        create: (context) => BookingLocationPickerBloc(),
+      body: BlocProvider<RequestLocationPickerBloc>(
+        create: (context) => RequestLocationPickerBloc(),
         child: const _Body(),
       ),
     );
@@ -93,7 +93,7 @@ class __SearchFieldState extends State<_SearchField> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments
-        as BookingLocationPickerArguments;
+        as RequestLocationPickerArguments;
     return TextFormField(
       initialValue: args.intialValue,
       autofocus: true,
@@ -112,8 +112,8 @@ class __SearchFieldState extends State<_SearchField> {
       onChanged: _onChanged(context),
       textInputAction: TextInputAction.search,
       onFieldSubmitted: (value) {
-        context.read<BookingLocationPickerBloc>().add(
-              BookingLocationPickerSearchChanged(value),
+        context.read<RequestLocationPickerBloc>().add(
+              RequestLocationPickerSearchChanged(value),
             );
       },
     );
@@ -126,8 +126,8 @@ class __SearchFieldState extends State<_SearchField> {
       _debounce = Timer(
         const Duration(milliseconds: 1500),
         () {
-          context.read<BookingLocationPickerBloc>().add(
-                BookingLocationPickerSearchChanged(value),
+          context.read<RequestLocationPickerBloc>().add(
+                RequestLocationPickerSearchChanged(value),
               );
         },
       );
@@ -146,7 +146,7 @@ class _MapResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookingLocationPickerBloc, BookingLocationPickerState>(
+    return BlocBuilder<RequestLocationPickerBloc, RequestLocationPickerState>(
       builder: (context, state) {
         final predictions = state.predictions;
 
@@ -191,7 +191,7 @@ class _MapResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookingLocationPickerBloc, BookingLocationPickerState>(
+    return BlocBuilder<RequestLocationPickerBloc, RequestLocationPickerState>(
       builder: (context, state) {
         return InkWell(
           onTap: _onItemTap(
@@ -218,14 +218,14 @@ class _MapResultTile extends StatelessWidget {
 
   Function()? _onItemTap(BuildContext context) {
     return () {
-      // add to bloc booking
-      context.read<BookingBloc>().add(
-            BookingAddressTapped(placeId),
+      // add to bloc request
+      context.read<RequestBloc>().add(
+            RequestAddressTapped(placeId),
           );
       //pop
       Navigator.popUntil(
         context,
-        ModalRoute.withName(Routes.bookingStart),
+        ModalRoute.withName(Routes.requestStart),
       );
     };
   }

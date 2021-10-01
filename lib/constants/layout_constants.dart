@@ -88,7 +88,7 @@ class SignupInformationLayoutConstants {
   static const String btnDialogName = 'Xác nhận';
 }
 
-class BookingStartLayoutConstants {
+class RequestStartLayoutConstants {
   //common
   static const double inputFontSize = 45;
 
@@ -104,14 +104,14 @@ class BookingStartLayoutConstants {
   static const String firstButtonTitle = 'Tiếp';
 }
 
-class BookingMapPickerLayoutConstants {
+class RequestMapPickerLayoutConstants {
   static const String markerPath = ImagesPaths.markerPoint;
   static const String submittedButton = 'Xác nhận';
 
   static const int minuteInterval = 15;
 }
 
-class BookingBulkyLayoutConstants {
+class RequestBulkyLayoutConstants {
   static const title =
       'Yêu cầu thu gom của bạn có bao gồm những vật nặng, cồng kềnh không?';
   static const exampleText =

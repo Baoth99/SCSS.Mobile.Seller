@@ -63,7 +63,7 @@ class MainLayout extends StatelessWidget {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).pushNamed(Routes.bookingStart),
+          onPressed: () => Navigator.of(context).pushNamed(Routes.requestStart),
           child: const Icon(
             Icons.add,
             color: Colors.white,

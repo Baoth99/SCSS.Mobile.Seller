@@ -3,7 +3,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seller_app/blocs/booking_bloc.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
@@ -16,12 +16,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seller_app/ui/widgets/view_image_layout.dart';
 import 'package:formz/formz.dart';
 
-class BookingBulkyLayout extends StatelessWidget {
-  const BookingBulkyLayout({Key? key}) : super(key: key);
+class RequestBulkyLayout extends StatelessWidget {
+  const RequestBulkyLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BookingBloc, BookingState>(
+    return BlocListener<RequestBloc, RequestState>(
       listener: (context, state) {
         if (state.status.isSubmissionInProgress) {
           showDialog(
@@ -62,7 +62,7 @@ class BookingBulkyLayout extends StatelessWidget {
         ),
         body: ListView(
           children: [
-            const BookingBulkyLayoutBody(),
+            const RequestBulkyLayoutBody(),
           ],
         ),
       ),
@@ -70,17 +70,17 @@ class BookingBulkyLayout extends StatelessWidget {
   }
 }
 
-class BookingBulkyLayoutBody extends StatelessWidget {
-  const BookingBulkyLayoutBody({Key? key}) : super(key: key);
+class RequestBulkyLayoutBody extends StatelessWidget {
+  const RequestBulkyLayoutBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const BookingBulkyLayoutBulkyInput(),
+        const RequestBulkyLayoutBulkyInput(),
         const CommonMarginContainer(
-          child: BookingBulkyLayoutImageInput(),
+          child: RequestBulkyLayoutImageInput(),
         ),
         CommonMarginContainer(
           child: SubmittedButton(title: 'Xác nhận', onPressed: _onPressed),
@@ -91,13 +91,13 @@ class BookingBulkyLayoutBody extends StatelessWidget {
 
   void Function() _onPressed(BuildContext context) {
     return () {
-      context.read<BookingBloc>().add(RequestSummited());
+      context.read<RequestBloc>().add(RequestSummited());
     };
   }
 }
 
-class BookingBulkyLayoutBulkyInput extends StatelessWidget {
-  const BookingBulkyLayoutBulkyInput({Key? key}) : super(key: key);
+class RequestBulkyLayoutBulkyInput extends StatelessWidget {
+  const RequestBulkyLayoutBulkyInput({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +105,7 @@ class BookingBulkyLayoutBulkyInput extends StatelessWidget {
       children: <Widget>[
         CommonMarginContainer(
           child: CustomText(
-            text: BookingBulkyLayoutConstants.title,
+            text: RequestBulkyLayoutConstants.title,
             fontSize: 45.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -117,13 +117,13 @@ class BookingBulkyLayoutBulkyInput extends StatelessWidget {
           ),
           child: CommonMarginContainer(
             child: CustomText(
-              text: BookingBulkyLayoutConstants.exampleText,
+              text: RequestBulkyLayoutConstants.exampleText,
               fontSize: 38.sp,
               color: Colors.grey[600],
             ),
           ),
         ),
-        BlocBuilder<BookingBloc, BookingState>(
+        BlocBuilder<RequestBloc, RequestState>(
           builder: (context, state) {
             return Column(
               children: <Widget>[
@@ -146,8 +146,8 @@ class BookingBulkyLayoutBulkyInput extends StatelessWidget {
   }
 }
 
-class BookingBulkyLayoutImageInput extends StatelessWidget {
-  const BookingBulkyLayoutImageInput({Key? key}) : super(key: key);
+class RequestBulkyLayoutImageInput extends StatelessWidget {
+  const RequestBulkyLayoutImageInput({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -155,11 +155,11 @@ class BookingBulkyLayoutImageInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         CustomText(
-          text: BookingBulkyLayoutConstants.imageTitle,
+          text: RequestBulkyLayoutConstants.imageTitle,
           fontSize: 45.sp,
           fontWeight: FontWeight.w500,
         ),
-        BlocBuilder<BookingBloc, BookingState>(
+        BlocBuilder<RequestBloc, RequestState>(
           builder: (context, state) => Center(
             child: Container(
               margin: EdgeInsets.symmetric(
@@ -235,7 +235,7 @@ class RadioButtonInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<BookingBloc>().add(BookingBulkyChosen(value));
+        context.read<RequestBloc>().add(RequestBulkyChosen(value));
       },
       child: Container(
         color: groupValue == value ? Colors.green[50] : null,
@@ -246,8 +246,8 @@ class RadioButtonInput extends StatelessWidget {
             value: value,
             onChanged: (value) {
               context
-                  .read<BookingBloc>()
-                  .add(BookingBulkyChosen(value ?? YesNo.yes));
+                  .read<RequestBloc>()
+                  .add(RequestBulkyChosen(value ?? YesNo.yes));
             },
           ),
           title: CustomText(
@@ -268,7 +268,7 @@ class ExistedPhotoDialog extends StatelessWidget {
     return SimpleDialog(
       title: const CustomText(text: 'Thay đổi ảnh'),
       children: [
-        BlocBuilder<BookingBloc, BookingState>(
+        BlocBuilder<RequestBloc, RequestState>(
           builder: (context, state) {
             return TextButton(
               onPressed: () {
@@ -291,10 +291,10 @@ class ExistedPhotoDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            context.read<BookingBloc>().add(BookingImageDeleted());
+            context.read<RequestBloc>().add(RequestImageDeleted());
             Navigator.popUntil(
               context,
-              ModalRoute.withName(Routes.bookingBulky),
+              ModalRoute.withName(Routes.requestBulky),
             );
           },
           child: ListTile(
@@ -351,12 +351,12 @@ class PhotoDialog extends StatelessWidget {
 
   void _addImage(BuildContext context, XFile? photo) {
     if (photo != null && photo.path.isNotEmpty) {
-      context.read<BookingBloc>().add(
-            BookingImageAdded(
+      context.read<RequestBloc>().add(
+            RequestImageAdded(
               File(photo.path),
             ),
           );
     }
-    Navigator.popUntil(context, ModalRoute.withName(Routes.bookingBulky));
+    Navigator.popUntil(context, ModalRoute.withName(Routes.requestBulky));
   }
 }

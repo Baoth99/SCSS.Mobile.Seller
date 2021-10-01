@@ -1,18 +1,18 @@
-part of '../booking_bloc.dart';
+part of '../request_bloc.dart';
 
-abstract class BookingEvent extends AbstractEvent {
-  const BookingEvent();
+abstract class RequestEvent extends AbstractEvent {
+  const RequestEvent();
 }
 
-class BookingStateInitial extends BookingEvent {}
+class RequestStateInitial extends RequestEvent {}
 
-class BookingAddressPicked extends BookingEvent {
+class RequestAddressPicked extends RequestEvent {
   final double latitude;
   final double longitude;
   final String name;
   final String address;
 
-  const BookingAddressPicked({
+  const RequestAddressPicked({
     required this.latitude,
     required this.longitude,
     required this.name,
@@ -28,16 +28,16 @@ class BookingAddressPicked extends BookingEvent {
       ];
 }
 
-class BookingAddressTapped extends BookingEvent {
+class RequestAddressTapped extends RequestEvent {
   final String placeId;
-  const BookingAddressTapped(this.placeId);
+  const RequestAddressTapped(this.placeId);
 
   @override
   List<String> get props => [placeId];
 }
 
-class BookingTimePicked extends BookingEvent {
-  const BookingTimePicked({
+class RequestTimePicked extends RequestEvent {
+  const RequestTimePicked({
     required this.date,
     required this.fromTime,
     required this.toTime,
@@ -55,8 +55,8 @@ class BookingTimePicked extends BookingEvent {
       ];
 }
 
-class BookingNoteChanged extends BookingEvent {
-  const BookingNoteChanged(this.value);
+class RequestNoteChanged extends RequestEvent {
+  const RequestNoteChanged(this.value);
 
   final String value;
 
@@ -64,25 +64,25 @@ class BookingNoteChanged extends BookingEvent {
   List<String> get props => [value];
 }
 
-class BookingBulkyChosen extends BookingEvent {
+class RequestBulkyChosen extends RequestEvent {
   final YesNo value;
 
-  const BookingBulkyChosen(this.value);
+  const RequestBulkyChosen(this.value);
 
   @override
   List<YesNo> get props => [value];
 }
 
-class BookingImageAdded extends BookingEvent {
+class RequestImageAdded extends RequestEvent {
   final File image;
-  const BookingImageAdded(this.image);
+  const RequestImageAdded(this.image);
 
   @override
   List<File> get props => [image];
 }
 
-class BookingImageDeleted extends BookingEvent {}
+class RequestImageDeleted extends RequestEvent {}
 
-class BookingAddressInitial extends BookingEvent {}
+class RequestAddressInitial extends RequestEvent {}
 
-class RequestSummited extends BookingEvent {}
+class RequestSummited extends RequestEvent {}
