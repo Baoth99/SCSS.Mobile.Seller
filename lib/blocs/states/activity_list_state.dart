@@ -5,6 +5,7 @@ enum ActivityListStatus {
   progress,
   completed,
   error,
+  emptyList,
 }
 
 // ignore: must_be_immutable

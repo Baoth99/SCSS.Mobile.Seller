@@ -134,9 +134,51 @@ class _ActivityListDataState extends State<ActivityListData> {
             _refreshController.refreshCompleted();
           }
         },
-        child: _buildCommonPullToResfresh(context, state),
+        child: state.listActivity.isNotEmpty
+            ? _buildCommonPullToResfresh(context, state)
+            : _emptyList(widget.tabStatus),
       ),
     );
+  }
+
+  Widget _emptyList(int tabStatus) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 150.h,
+        ),
+        Image.asset(
+          ImagesPaths.emptyActivityList,
+          height: 400.h,
+        ),
+        Container(
+          child: CustomText(
+            text: _getEmptyText(tabStatus),
+            fontSize: 50.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+            textAlign: TextAlign.center,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: 100.w,
+            vertical: 50.w,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getEmptyText(int status) {
+    switch (status) {
+      case ActivityLayoutConstants.tabPending:
+        return 'Hiện vẫn chưa có yêu cầu nào đang chờ';
+      case ActivityLayoutConstants.tabApproved:
+        return 'Hiện vẫn chưa có yêu cầu thu gom nào được xác nhận';
+      case ActivityLayoutConstants.tabCompleted:
+        return 'Hiện vẫn chưa có yêu cầu thu gom nào được hoàn thành';
+      default:
+        return Symbols.empty;
+    }
   }
 
   Widget _buildCommonPullToResfresh(
