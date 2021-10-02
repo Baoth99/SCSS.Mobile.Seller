@@ -13,6 +13,7 @@ class ActivityListState extends Equatable {
     List<Activity>? listActivity,
     required this.activityStatus,
     this.status = ActivityListStatus.pure,
+    this.refreshStatus = RefreshStatus.idle,
   }) {
     this.listActivity = listActivity ?? [];
   }
@@ -20,16 +21,19 @@ class ActivityListState extends Equatable {
   late List<Activity> listActivity;
   final int activityStatus;
   final ActivityListStatus status;
+  final RefreshStatus refreshStatus;
 
   ActivityListState copyWith({
     List<Activity>? listActivity,
     int? activityStatus,
     ActivityListStatus? status,
+    RefreshStatus? refreshStatus,
   }) {
     return ActivityListState(
       listActivity: listActivity ?? this.listActivity,
       activityStatus: activityStatus ?? this.activityStatus,
       status: status ?? this.status,
+      refreshStatus: refreshStatus ?? this.refreshStatus,
     );
   }
 
@@ -38,6 +42,7 @@ class ActivityListState extends Equatable {
         listActivity,
         activityStatus,
         status,
+        refreshStatus,
       ];
 }
 

@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/activity_list_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
@@ -84,34 +86,19 @@ class ActivityList extends StatelessWidget {
           ActivityListInitial(),
         ),
       child: BlocBuilder<ActivityListBloc, ActivityListState>(
-        builder: (context, state) => _buildActivityList(context, state),
+        builder: (context, state) => _buildScreen(context, state),
       ),
     );
   }
 
-  Widget _buildActivityList(
+  Widget _buildScreen(
     BuildContext context,
     ActivityListState state,
   ) {
     switch (state.status) {
       case ActivityListStatus.completed:
-        return ListView.separated(
-          itemBuilder: (context, index) {
-            var a = state.listActivity[index];
-            return CurrentActivity(
-              requestId: a.collectingRequestId,
-              time: a.collectingRequestDate,
-              fromTime: a.fromTime,
-              toTime: a.toTime,
-              placeName: a.addressName,
-              bulky: a.isBulky,
-              privateStatus: a.status,
-              tabStatus: status,
-              price: a.total,
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox.shrink(),
-          itemCount: state.listActivity.length,
+        return ActivityListData(
+          tabStatus: status,
         );
       case ActivityListStatus.progress:
         return FunctionalWidgets.getLoadingAnimation();
@@ -120,6 +107,106 @@ class ActivityList extends StatelessWidget {
       default:
         return const SizedBox.shrink();
     }
+  }
+}
+
+class ActivityListData extends StatefulWidget {
+  const ActivityListData({
+    Key? key,
+    required this.tabStatus,
+  }) : super(key: key);
+  final int tabStatus;
+  @override
+  _ActivityListDataState createState() => _ActivityListDataState();
+}
+
+class _ActivityListDataState extends State<ActivityListData> {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ActivityListBloc, ActivityListState>(
+      builder: (context, state) =>
+          BlocListener<ActivityListBloc, ActivityListState>(
+        listener: (context, state) {
+          if (state.refreshStatus == RefreshStatus.completed) {
+            _refreshController.refreshCompleted();
+          }
+        },
+        child: _buildCommonPullToResfresh(context, state),
+      ),
+    );
+  }
+
+  Widget _buildCommonPullToResfresh(
+      BuildContext context, ActivityListState state) {
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: const WaterDropHeader(
+        waterDropColor: AppColors.greenFF61C53D,
+        failed: SizedBox.shrink(),
+        complete: SizedBox.shrink(),
+      ),
+      footer: CustomFooter(
+        builder: (context, mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text("pull up load");
+          } else if (mode == LoadStatus.loading) {
+            body = const CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text("Load Failed!Click retry!");
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text("release to load more");
+          } else {
+            body = Text("No more Data");
+          }
+          return Container(
+            height: 55.0,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      onRefresh: _onRefresh(context),
+      onLoading: () {},
+      child: ListView.separated(
+        itemBuilder: (context, index) => _buildActivity(
+          state,
+          index,
+          widget.tabStatus,
+        ),
+        separatorBuilder: (context, index) => const SizedBox.shrink(),
+        itemCount: state.listActivity.length,
+      ),
+    );
+  }
+
+  void Function() _onRefresh(BuildContext context) {
+    return () {
+      context.read<ActivityListBloc>().add(ActivityListRefresh());
+    };
+  }
+
+  Widget _buildActivity(
+    ActivityListState state,
+    int index,
+    int tabStatus,
+  ) {
+    var a = state.listActivity[index];
+    return CurrentActivity(
+      requestId: a.collectingRequestId,
+      time: a.collectingRequestDate,
+      fromTime: a.fromTime,
+      toTime: a.toTime,
+      placeName: a.addressName,
+      bulky: a.isBulky,
+      privateStatus: a.status,
+      tabStatus: tabStatus,
+      price: a.total,
+    );
   }
 }
 

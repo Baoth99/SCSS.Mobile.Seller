@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/activity_service.dart';
@@ -25,9 +26,7 @@ class ActivityListBloc extends Bloc<ActivityListEvent, ActivityListState> {
           status: ActivityListStatus.progress,
         );
 
-        var listActivity = await futureAppDuration<List<Activity>>(
-          _activityService.getListActivityByStatus(state.activityStatus),
-        );
+        var listActivity = await getListActivityByStatus();
 
         yield state.copyWith(
           status: ActivityListStatus.completed,
@@ -40,6 +39,28 @@ class ActivityListBloc extends Bloc<ActivityListEvent, ActivityListState> {
       }
     } else if (event is ActivityListInitial) {
       add(ActivityListRetreived());
+    } else if (event is ActivityListRefresh) {
+      try {
+        yield state.copyWith(
+          refreshStatus: RefreshStatus.refreshing,
+        );
+        var listActivity = await getListActivityByStatus();
+
+        yield state.copyWith(
+          refreshStatus: RefreshStatus.completed,
+          listActivity: listActivity,
+        );
+      } catch (e) {
+        yield state.copyWith(
+          refreshStatus: RefreshStatus.failed,
+        );
+      }
     }
+  }
+
+  Future<List<Activity>> getListActivityByStatus() async {
+    return await futureAppDuration<List<Activity>>(
+      _activityService.getListActivityByStatus(state.activityStatus),
+    );
   }
 }
