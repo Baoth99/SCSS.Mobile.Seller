@@ -15,6 +15,8 @@ class ActivityListState extends Equatable {
     required this.activityStatus,
     this.status = ActivityListStatus.pure,
     this.refreshStatus = RefreshStatus.idle,
+    this.page = 0,
+    this.loadStatus = LoadStatus.idle,
   }) {
     this.listActivity = listActivity ?? [];
   }
@@ -23,18 +25,24 @@ class ActivityListState extends Equatable {
   final int activityStatus;
   final ActivityListStatus status;
   final RefreshStatus refreshStatus;
+  final int page;
+  final LoadStatus loadStatus;
 
   ActivityListState copyWith({
     List<Activity>? listActivity,
     int? activityStatus,
     ActivityListStatus? status,
     RefreshStatus? refreshStatus,
+    int? page,
+    LoadStatus? loadStatus,
   }) {
     return ActivityListState(
       listActivity: listActivity ?? this.listActivity,
       activityStatus: activityStatus ?? this.activityStatus,
       status: status ?? this.status,
       refreshStatus: refreshStatus ?? this.refreshStatus,
+      page: page ?? this.page,
+      loadStatus: loadStatus ?? this.loadStatus,
     );
   }
 
@@ -44,6 +52,8 @@ class ActivityListState extends Equatable {
         activityStatus,
         status,
         refreshStatus,
+        page,
+        loadStatus,
       ];
 }
 

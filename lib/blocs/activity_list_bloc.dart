@@ -18,49 +18,73 @@ class ActivityListBloc extends Bloc<ActivityListEvent, ActivityListState> {
     _activityService = requestService ?? getIt.get<ActivityService>();
   }
   late ActivityService _activityService;
+  final initialAbstractPage = 2;
+  final sizeList = 10;
   @override
   Stream<ActivityListState> mapEventToState(ActivityListEvent event) async* {
-    if (event is ActivityListRetreived) {
+    if (event is ActivityListInitial) {
+      int pageSize = initialAbstractPage * sizeList;
+
       try {
         yield state.copyWith(
           status: ActivityListStatus.progress,
         );
 
-        var listActivity = await getListActivityByStatus();
+        var listActivity = await getListActivityByStatus(pageSize, 1);
 
         yield state.copyWith(
           status: ActivityListStatus.completed,
           listActivity: listActivity,
+          page: listActivity.isNotEmpty ? initialAbstractPage : 0,
         );
       } catch (e) {
         yield state.copyWith(
           status: ActivityListStatus.error,
         );
       }
-    } else if (event is ActivityListInitial) {
-      add(ActivityListRetreived());
     } else if (event is ActivityListRefresh) {
+      int pageSize = initialAbstractPage * sizeList;
+
       try {
         yield state.copyWith(
           refreshStatus: RefreshStatus.refreshing,
         );
-        var listActivity = await getListActivityByStatus();
+        var listActivity = await getListActivityByStatus(pageSize, 1);
 
         yield state.copyWith(
           refreshStatus: RefreshStatus.completed,
           listActivity: listActivity,
+          page: listActivity.isNotEmpty ? initialAbstractPage : 0,
         );
       } catch (e) {
         yield state.copyWith(
           refreshStatus: RefreshStatus.failed,
         );
       }
+    } else if (event is ActivityListLoading) {
+      try {
+        yield state.copyWith(
+          loadStatus: LoadStatus.loading,
+        );
+        var listActivity =
+            await getListActivityByStatus(sizeList, state.page + 1);
+        yield state.copyWith(
+          loadStatus: LoadStatus.idle,
+          listActivity: state.listActivity..addAll(listActivity),
+          page: listActivity.isNotEmpty ? state.page + 1 : state.page,
+        );
+      } catch (e) {
+        yield state.copyWith(
+          loadStatus: LoadStatus.idle,
+        );
+      }
     }
   }
 
-  Future<List<Activity>> getListActivityByStatus() async {
+  Future<List<Activity>> getListActivityByStatus(int size, int page) async {
     return await futureAppDuration<List<Activity>>(
-      _activityService.getListActivityByStatus(state.activityStatus),
+      _activityService.getListActivityByStatus(
+          state.activityStatus, size, page),
     );
   }
 }

@@ -4,7 +4,11 @@ import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/activity_network.dart';
 
 abstract class ActivityService {
-  Future<List<Activity>> getListActivityByStatus(int status);
+  Future<List<Activity>> getListActivityByStatus(
+    int status,
+    int size,
+    int page,
+  );
 }
 
 class ActivityServiceImpl implements ActivityService {
@@ -16,12 +20,18 @@ class ActivityServiceImpl implements ActivityService {
   late ActivityNetwork _activityNetwork;
 
   @override
-  Future<List<Activity>> getListActivityByStatus(int status) async {
+  Future<List<Activity>> getListActivityByStatus(
+    int status,
+    int size,
+    int page,
+  ) async {
     Client client = Client();
 
     var responseModel = await _activityNetwork
         .activityGet(
           status,
+          size,
+          page,
           client,
         )
         .whenComplete(

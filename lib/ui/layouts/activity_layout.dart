@@ -133,6 +133,9 @@ class _ActivityListDataState extends State<ActivityListData> {
           if (state.refreshStatus == RefreshStatus.completed) {
             _refreshController.refreshCompleted();
           }
+          if (state.loadStatus == LoadStatus.idle) {
+            _refreshController.loadComplete();
+          }
         },
         child: state.listActivity.isNotEmpty
             ? _buildCommonPullToResfresh(context, state)
@@ -182,7 +185,7 @@ class _ActivityListDataState extends State<ActivityListData> {
         builder: (context, mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text("pull up load");
+            body = Text("Kéo lên để tải thêm thông tin");
           } else if (mode == LoadStatus.loading) {
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
@@ -200,7 +203,7 @@ class _ActivityListDataState extends State<ActivityListData> {
       ),
       controller: _refreshController,
       onRefresh: _onRefresh(context),
-      onLoading: () {},
+      onLoading: _onLoading(context),
       child: ListView.separated(
         itemBuilder: (context, index) => _buildActivity(
           state,
@@ -211,6 +214,12 @@ class _ActivityListDataState extends State<ActivityListData> {
         itemCount: state.listActivity.length,
       ),
     );
+  }
+
+  void Function() _onLoading(BuildContext context) {
+    return () {
+      context.read<ActivityListBloc>().add(ActivityListLoading());
+    };
   }
 
   void Function() _onRefresh(BuildContext context) {

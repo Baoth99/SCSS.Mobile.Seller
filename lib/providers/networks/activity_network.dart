@@ -6,6 +6,8 @@ import 'package:seller_app/utils/common_utils.dart';
 abstract class ActivityNetwork {
   Future<ActivityListResponseModel> activityGet(
     int status,
+    int size,
+    int page,
     Client client,
   );
 }
@@ -14,6 +16,8 @@ class ActivityNetworkImpl implements ActivityNetwork {
   @override
   Future<ActivityListResponseModel> activityGet(
     int status,
+    int size,
+    int page,
     Client client,
   ) async {
     var responseModel = ActivityListResponseModel(resData: []);
@@ -23,6 +27,8 @@ class ActivityNetworkImpl implements ActivityNetwork {
       client: client,
       queries: {
         'Status': status.toString(),
+        'PageSize': size.toString(),
+        'Page': page.toString(),
       },
     );
     // get model

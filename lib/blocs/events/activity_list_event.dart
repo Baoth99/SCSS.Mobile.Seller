@@ -6,6 +6,6 @@ class ActivityListEvent extends AbstractEvent {
 
 class ActivityListInitial extends ActivityListEvent {}
 
-class ActivityListRetreived extends ActivityListEvent {}
+class ActivityListLoading extends ActivityListEvent {}
 
 class ActivityListRefresh extends ActivityListEvent {}
