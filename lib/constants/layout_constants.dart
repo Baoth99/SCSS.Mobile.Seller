@@ -137,4 +137,17 @@ class MainLayoutConstants {
 class ActivityLayoutConstants {
   static const bulkyImage = ImagesPaths.bulky;
   static const notBulkyImage = ImagesPaths.notBulky;
+
+  //tab status
+  static const tabPending = 1;
+  static const tabApproved = 4;
+  static const tabCompleted = 5;
+
+  //status
+  static const pending = tabPending;
+  static const cancelBySeller = 2;
+  static const cancelByCollect = 3;
+  static const approved = tabApproved;
+  static const completed = tabCompleted;
+  static const cancelBySystem = 6;
 }
