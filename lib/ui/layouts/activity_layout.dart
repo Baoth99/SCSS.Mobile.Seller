@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+import 'package:seller_app/blocs/activity_list_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/common_scaffold_title.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'request_detail_layout.dart';
 
 class ActivityLayout extends StatelessWidget {
@@ -44,13 +48,17 @@ class ActivityLayout extends StatelessWidget {
         body: const TabBarView(
           children: [
             CommonMarginContainer(
-              child: ActivityList(),
+              child: ActivityList(
+                status: ActivityLayoutConstants.tabPending,
+              ),
             ),
             CommonMarginContainer(
-              child: ActivityList(),
+              child: ActivityList(status: ActivityLayoutConstants.tabApproved),
             ),
             CommonMarginContainer(
-              child: ActivityList(),
+              child: ActivityList(
+                status: ActivityLayoutConstants.tabCompleted,
+              ),
             ),
           ],
         ),
@@ -60,23 +68,58 @@ class ActivityLayout extends StatelessWidget {
 }
 
 class ActivityList extends StatelessWidget {
-  const ActivityList({Key? key}) : super(key: key);
+  const ActivityList({
+    Key? key,
+    required this.status,
+  }) : super(key: key);
+
+  final int status;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemBuilder: (context, index) => CurrentActivity(
-        requestId: 'suck may dick',
-        time: 'Th3, 24 thg8, 2021, 09:45 - 10:00',
-        placeName: 'Công viên tao đàng',
-        bulky: true,
-        isCompleted: true,
-        extraInfo: 'Hoàn thành',
-        price: '500.000đ',
+    return BlocProvider(
+      create: (context) => ActivityListBloc(
+        status: status,
+      )..add(
+          ActivityListInitial(),
+        ),
+      child: BlocBuilder<ActivityListBloc, ActivityListState>(
+        builder: (context, state) => _buildActivityList(context, state),
       ),
-      separatorBuilder: (context, index) => Container(),
-      itemCount: 20,
     );
+  }
+
+  Widget _buildActivityList(
+    BuildContext context,
+    ActivityListState state,
+  ) {
+    switch (state.status) {
+      case ActivityListStatus.completed:
+        return ListView.separated(
+          itemBuilder: (context, index) {
+            var a = state.listActivity[index];
+            return CurrentActivity(
+              requestId: a.collectingRequestId,
+              time: a.collectingRequestDate,
+              fromTime: a.fromTime,
+              toTime: a.toTime,
+              placeName: a.addressName,
+              bulky: a.isBulky,
+              privateStatus: a.status,
+              tabStatus: status,
+              price: a.total,
+            );
+          },
+          separatorBuilder: (context, index) => const SizedBox.shrink(),
+          itemCount: state.listActivity.length,
+        );
+      case ActivityListStatus.progress:
+        return FunctionalWidgets.getLoadingAnimation();
+      case ActivityListStatus.error:
+        return FunctionalWidgets.getErrorIcon();
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
 
@@ -85,19 +128,23 @@ class CurrentActivity extends StatelessWidget {
     Key? key,
     required this.requestId,
     required this.time,
+    required this.fromTime,
+    required this.toTime,
     required this.placeName,
     required this.bulky,
-    this.isCompleted,
-    this.extraInfo,
+    required this.privateStatus,
+    required this.tabStatus,
     this.price,
   }) : super(key: key);
 
   final String requestId;
   final String time;
+  final String fromTime;
+  final String toTime;
   final String placeName;
   final bool bulky;
-  final bool? isCompleted;
-  final String? extraInfo;
+  final int privateStatus;
+  final int tabStatus;
   final String? price;
 
   @override
@@ -105,7 +152,7 @@ class CurrentActivity extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 20.h),
       constraints: BoxConstraints(
-        minHeight: 130.h,
+        minHeight: 200.h,
       ),
       decoration: BoxDecoration(
         border: Border.all(
@@ -145,7 +192,7 @@ class CurrentActivity extends StatelessWidget {
                     constraints: BoxConstraints(minHeight: 130.h),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _getContainerColumn(
@@ -157,16 +204,17 @@ class CurrentActivity extends StatelessWidget {
                         ),
                         _getContainerColumn(
                           CustomText(
-                            text: time,
+                            text: '$time, $fromTime-$toTime',
                             color: Colors.green[600],
                             fontSize: 37.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        price != null
+                        privateStatus == ActivityLayoutConstants.completed &&
+                                price != null
                             ? _getContainerColumn(
                                 CustomText(
-                                  text: 'Tổng cộng: $price',
+                                  text: 'Tổng cộng: $price ₫',
                                   fontSize: 40.sp,
                                 ),
                               )
@@ -175,7 +223,7 @@ class CurrentActivity extends StatelessWidget {
                     ),
                   ),
                 ),
-                isCompleted != null && isCompleted!
+                tabStatus == ActivityLayoutConstants.tabCompleted
                     ? Container(
                         // constraints: BoxConstraints(
                         //   minWidth: 100.w,
@@ -186,21 +234,46 @@ class CurrentActivity extends StatelessWidget {
                         ),
                         width: 200.w,
                         child: CustomText(
-                          text: extraInfo ?? Symbols.empty,
-                          color: isCompleted!
-                              ? Colors.green[600]
-                              : AppColors.orangeFFF5670A,
+                          text: _getCompletedText(privateStatus),
+                          color: _getCompletedColor(privateStatus),
                           fontWeight: FontWeight.w500,
-                          fontSize: 30.sp,
+                          fontSize: 36.sp,
                         ),
                         alignment: Alignment.topRight)
-                    : Container(),
+                    : const SizedBox.shrink(),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  String _getCompletedText(int status) {
+    switch (status) {
+      case ActivityLayoutConstants.completed:
+        return 'Hoàn thành';
+      case ActivityLayoutConstants.cancelBySeller:
+        return 'Đã hủy';
+      case ActivityLayoutConstants.cancelByCollect:
+      case ActivityLayoutConstants.cancelBySystem:
+        return 'Bị hủy';
+      default:
+        return Symbols.empty;
+    }
+  }
+
+  Color _getCompletedColor(int status) {
+    switch (status) {
+      case ActivityLayoutConstants.completed:
+        return Colors.green[600]!;
+      case ActivityLayoutConstants.cancelBySeller:
+      case ActivityLayoutConstants.cancelByCollect:
+      case ActivityLayoutConstants.cancelBySystem:
+        return AppColors.orangeFFF5670A;
+      default:
+        return Colors.black;
+    }
   }
 
   void Function() _onTap(BuildContext context) {

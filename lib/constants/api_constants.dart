@@ -49,4 +49,5 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/upload-img';
   static final collectingRequestRequest =
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/request';
+  static final activityGet = '${EnvBaseAppSettingValue.baseApiUrl}activity/get';
 }

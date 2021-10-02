@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
+import 'package:seller_app/providers/networks/activity_network.dart';
 import 'package:seller_app/providers/networks/collecting_request_network.dart';
 import 'package:seller_app/providers/networks/goong_map_network.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
+import 'package:seller_app/providers/services/activity_service.dart';
 import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/providers/services/firebase_service.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
@@ -21,6 +23,9 @@ void configureDependencies() async {
   getIt.registerLazySingleton<CollectingRequestNetwork>(
     () => CollectingRequestNetworkImpl(),
   );
+  getIt.registerLazySingleton<ActivityNetwork>(
+    () => ActivityNetworkImpl(),
+  );
 
   // Service
   getIt.registerLazySingleton<GoongMapService>(
@@ -31,5 +36,8 @@ void configureDependencies() async {
   );
   getIt.registerLazySingleton<CollectingRequestService>(
     () => CollectingRequestServiceImpl(),
+  );
+  getIt.registerLazySingleton<ActivityService>(
+    () => ActivityServiceImpl(),
   );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
@@ -137,6 +138,20 @@ class FunctionalWidgets {
           confirmBtnTapRoute,
         ),
       ),
+    );
+  }
+
+  static Widget getLoadingAnimation() {
+    return const SpinKitRing(
+      color: AppColors.greenFF61C53D,
+    );
+  }
+
+  static Widget getErrorIcon() {
+    return Icon(
+      Icons.error,
+      size: 180.sp,
+      color: AppColors.red,
     );
   }
 }
