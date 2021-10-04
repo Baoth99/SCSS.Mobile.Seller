@@ -17,6 +17,8 @@ abstract class IdentityServerService {
   Future<bool> connectRevocation();
 
   Future<bool> refreshToken();
+
+  Future<bool> updateDeviceId(String deviceId);
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -161,5 +163,16 @@ class IdentityServerServiceImpl implements IdentityServerService {
       return await resultAT && await resultRT;
     }
     return false;
+  }
+
+  @override
+  Future<bool> updateDeviceId(String deviceId) async {
+    Client client = Client();
+
+    bool result = await _identityServerNetwork
+        .accountDeviceId(deviceId, client)
+        .whenComplete(() => client.close());
+
+    return result;
   }
 }

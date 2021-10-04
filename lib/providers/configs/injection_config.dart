@@ -10,9 +10,7 @@ import 'package:seller_app/providers/services/goong_map_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 
 final getIt = GetIt.instance;
-void configureDependencies() async {
-  getIt.registerSingleton<FirebaseNotification>(FirebaseNotification());
-
+Future<void> configureDependencies() async {
   // Network
   getIt.registerLazySingleton<GoongMapNetwork>(
     () => GoongMapNetworkImpl(),
@@ -40,4 +38,7 @@ void configureDependencies() async {
   getIt.registerLazySingleton<ActivityService>(
     () => ActivityServiceImpl(),
   );
+
+  //firebase
+  getIt.registerSingleton<FirebaseNotification>(FirebaseNotification());
 }

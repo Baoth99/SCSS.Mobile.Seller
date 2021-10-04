@@ -53,4 +53,6 @@ class APIServiceURI {
   static final activityDetail =
       '${EnvBaseAppSettingValue.baseApiUrl}activity/detail';
   static final imageGet = '${EnvBaseAppSettingValue.baseApiUrl}image/get';
+  static final accountDeviceID =
+      '${EnvBaseAppSettingValue.baseApiUrl}seller/account/device-id';
 }

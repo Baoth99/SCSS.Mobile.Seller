@@ -6,6 +6,7 @@ import 'package:seller_app/blocs/models/models.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
+import 'package:seller_app/providers/services/firebase_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/utils/common_function.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -13,13 +14,17 @@ part 'states/login_state.dart';
 part 'events/login_event.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  late IdentityServerService _identityServerService =
-      getIt.get<IdentityServerService>();
+  late IdentityServerService _identityServerService;
+  late FirebaseNotification _firebaseNotification;
 
-  LoginBloc({IdentityServerService? identityServerService})
-      : super(const LoginState()) {
+  LoginBloc({
+    IdentityServerService? identityServerService,
+    FirebaseNotification? firebaseNotification,
+  }) : super(const LoginState()) {
     _identityServerService =
         identityServerService ?? getIt.get<IdentityServerService>();
+    _firebaseNotification =
+        firebaseNotification ?? getIt.get<FirebaseNotification>();
   }
 
   @override
@@ -92,6 +97,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
               if (accessResult && refreshResult) {
                 // generate satus success
+
+                // update deviceID
+                _firebaseNotification.updateToken();
                 yield state.copyWith(
                   status: FormzStatus.submissionSuccess,
                 );
@@ -130,6 +138,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           yield state.copyWith(
             status: FormzStatus.submissionSuccess,
           );
+
+          // update deviceID
+          _firebaseNotification.updateToken();
         } else {
           throw Exception();
         }
