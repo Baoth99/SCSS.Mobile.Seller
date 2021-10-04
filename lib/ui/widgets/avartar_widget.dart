@@ -9,32 +9,23 @@ import 'package:seller_app/utils/common_utils.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
-    required this.imagePath,
+    this.image,
     required this.isMale,
     this.width = 450,
     Key? key,
   }) : super(key: key);
-  final String imagePath;
+  final ImageProvider<Object>? image;
   final bool isMale;
   final double width;
   @override
   Widget build(BuildContext context) {
     return Container(
       width: width.w,
-      child: FutureBuilder<List>(
-        future: getMetaDataImage(imagePath),
-        builder: (c, snapshot) {
-          return CircleAvatar(
-            radius: (width / 2).r,
-            onForegroundImageError: (exception, stackTrace) => print(exception),
-            foregroundImage: imagePath.isNotEmpty && snapshot.hasData
-                ? NetworkImage(snapshot.data![0], headers: {
-                    HttpHeaders.authorizationHeader: snapshot.data![1],
-                  })
-                : getFalloutImage() as ImageProvider,
-            backgroundImage: getFalloutImage(),
-          );
-        },
+      child: CircleAvatar(
+        radius: (width / 2).r,
+        onForegroundImageError: (exception, stackTrace) => print(exception),
+        foregroundImage: (image != null) ? image : getFalloutImage(),
+        backgroundImage: getFalloutImage(),
       ),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -44,18 +35,6 @@ class AvatarWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<List> getMetaDataImage(String imagePath) async {
-    var bearerToken = NetworkUtils.getBearerToken();
-    var url = NetworkUtils.getUrlWithQueryString(
-      APIServiceURI.imageGet,
-      {'imageUrl': imagePath},
-    );
-    return [
-      url,
-      await bearerToken,
-    ];
   }
 
   AssetImage getFalloutImage() {

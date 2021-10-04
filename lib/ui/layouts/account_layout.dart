@@ -1,15 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/account_bloc.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
+import 'package:seller_app/utils/common_utils.dart';
 
 class AccountLayout extends StatelessWidget {
   const AccountLayout({Key? key}) : super(key: key);
@@ -101,11 +105,8 @@ class AccountBody extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                child: AvatarWidget(
-                  imagePath: s.image ?? Symbols.empty,
-                  isMale: s.gender == Gender.male,
-                  width: 250,
-                ),
+                child:
+                    _getAvatarFutureBuilder(s.gender, s.image ?? Symbols.empty),
                 margin: EdgeInsets.symmetric(
                   horizontal: 50.w,
                 ),
@@ -165,6 +166,44 @@ class AccountBody extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _getAvatarFutureBuilder(Gender gender, String url) {
+    return FutureBuilder(
+      future:
+          url.isNotEmpty ? getMetaDataImage(url) : Future.value(Symbols.empty),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data;
+          if (data is List) {
+            var image = NetworkImage(data[0], headers: {
+              HttpHeaders.authorizationHeader: data[1],
+            });
+            return AvatarWidget(
+              image: image,
+              isMale: gender == Gender.male,
+              width: 250,
+            );
+          }
+        }
+        return AvatarWidget(
+          isMale: gender == Gender.male,
+          width: 250,
+        );
+      },
+    );
+  }
+
+  Future<List> getMetaDataImage(String imagePath) async {
+    var bearerToken = NetworkUtils.getBearerToken();
+    var url = NetworkUtils.getUrlWithQueryString(
+      APIServiceURI.imageGet,
+      {'imageUrl': imagePath},
+    );
+    return [
+      url,
+      await bearerToken,
+    ];
   }
 
   Widget options(BuildContext context) {

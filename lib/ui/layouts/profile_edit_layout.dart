@@ -167,8 +167,6 @@ class ProfileEditBody extends StatelessWidget {
         alignment: Alignment.bottomRight,
         children: [
           const AvatarWidget(
-            imagePath:
-                'https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg',
             isMale: true,
           ),
           Container(
