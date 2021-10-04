@@ -104,6 +104,13 @@ class CommonUtils {
 }
 
 class NetworkUtils {
+  static String getUrlWithQueryString(String uri, Map<String, String> queries) {
+    // ignore: non_constant_identifier_names
+    var URI = Uri.parse(uri);
+    URI = URI.replace(queryParameters: queries);
+    return URI.toString();
+  }
+
   static Future<T>
       checkSuccessStatusCodeAPIMainResponseModel<T extends BaseResponseModel>(
     http.Response response,

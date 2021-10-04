@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seller_app/blocs/request_detail_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -6,6 +11,9 @@ import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:formz/formz.dart';
+import 'package:seller_app/ui/widgets/view_image_layout.dart';
+import 'package:seller_app/utils/common_utils.dart';
 
 class RequestDetailArguments {
   final String requestId;
@@ -35,19 +43,61 @@ class RequestDetailLayout extends StatelessWidget {
         centerTitle: true,
         elevation: 0,
       ),
-      body: ListView(
+      body: BlocProvider(
+        create: (context) => RequestDetailBloc(id: args.requestId)
+          ..add(
+            RequestDetailInitial(),
+          ),
+        child: BlocBuilder<RequestDetailBloc, RequestDetailState>(
+          builder: (context, state) => state.stateStatus.isSubmissionInProgress
+              ? FunctionalWidgets.getLoadingAnimation()
+              : state.stateStatus.isSubmissionSuccess
+                  ? _body(context)
+                  : state.stateStatus.isSubmissionFailure
+                      ? Center(
+                          child: FunctionalWidgets.getErrorIcon(),
+                        )
+                      : const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return BlocBuilder<RequestDetailBloc, RequestDetailState>(
+      builder: (c, s) => ListView(
         children: [
           const RequestDetailHeader(),
-          const RequestDetailDivider(),
-          const RequestDetailRating(),
-          const RequestDetailDivider(),
-          const RequestDetailCollectorInfo(),
+          s.status == ActivityLayoutConstants.pending
+              ? const SizedBox.shrink()
+              : Column(
+                  children: [
+                    const RequestDetailDivider(),
+                    const RequestDetailRating(),
+                  ],
+                ),
+          s.status == ActivityLayoutConstants.pending
+              ? const SizedBox.shrink()
+              : Column(
+                  children: [
+                    const RequestDetailDivider(),
+                    const RequestDetailCollectorInfo(),
+                  ],
+                ),
           const RequestDetailDivider(),
           const RequestDetailBody(),
+          s.status == ActivityLayoutConstants.pending
+              ? const SizedBox.shrink()
+              : Column(
+                  children: [
+                    const RequestDetailDivider(),
+                    const RequestDetailBill(),
+                  ],
+                ),
           const RequestDetailDivider(),
-          const RequestDetailBill(),
-          const RequestDetailDivider(),
-          const RequestDetailTime(),
+          RequestDetailTime(
+            status: s.status,
+          ),
           _getCancelButton(context),
         ],
       ),
@@ -170,7 +220,9 @@ class RequestDetailLayout extends StatelessWidget {
 }
 
 class RequestDetailTime extends StatelessWidget {
-  const RequestDetailTime({Key? key}) : super(key: key);
+  const RequestDetailTime({required this.status, Key? key}) : super(key: key);
+
+  final int status;
 
   @override
   Widget build(BuildContext context) {
@@ -178,8 +230,14 @@ class RequestDetailTime extends StatelessWidget {
       child: Column(
         children: [
           _getDataRow('Thời gian đặt', '08-08-2021 00:23'),
-          _getDataRow('Thời gian được xác nhận', '10-08-2021 08:23'),
-          _getDataRow('Thời gian thu gom', '01-10-2021 07:23'),
+          status == ActivityLayoutConstants.pending
+              ? const SizedBox.shrink()
+              : Column(
+                  children: [
+                    _getDataRow('Thời gian được xác nhận', '10-08-2021 08:23'),
+                    _getDataRow('Thời gian thu gom', '01-10-2021 07:23'),
+                  ],
+                )
         ],
       ),
     );
@@ -594,128 +652,179 @@ class RequestDetailBody extends StatelessWidget {
             fontSize: 40.sp,
             fontWeight: FontWeight.w500,
           ),
-          Container(
-            child: Column(
-              children: [
-                RequestDetailElementPattern(
-                  icon: Icons.place,
-                  title: 'Địa chỉ thu gom',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
+          BlocBuilder<RequestDetailBloc, RequestDetailState>(
+            builder: (c, s) {
+              return Container(
+                child: Column(
+                  children: [
+                    RequestDetailElementPattern(
+                      icon: Icons.place,
+                      title: 'Địa chỉ thu gom',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            fontSize: 47.sp,
+                            text: s.addressName,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 12.h,
+                            ),
+                            child: CustomText(
+                              text: s.address,
+                              fontSize: 39.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RequestDetailElementPattern(
+                      icon: AppIcons.event,
+                      title: 'Thời gian hẹn thu gom',
+                      child: CustomText(
+                        text:
+                            '${s.collectingRequestDate}, ${s.fromTime} - ${s.toTime}',
                         fontSize: 47.sp,
-                        text: 'Khu dân cư 6B Kiên Cường',
                         fontWeight: FontWeight.w500,
                       ),
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 12.h,
-                        ),
-                        child: CustomText(
-                          text:
-                              'Đường số 7, Bình Hưng, Bình Chánh, Thành phố Hồ Chí Minh, Vietnam',
-                          fontSize: 39.sp,
-                        ),
+                    ),
+                    RequestDetailElementPattern(
+                      icon: Icons.kitchen,
+                      title: 'Có đồ cồng kềnh',
+                      child: CustomText(
+                        text: s.isBulky ? 'Có' : 'Không',
+                        fontSize: 47.sp,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
-                  ),
+                    ),
+                    s.scrapCategoryImageUrl != null &&
+                            s.scrapCategoryImageUrl!.isNotEmpty
+                        ? RequestDetailElementPattern(
+                            icon: Icons.image_outlined,
+                            title: 'Ảnh ve chai',
+                            child: _image(context, s.scrapCategoryImageUrl!),
+                          )
+                        : const SizedBox.shrink(),
+                    RequestDetailElementPattern(
+                      icon: Icons.notes,
+                      title: 'Ghi chú',
+                      child: CustomText(
+                        text: s.note,
+                        fontSize: 40.sp,
+                      ),
+                    ),
+                  ],
                 ),
-                RequestDetailElementPattern(
-                  icon: AppIcons.event,
-                  title: 'Thời gian hẹn thu gom',
-                  child: CustomText(
-                    text: 'Th 3, 24 thg 8, 09:45 - 10:00',
-                    fontSize: 47.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                RequestDetailElementPattern(
-                  icon: Icons.kitchen,
-                  title: 'Có đồ cồng kềnh',
-                  child: CustomText(
-                    text: 'Có',
-                    fontSize: 47.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                RequestDetailElementPattern(
-                  icon: Icons.image_outlined,
-                  title: 'Ảnh ve chai',
-                  child: _image(context),
-                ),
-                RequestDetailElementPattern(
-                  icon: Icons.notes,
-                  title: 'Ghi chú',
-                  child: CustomText(
-                    text:
-                        'Anh nhớ là phải tới cái hẻm rồi quẹo, có gì tới gọi tôi tôi sẽ ra đón. Anh có thể đổ thêm xăng vì nhà tôi đi tới tận chân trời mơi hết được cái thủ phủ của ông Lê nếu đi mà',
-                    fontSize: 40.sp,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           )
         ],
       ),
     );
   }
 
-  Widget _image(BuildContext context) {
+  Widget _image(BuildContext context, String url) {
     return Center(
       child: Container(
         margin: EdgeInsets.symmetric(
           vertical: 40.h,
         ),
         constraints: BoxConstraints(maxHeight: 600.h, minHeight: 400.h),
-        child: ''.isEmpty
-            ? Stack(
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0.r),
-                    child: Image.network(
-                        'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U'),
+        child:
+            // ''.isEmpty
+            //     ? Stack(
+            //         children:
+            //         <Widget>[
+            ClipRRect(
+          borderRadius: BorderRadius.circular(20.0.r),
+          child: FutureBuilder<List>(
+            future: getMetaDataImage(url),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var image = FadeInImage(
+                  image: NetworkImage(snapshot.data![0], headers: {
+                    HttpHeaders.authorizationHeader: snapshot.data![1],
+                  }),
+                  placeholder: const AssetImage(
+                    ImagesPaths.placeholderImage,
                   ),
-                  Positioned.fill(
-                    child: Container(
-                      height: double.minPositive,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0.r),
-                        color: Colors.black.withOpacity(0.4),
+                );
+
+                return GestureDetector(
+                  child: image,
+                  onTap: () {
+                    Navigator.push<void>(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => ViewImageLayout(
+                          imageProvider: image.image,
+                        ),
                       ),
-                      child: IconButton(
-                        color: Colors.white,
-                        icon: const Icon(Icons.add_a_photo_outlined),
-                        onPressed: () {
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (context) => const ExistedPhotoDialog(),
-                          // );
-                        },
-                      ),
-                    ),
-                  )
-                ],
-              )
-            : CircleAvatar(
-                backgroundColor: Colors.deepOrange,
-                radius: 100.0.r,
-                child: IconButton(
-                  onPressed: () {
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) => const PhotoDialog(),
-                    // );
+                    );
                   },
-                  icon: Icon(
-                    Icons.add_a_photo_outlined,
-                    size: 80.0.r,
-                    color: AppColors.white,
-                  ),
-                ),
-              ),
+                );
+              } else {
+                return Image.asset(
+                  ImagesPaths.placeholderImage,
+                );
+              }
+            },
+          ),
+        ),
+        // Positioned.fill(
+        //   child: Container(
+        //     height: double.minPositive,
+        //     decoration: BoxDecoration(
+        //       borderRadius: BorderRadius.circular(20.0.r),
+        //       color: Colors.black.withOpacity(0.4),
+        //     ),
+        //     child: IconButton(
+        //       color: Colors.white,
+        //       icon: const Icon(Icons.add_a_photo_outlined),
+        //       onPressed: () {
+        //         // showDialog(
+        //         //   context: context,
+        //         //   builder: (context) => const ExistedPhotoDialog(),
+        //         // );
+        //       },
+        //     ),
+        //   ),
+        // )
+        // ],F
+        // )
+        // : CircleAvatar(
+        //     backgroundColor: Colors.deepOrange,
+        //     radius: 100.0.r,
+        //     child: IconButton(
+        //       onPressed: () {
+        //         // showDialog(
+        //         //   context: context,
+        //         //   builder: (context) => const PhotoDialog(),
+        //         // );
+        //       },
+        //       icon: Icon(
+        //         Icons.add_a_photo_outlined,
+        //         size: 80.0.r,
+        //         color: AppColors.white,
+        //       ),
+        //     ),
+        //   ),
       ),
     );
+  }
+
+  Future<List> getMetaDataImage(String imagePath) async {
+    var bearerToken = NetworkUtils.getBearerToken();
+    var url = NetworkUtils.getUrlWithQueryString(
+      APIServiceURI.imageGet,
+      {'imageUrl': imagePath},
+    );
+    return [
+      url,
+      await bearerToken,
+    ];
   }
 }
 
@@ -790,17 +899,57 @@ class RequestDetailHeader extends StatelessWidget {
         constraints: BoxConstraints(
           minHeight: 200.h,
         ),
-        child: Column(
-          children: <Widget>[
-            _requestId(context),
-            _getStepper(context),
-          ],
+        child: BlocBuilder<RequestDetailBloc, RequestDetailState>(
+          builder: (c, s) {
+            return Column(
+              children: <Widget>[
+                _requestId(
+                  context,
+                  s.id,
+                  s.collectingRequestCode,
+                ),
+                _getHeaderStatus(context, s.status),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _requestId(BuildContext context) {
+  Widget _getHeaderStatus(BuildContext context, int status) {
+    switch (status) {
+      case ActivityLayoutConstants.pending:
+      case ActivityLayoutConstants.approved:
+      case ActivityLayoutConstants.completed:
+        return _getStepper(context, status);
+      case ActivityLayoutConstants.cancelByCollect:
+      case ActivityLayoutConstants.cancelBySystem:
+        return _getStatusTextHeader('Bị hủy');
+      case ActivityLayoutConstants.cancelBySeller:
+        return _getStatusTextHeader('Đã hủy');
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget _getStatusTextHeader(String text) {
+    return Container(
+      margin: EdgeInsets.only(
+        left: 85.w,
+      ),
+      width: double.infinity,
+      child: CustomText(
+        text: text,
+        textAlign: TextAlign.start,
+        fontSize: 40.sp,
+        color: AppColors.orangeFFF5670A,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Widget _requestId(BuildContext context, String id, String code) {
     return Row(
       children: <Widget>[
         const Icon(
@@ -812,9 +961,10 @@ class RequestDetailHeader extends StatelessWidget {
             margin: EdgeInsets.symmetric(
               horizontal: 20.w,
             ),
-            child: const CustomText(
-              text: 'Mã Đơn Hẹn: GK-12-5597360',
+            child: CustomText(
+              text: 'Mã Đơn Hẹn: $code',
               fontWeight: FontWeight.w500,
+              fontSize: 35.sp,
             ),
           ),
         ),
@@ -822,7 +972,7 @@ class RequestDetailHeader extends StatelessWidget {
           onPressed: () {
             FunctionalWidgets.showCustomModalBottomSheet<String>(
               context: context,
-              child: _getQrCode(),
+              child: _getQrCode(id, code),
               routeClosed: Routes.requestDetail,
             );
           },
@@ -835,7 +985,7 @@ class RequestDetailHeader extends StatelessWidget {
     );
   }
 
-  Widget _getQrCode() {
+  Widget _getQrCode(String id, String code) {
     return Container(
       margin: EdgeInsets.only(
         top: 400.h,
@@ -846,14 +996,13 @@ class RequestDetailHeader extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomText(
-              text: 'Đơn hẹn\nGK-12-5597360',
+              text: 'Đơn hẹn\n$code',
               textAlign: TextAlign.center,
               fontSize: 50.sp,
               fontWeight: FontWeight.w500,
             ),
             QrImage(
-              data:
-                  "12321312321312312321321321324523434rdfgfhfgnfghgrfthfdghdfgfdgdfgdfgfdgdrfgdfgdfgdfgdfgfdgfdg",
+              data: id,
               version: QrVersions.auto,
               size: 600.r,
             ),
@@ -863,7 +1012,7 @@ class RequestDetailHeader extends StatelessWidget {
     );
   }
 
-  Widget _getStepper(BuildContext context) {
+  Widget _getStepper(BuildContext context, int status) {
     return Container(
       height: 220.h,
       child: Theme(
@@ -891,7 +1040,9 @@ class RequestDetailHeader extends StatelessWidget {
           steps: <Step>[
             Step(
               state: StepState.complete,
-              isActive: true,
+              isActive: status == ActivityLayoutConstants.pending ||
+                  status == ActivityLayoutConstants.approved ||
+                  status == ActivityLayoutConstants.completed,
               title: CustomText(
                 text: 'Đặt hẹn',
                 fontSize: 28.sp,
@@ -900,6 +1051,8 @@ class RequestDetailHeader extends StatelessWidget {
             ),
             Step(
               state: StepState.complete,
+              isActive: status == ActivityLayoutConstants.approved ||
+                  status == ActivityLayoutConstants.completed,
               title: CustomText(
                 text: 'Đã nhận',
                 fontSize: 28.sp,
@@ -908,6 +1061,7 @@ class RequestDetailHeader extends StatelessWidget {
             ),
             Step(
               state: StepState.complete,
+              isActive: status == ActivityLayoutConstants.completed,
               title: CustomText(
                 text: 'Hoàn thành',
                 fontSize: 28.sp,

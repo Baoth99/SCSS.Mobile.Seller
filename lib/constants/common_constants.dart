@@ -31,6 +31,7 @@ class ImagesPaths {
   static const String maleProfile = '$imagePath/male_profile.png';
   static const String femaleProfile = '$imagePath/female_profile.png';
   static const String emptyActivityList = '$imagePath/empty_activity_list.png';
+  static const String placeholderImage = '$imagePath/placeholder_image.jpg';
 }
 
 class Symbols {

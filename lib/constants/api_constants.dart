@@ -50,4 +50,7 @@ class APIServiceURI {
   static final collectingRequestRequest =
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/request';
   static final activityGet = '${EnvBaseAppSettingValue.baseApiUrl}activity/get';
+  static final activityDetail =
+      '${EnvBaseAppSettingValue.baseApiUrl}activity/detail';
+  static final imageGet = '${EnvBaseAppSettingValue.baseApiUrl}image/get';
 }
