@@ -250,6 +250,44 @@ class NetworkUtils {
     return response;
   }
 
+  static Future<http.Response> putBody({
+    required String uri,
+    Map<String, String>? headers,
+    Object? body,
+    required http.Client client,
+  }) async {
+    var response = client.put(
+      Uri.parse(
+        uri,
+      ),
+      body: body,
+      headers: headers,
+    );
+    return response;
+  }
+
+  static Future<http.Response> putBodyWithBearerAuth({
+    required String uri,
+    Map<String, String>? headers,
+    Object? body,
+    required http.Client client,
+  }) async {
+    var mainHeader = <String, String>{
+      HttpHeaders.authorizationHeader: await getBearerToken(),
+    };
+
+    if (headers != null) {
+      mainHeader.addAll(headers);
+    }
+
+    return await putBody(
+      uri: uri,
+      headers: mainHeader,
+      body: body,
+      client: client,
+    );
+  }
+
   // static Future<Map<String, dynamic>> getMapOfStreamResponse(
   //     http.Response response) async {
   //   switch (response.statusCode) {

@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/providers/networks/models/request/account_device_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/refresh_token_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -23,6 +25,11 @@ abstract class IdentityServerNetwork {
 
   Future<RefreshTokenResponseModel> refreshToken(
     String refreshToken,
+    Client client,
+  );
+
+  Future<bool> accountDeviceId(
+    String deviceId,
     Client client,
   );
 }
@@ -133,5 +140,30 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
     );
 
     return responseModel;
+  }
+
+  @override
+  Future<bool> accountDeviceId(String deviceId, Client client) async {
+    var response = await NetworkUtils.putBodyWithBearerAuth(
+      uri: APIServiceURI.accountDeviceID,
+      headers: {
+        HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
+      },
+      body: accountDeviceIdRequestModelToJson(
+        AccountDeviceIdRequestModel(
+          deviceId: deviceId,
+        ),
+      ),
+      client: client,
+    );
+
+    // get model
+    var responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
+    );
+
+    return responseModel.isSuccess!;
   }
 }

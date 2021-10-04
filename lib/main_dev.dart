@@ -9,10 +9,10 @@ import 'package:seller_app/utils/env_util.dart';
 void main() async {
   // Load env
   await dotenv.load(fileName: EnvAppSetting.dev);
-  configureDependencies();
+  await configureDependencies();
   configureMappers();
   final firebase = getIt.get<FirebaseNotification>();
   await firebase.initialize();
-  print(await firebase.getToken());
+
   runApp(SellerApp());
 }
