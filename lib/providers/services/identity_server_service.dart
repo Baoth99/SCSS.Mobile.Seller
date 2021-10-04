@@ -1,4 +1,6 @@
 import 'package:http/http.dart';
+import 'package:seller_app/blocs/models/gender_model.dart';
+import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
@@ -19,6 +21,7 @@ abstract class IdentityServerService {
   Future<bool> refreshToken();
 
   Future<bool> updateDeviceId(String deviceId);
+  Future<ProfileState?> getProfile();
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -172,6 +175,32 @@ class IdentityServerServiceImpl implements IdentityServerService {
     bool result = await _identityServerNetwork
         .accountDeviceId(deviceId, client)
         .whenComplete(() => client.close());
+
+    return result;
+  }
+
+  @override
+  Future<ProfileState?> getProfile() async {
+    Client client = Client();
+    ProfileState? result;
+    var responseModel = await _identityServerNetwork
+        .getAccountInfo(client)
+        .whenComplete(() => client.close());
+    var m = responseModel.resData;
+    if (m != null) {
+      result = ProfileState(
+        name: m.name ?? Symbols.empty,
+        address: m.address,
+        birthDate: m.birthDate == null
+            ? null
+            : CommonUtils.convertDDMMYYYToDateTime(m.birthDate!),
+        email: m.email,
+        gender: m.gender == 1 ? Gender.male : Gender.female,
+        image: m.image,
+        phone: m.phone ?? Symbols.empty,
+        totalPoint: m.totalPoint ?? 0,
+      );
+    }
 
     return result;
   }

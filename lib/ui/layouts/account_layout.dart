@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/account_bloc.dart';
+import 'package:seller_app/blocs/models/gender_model.dart';
+import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:formz/formz.dart';
+import 'package:seller_app/ui/widgets/function_widgets.dart';
 
 class AccountLayout extends StatelessWidget {
   const AccountLayout({Key? key}) : super(key: key);
@@ -40,10 +43,23 @@ class AccountLayout extends StatelessWidget {
                 Routes.login, (Route<dynamic> route) => false);
           }
         },
-        child: const Scaffold(
+        child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: Color(0XFFF8F8F8),
-          body: AccountBody(),
+          body: BlocProvider(
+            create: (context) => ProfileBloc()
+              ..add(
+                ProfileInitial(),
+              ),
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, s) {
+                return s.status.isSubmissionSuccess ||
+                        s.status.isSubmissionFailure
+                    ? const AccountBody()
+                    : FunctionalWidgets.getLoadingAnimation();
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -64,82 +80,90 @@ class AccountBody extends StatelessWidget {
   }
 
   Widget avatar() {
-    return Container(
-      width: double.infinity,
-      height: 550.h,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment
-              .bottomCenter, // 10% of the width, so there are ten blinds.
-          colors: <Color>[
-            AppColors.greenFF61C53D.withOpacity(0.5),
-            AppColors.greenFF39AC8F.withOpacity(0.5),
-          ], // red to yellow
-          tileMode: TileMode.repeated, // repeats the gradient over the canvas
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            child: AvatarWidget(
-              imagePath:
-                  'https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg',
-              isMale: false,
-              width: 250,
-            ),
-            margin: EdgeInsets.symmetric(
-              horizontal: 50.w,
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, s) {
+        return Container(
+          width: double.infinity,
+          height: 550.h,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment
+                  .bottomCenter, // 10% of the width, so there are ten blinds.
+              colors: <Color>[
+                AppColors.greenFF61C53D.withOpacity(0.5),
+                AppColors.greenFF39AC8F.withOpacity(0.5),
+              ], // red to yellow
+              tileMode:
+                  TileMode.repeated, // repeats the gradient over the canvas
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
               Container(
-                child: CustomText(
-                  text: 'Vũ Xuân Thiên',
-                  color: Colors.white70,
-                  fontSize: 55.sp,
-                  fontWeight: FontWeight.w500,
+                child: AvatarWidget(
+                  imagePath: s.image ?? Symbols.empty,
+                  isMale: s.gender == Gender.male,
+                  width: 250,
                 ),
                 margin: EdgeInsets.symmetric(
-                  vertical: 20.h,
+                  horizontal: 50.w,
                 ),
               ),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                  ),
-                  CustomText(
-                    text: '56',
-                    fontSize: 50.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white70,
-                  ),
                   Container(
-                    child: Icon(
-                      Icons.fiber_manual_record,
+                    child: CustomText(
+                      text: s.name,
                       color: Colors.white70,
-                      size: 20.sp,
+                      fontSize: 55.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                     margin: EdgeInsets.symmetric(
-                      horizontal: 25.w,
+                      vertical: 20.h,
                     ),
                   ),
-                  const CustomText(
-                    text: '+84767234215',
-                    color: Colors.white70,
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.control_point_duplicate_outlined,
+                        color: Colors.yellow,
+                        size: 47.sp,
+                      ),
+                      SizedBox(
+                        width: 15.w,
+                      ),
+                      CustomText(
+                        text: s.totalPoint.toString(),
+                        fontSize: 50.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white70,
+                      ),
+                      Container(
+                        child: Icon(
+                          Icons.fiber_manual_record,
+                          color: Colors.white70,
+                          size: 20.sp,
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 25.w,
+                        ),
+                      ),
+                      CustomText(
+                        text: s.phone,
+                        color: Colors.white70,
+                      ),
+                    ],
+                  )
                 ],
-              )
+              ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

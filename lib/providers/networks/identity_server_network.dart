@@ -8,6 +8,7 @@ import 'package:seller_app/providers/networks/models/request/connect_revocation_
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
+import 'package:seller_app/providers/networks/models/response/profile_info_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/refresh_token_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/env_util.dart';
@@ -32,6 +33,8 @@ abstract class IdentityServerNetwork {
     String deviceId,
     Client client,
   );
+
+  Future<ProfileInfoResponseModel> getAccountInfo(Client client);
 }
 
 class IdentityServerNetworkImpl implements IdentityServerNetwork {
@@ -165,5 +168,22 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
     );
 
     return responseModel.isSuccess!;
+  }
+
+  @override
+  Future<ProfileInfoResponseModel> getAccountInfo(Client client) async {
+    var responseModel = ProfileInfoResponseModel();
+
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.accountSellerInfo,
+      client: client,
+    );
+    // get model
+    responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<ProfileInfoResponseModel>(
+      response,
+      profileInfoResponseModelFromJson,
+    );
+    return responseModel;
   }
 }
