@@ -275,8 +275,9 @@ class ExistedPhotoDialog extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        ViewImageLayout(state.imageFile),
+                    builder: (BuildContext context) => ViewImageLayout(
+                      file: state.imageFile,
+                    ),
                   ),
                 );
               },

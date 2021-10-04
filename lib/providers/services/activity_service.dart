@@ -1,5 +1,7 @@
 import 'package:http/http.dart';
 import 'package:seller_app/blocs/activity_list_bloc.dart';
+import 'package:seller_app/blocs/request_detail_bloc.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/activity_network.dart';
 
@@ -9,6 +11,8 @@ abstract class ActivityService {
     int size,
     int page,
   );
+
+  Future<RequestDetailState?> getRequetsDetail(String id);
 }
 
 class ActivityServiceImpl implements ActivityService {
@@ -57,5 +61,44 @@ class ActivityServiceImpl implements ActivityService {
     }
 
     return result;
+  }
+
+  @override
+  Future<RequestDetailState?> getRequetsDetail(String id) async {
+    Client client = Client();
+    var responseModel = await _activityNetwork
+        .activityDetail(
+          id,
+          client,
+        )
+        .whenComplete(
+          () => client.close(),
+        );
+    var d = responseModel.resData;
+    if (d != null) {
+      var result = RequestDetailState(
+        id: d.id,
+        createdDate: d.createdDate,
+        createdTime: d.createdTime,
+        collectingRequestCode: d.collectingRequestCode,
+        status: d.status,
+        addressName: d.addressName,
+        address: d.address,
+        collectingRequestDate: d.collectingRequestDate,
+        fromTime: d.fromTime,
+        toTime: d.toTime,
+        isBulky: d.isBulky,
+        approvedDate: d.approvedDate,
+        approvedTime: d.approvedTime,
+        // collectorInfo: d.collectorInfo,
+        doneActivityDate: d.doneActivityDate,
+        doneActivityTime: d.doneActivityTime,
+        note: d.note ?? Symbols.empty,
+        scrapCategoryImageUrl: d.scrapCategoryImageUrl,
+        transaction: d.transaction,
+      );
+      return result;
+    }
+    return null;
   }
 }
