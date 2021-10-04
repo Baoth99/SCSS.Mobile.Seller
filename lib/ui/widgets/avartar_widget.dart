@@ -1,15 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/utils/common_utils.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
-    required this.imagePath,
+    this.image,
     required this.isMale,
     this.width = 450,
     Key? key,
   }) : super(key: key);
-  final String imagePath;
+  final ImageProvider<Object>? image;
   final bool isMale;
   final double width;
   @override
@@ -17,13 +22,9 @@ class AvatarWidget extends StatelessWidget {
     return Container(
       width: width.w,
       child: CircleAvatar(
-        onForegroundImageError: (exception, stackTrace) {},
         radius: (width / 2).r,
-        foregroundImage: imagePath.isNotEmpty
-            ? NetworkImage(
-                imagePath,
-              )
-            : getFalloutImage() as ImageProvider,
+        onForegroundImageError: (exception, stackTrace) => print(exception),
+        foregroundImage: (image != null) ? image : getFalloutImage(),
         backgroundImage: getFalloutImage(),
       ),
       decoration: BoxDecoration(

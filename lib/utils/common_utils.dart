@@ -9,8 +9,18 @@ import 'package:seller_app/exceptions/custom_exceptions.dart';
 import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
 import 'package:seller_app/utils/env_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class CommonUtils {
+  static DateTime? convertDDMMYYYToDateTime(String date) {
+    DateTime? result;
+    try {
+      DateFormat format = DateFormat("dd-MM-yyyy");
+      result = format.parse(date);
+    } catch (e) {}
+    return result;
+  }
+
   static List<int> convertImageToBasae64(File file) {
     return file.readAsBytesSync().toList();
   }
