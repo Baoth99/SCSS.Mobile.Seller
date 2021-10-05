@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/send_request_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/operating_time_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/remaining_days_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/requets_ability_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/send_request_response_model.dart';
@@ -26,6 +27,8 @@ abstract class CollectingRequestNetwork {
   );
 
   Future<RequestAbilityResponseModel> requestAbility(Client client);
+
+  Future<OperatingTimeResponseModel> getOperatingTime(Client client);
 }
 
 class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
@@ -115,6 +118,21 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
             RequestAbilityResponseModel>(
       response,
       requestAbilityResponseModelFromJson,
+    );
+    return responseModel;
+  }
+
+  @override
+  Future<OperatingTimeResponseModel> getOperatingTime(Client client) async {
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.operatingTime,
+      client: client,
+    );
+    // get model
+    var responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<OperatingTimeResponseModel>(
+      response,
+      operatingTimeResponseModelFromJson,
     );
     return responseModel;
   }

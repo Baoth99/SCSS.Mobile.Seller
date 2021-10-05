@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
@@ -406,7 +407,7 @@ class _TimeInputDialog extends StatelessWidget {
             ),
             BlocBuilder<RequestTimeBloc, RequestTimeState>(
               builder: (context, state) {
-                return _getErrorTimeInput(state.status);
+                return _getErrorTimeInput(context, state.status, state);
               },
             )
           ],
@@ -415,7 +416,8 @@ class _TimeInputDialog extends StatelessWidget {
     );
   }
 
-  Widget _getErrorTimeInput(RequestTimeStatus status) {
+  Widget _getErrorTimeInput(
+      BuildContext context, RequestTimeStatus status, RequestTimeState s) {
     String text = '';
 
     switch (status) {
@@ -429,6 +431,10 @@ class _TimeInputDialog extends StatelessWidget {
         break;
       case RequestTimeStatus.rangeTimeBetweenTwonotenough:
         text = 'Khoảng thời gian phải tối thiểu 15 phút';
+        break;
+      case RequestTimeStatus.notinrangetime:
+        text =
+            'Thời gian hẹn phải nằm trong khoảng ${s.operatingFromTime!.format(context)} - ${s.operatingTotime!.format(context)}';
         break;
       default:
     }

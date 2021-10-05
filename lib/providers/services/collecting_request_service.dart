@@ -25,6 +25,8 @@ abstract class CollectingRequestService {
   );
 
   Future<bool> getRequestAbility();
+
+  Future<List<TimeOfDay>> getOperatingTime();
 }
 
 class CollectingRequestServiceImpl implements CollectingRequestService {
@@ -125,5 +127,23 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
     }
 
     throw Exception();
+  }
+
+  @override
+  Future<List<TimeOfDay>> getOperatingTime() async {
+    Client client = Client();
+    var responseModel = await _collectingRequestNetwork
+        .getOperatingTime(client)
+        .whenComplete(() => client.close());
+
+    var data = responseModel.resData;
+    if (data != null) {
+      var fromTime =
+          CommonUtils.convertStringToTimeOfDay(data.operatingFromTime);
+      var toTime = CommonUtils.convertStringToTimeOfDay(data.operatingToTime);
+
+      return [fromTime, toTime];
+    }
+    throw Exception('Do not have operating time');
   }
 }

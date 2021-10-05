@@ -44,6 +44,17 @@ class CommonUtils {
     return file.readAsBytesSync().toList();
   }
 
+  static TimeOfDay convertStringToTimeOfDay(String s) {
+    var listStr = s.split(":");
+
+    TimeOfDay startTime = TimeOfDay(
+      hour: int.parse(listStr[0]),
+      minute: int.parse(listStr[1]),
+    );
+
+    return startTime;
+  }
+
   static String convertTimeToString(TimeOfDay timeOfDay) {
     return '${timeOfDay.hour}:${timeOfDay.minute}';
   }
