@@ -1,16 +1,32 @@
 part of '../main_bloc.dart';
 
 class MainState extends Equatable {
-  const MainState({this.screenIndex = 0});
+  MainState({
+    this.screenIndex = 0,
+    this.isRequestFull,
+    this.statusCreateRequest = FormzStatus.pure,
+  });
 
   final int screenIndex;
+  bool? isRequestFull;
+  final FormzStatus statusCreateRequest;
 
-  MainState copyWith({int? screenIndex}) {
+  MainState copyWith({
+    int? screenIndex,
+    bool? isRequestFull,
+    FormzStatus? statusCreateRequest,
+  }) {
     return MainState(
       screenIndex: screenIndex ?? this.screenIndex,
+      isRequestFull: isRequestFull ?? this.isRequestFull,
+      statusCreateRequest: statusCreateRequest ?? this.statusCreateRequest,
     );
   }
 
   @override
-  List<int> get props => [screenIndex];
+  List<Object?> get props => [
+        screenIndex,
+        isRequestFull,
+        statusCreateRequest,
+      ];
 }

@@ -137,14 +137,13 @@ class _ActivityListDataState extends State<ActivityListData> {
             _refreshController.loadComplete();
           }
         },
-        child: state.listActivity.isNotEmpty
-            ? _buildCommonPullToResfresh(context, state)
-            : _emptyList(widget.tabStatus),
+        child: _buildCommonPullToResfresh(
+            context, state, state.listActivity.isNotEmpty),
       ),
     );
   }
 
-  Widget _emptyList(int tabStatus) {
+  Widget _emptyList() {
     return Column(
       children: [
         SizedBox(
@@ -172,7 +171,7 @@ class _ActivityListDataState extends State<ActivityListData> {
   }
 
   Widget _buildCommonPullToResfresh(
-      BuildContext context, ActivityListState state) {
+      BuildContext context, ActivityListState state, bool isNotEmpty) {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -204,15 +203,17 @@ class _ActivityListDataState extends State<ActivityListData> {
       controller: _refreshController,
       onRefresh: _onRefresh(context),
       onLoading: _onLoading(context),
-      child: ListView.separated(
-        itemBuilder: (context, index) => _buildActivity(
-          state,
-          index,
-          widget.tabStatus,
-        ),
-        separatorBuilder: (context, index) => const SizedBox.shrink(),
-        itemCount: state.listActivity.length,
-      ),
+      child: isNotEmpty
+          ? ListView.separated(
+              itemBuilder: (context, index) => _buildActivity(
+                state,
+                index,
+                widget.tabStatus,
+              ),
+              separatorBuilder: (context, index) => const SizedBox.shrink(),
+              itemCount: state.listActivity.length,
+            )
+          : _emptyList(),
     );
   }
 

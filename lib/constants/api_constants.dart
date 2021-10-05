@@ -64,4 +64,6 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}seller/account/upload-image';
   static final accountUpdate =
       '${EnvBaseAppSettingValue.baseApiUrl}seller/account/update';
+  static final requestAbility =
+      '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/request-ability';
 }

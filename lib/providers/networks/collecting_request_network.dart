@@ -5,6 +5,7 @@ import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/send_request_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/remaining_days_response_model.dart';
+import 'package:seller_app/providers/networks/models/response/requets_ability_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/send_request_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/upload_image_request_collecting_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -23,6 +24,8 @@ abstract class CollectingRequestNetwork {
     SendRequestRequestModel requestModel,
     Client client,
   );
+
+  Future<RequestAbilityResponseModel> requestAbility(Client client);
 }
 
 class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
@@ -92,6 +95,27 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
       uploadImageRequestCollectingResponseModelFromJson,
     );
 
+    return responseModel;
+  }
+
+  @override
+  Future<RequestAbilityResponseModel> requestAbility(Client client) async {
+    RequestAbilityResponseModel responseModel = RequestAbilityResponseModel(
+      isSuccess: false,
+      statusCode: 500,
+    );
+
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.requestAbility,
+      client: client,
+    );
+    // get model
+    responseModel =
+        await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+            RequestAbilityResponseModel>(
+      response,
+      requestAbilityResponseModelFromJson,
+    );
     return responseModel;
   }
 }

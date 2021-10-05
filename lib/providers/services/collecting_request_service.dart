@@ -23,6 +23,8 @@ abstract class CollectingRequestService {
     YesNo isBulky,
     File imageFile,
   );
+
+  Future<bool> getRequestAbility();
 }
 
 class CollectingRequestServiceImpl implements CollectingRequestService {
@@ -108,5 +110,20 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
       return true;
     }
     return false;
+  }
+
+  @override
+  Future<bool> getRequestAbility() async {
+    Client client = Client();
+    var responseModel =
+        await _collectingRequestNetwork.requestAbility(client).whenComplete(
+              () => client.close(),
+            );
+    var data = responseModel.resData;
+    if (data != null) {
+      return data.isFull;
+    }
+
+    throw Exception();
   }
 }

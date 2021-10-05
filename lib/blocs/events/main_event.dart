@@ -14,3 +14,5 @@ class MainBarItemTapped extends MainEvent {
   @override
   List<int> get props => [index];
 }
+
+class MainCheckFullRequest extends MainEvent {}
