@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/update_info_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
 import 'package:seller_app/providers/services/models/get_token_service_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -25,6 +28,16 @@ abstract class IdentityServerService {
 
   Future<int?> updatePassword(
       String id, String oldPassword, String newPassword);
+
+  Future<String> updateImage(File image);
+  Future<int?> updateInfo(
+    String name,
+    String? email,
+    Gender gender,
+    DateTime? birthdate,
+    String? address,
+    String? imageUrl,
+  );
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -222,6 +235,61 @@ class IdentityServerServiceImpl implements IdentityServerService {
           client,
         )
         .whenComplete(() => client.close());
+
+    return result;
+  }
+
+  @override
+  Future<String> updateImage(File image) async {
+    Client client = Client();
+    String imageUrl = Symbols.empty;
+    if (image.path.isNotEmpty) {
+      var imageBase64 = CommonUtils.convertImageToBasae64(image);
+
+      // call API upload Image
+      var imageResponseModel = await _identityServerNetwork.uploadImage(
+        imageBase64,
+        client,
+      );
+      if (imageResponseModel.statusCode == NetworkConstants.ok200 &&
+          imageResponseModel.isSuccess!) {
+        imageUrl = imageResponseModel.resData ?? Symbols.empty;
+      } else {
+        throw Exception();
+      }
+    }
+    return imageUrl;
+  }
+
+  @override
+  Future<int?> updateInfo(
+    String name,
+    String? email,
+    Gender gender,
+    DateTime? birthdate,
+    String? address,
+    String? imageUrl,
+  ) async {
+    Client client = Client();
+
+    email = CommonUtils.assignNullEmpty(email);
+    address = CommonUtils.assignNullEmpty(address);
+    imageUrl = CommonUtils.assignNullEmpty(imageUrl);
+
+    var result = await _identityServerNetwork
+        .updateInfo(
+            UpdateInfoRequestModel(
+              name: name,
+              email: email,
+              gender: gender == Gender.male ? 1 : 2,
+              birthDate: birthdate,
+              address: address,
+              imageUrl: imageUrl,
+            ),
+            client)
+        .whenComplete(
+          () => client.close(),
+        );
 
     return result;
   }

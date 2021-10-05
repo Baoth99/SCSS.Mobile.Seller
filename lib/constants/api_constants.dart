@@ -59,4 +59,9 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}seller/account/device-id';
   static final accountSellerInfo =
       '${EnvBaseAppSettingValue.baseApiUrl}seller/account/seller-info';
+
+  static final accountUploadImage =
+      '${EnvBaseAppSettingValue.baseApiUrl}seller/account/upload-image';
+  static final accountUpdate =
+      '${EnvBaseAppSettingValue.baseApiUrl}seller/account/update';
 }

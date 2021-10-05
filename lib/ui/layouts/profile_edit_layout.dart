@@ -1,17 +1,51 @@
+import 'dart:io';
+
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
+import 'package:seller_app/blocs/profile_edit_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
+import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/utils/common_utils.dart';
+import 'package:formz/formz.dart';
+
+class ProfileEditArgs {
+  String name;
+  String? imagePath;
+  String phoneNumber;
+  String address;
+  String email;
+  Gender gender;
+  DateTime? birthdate;
+
+  ProfileEditArgs({
+    required this.name,
+    required this.imagePath,
+    required this.phoneNumber,
+    required this.address,
+    required this.email,
+    required this.gender,
+    this.birthdate,
+  });
+}
 
 class ProfileEditLayout extends StatelessWidget {
-  const ProfileEditLayout({Key? key}) : super(key: key);
+  const ProfileEditLayout({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as ProfileEditArgs;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: FunctionalWidgets.buildAppBar(
@@ -23,7 +57,51 @@ class ProfileEditLayout extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
-      body: const ProfileEditBody(),
+      body: BlocProvider(
+        create: (context) => ProfileEditBloc(
+          name: args.name,
+          address: (args.address.compareTo(Others.NA) == 0)
+              ? Symbols.empty
+              : args.address,
+          email: (args.email.compareTo(Others.NA) == 0)
+              ? Symbols.empty
+              : args.email,
+          gender: args.gender,
+          imagePath: args.imagePath,
+          dateTime: args.birthdate,
+          phoneNumber: args.phoneNumber,
+        ),
+        child: BlocListener<ProfileEditBloc, ProfileEditState>(
+          listener: (context, state) {
+            if (state.status.isSubmissionSuccess) {
+              FunctionalWidgets.showCoolAlert(
+                context: context,
+                confirmBtnTapRoute: Routes.profileEdit,
+                type: CoolAlertType.success,
+                confirmBtnText: 'Đóng',
+                title: 'Cập nhật thành công',
+              );
+            }
+            if (state.status.isSubmissionFailure) {
+              FunctionalWidgets.showCoolAlert(
+                context: context,
+                confirmBtnTapRoute: Routes.profileEdit,
+                type: CoolAlertType.success,
+                confirmBtnText: 'Đóng',
+                title: 'Có lỗi từ hệ thống',
+              );
+            }
+            if (state.status.isSubmissionInProgress) {
+              CommonUtils.unfocus(context);
+              showDialog(
+                context: context,
+                builder: (context) => const CustomProgressIndicatorDialog(),
+              );
+            }
+          },
+          child: const ProfileEditBody(),
+        ),
+      ),
     );
   }
 }
@@ -48,81 +126,120 @@ class ProfileEditBody extends StatelessWidget {
   }
 
   Widget inputs(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        getSizeboxcolumn(),
-        input(
-          labelText: 'Tên',
-          hintText: 'Ít nhất 1 ký tự',
-          textInputAction: TextInputAction.next,
-        ),
-        getSizeboxcolumn(),
-        input(
-          textInputAction: TextInputAction.next,
-          labelText: 'Số điện thoại',
-          enabled: false,
-        ),
-        getSizeboxcolumn(),
-        input(
-          textInputAction: TextInputAction.next,
-          labelText: 'Địa chỉ',
-          hintText: 'vd: 123 Nguyen van troi',
-        ),
-        getSizeboxcolumn(),
-        input(
-          textInputAction: TextInputAction.next,
-          labelText: 'Email',
-          hintText: 'vd: abc@gmail.com',
-        ),
-        getSizeboxcolumn(),
-        const InputContainer(
-          lable: 'Giới tính',
-          children: [
-            _RadioButtonGender(
-              label: 'Nam',
-              gender: Gender.male,
-              value: Gender.male,
+    return BlocBuilder<ProfileEditBloc, ProfileEditState>(
+      builder: (context, s) {
+        return Column(
+          children: <Widget>[
+            getSizeboxcolumn(),
+            input(
+              labelText: 'Tên',
+              hintText: 'Ít nhất 1 ký tự',
+              textInputAction: TextInputAction.next,
+              initialValue: s.name.value,
+              onChanged: (name) {
+                context.read<ProfileEditBloc>().add(
+                      ProfileEditNameChanged(name),
+                    );
+              },
+              errorText:
+                  s.name.invalid ? 'Xin hãy nhập tối thiểu 1 ký tự' : null,
             ),
-            _RadioButtonGender(
-              label: 'Nữ',
-              gender: Gender.female,
-              value: Gender.male,
+            getSizeboxcolumn(),
+            input(
+              textInputAction: TextInputAction.next,
+              labelText: 'Số điện thoại',
+              enabled: false,
+              initialValue: s.phoneNumber,
             ),
-          ],
-        ),
-        getSizeboxcolumn(),
-        InkWell(
-          onTap: onTapBirthday(context),
-          child: InputContainer(
-            lable: 'Sinh nhật',
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 35.w,
+            getSizeboxcolumn(),
+            input(
+              textInputAction: TextInputAction.next,
+              labelText: 'Địa chỉ',
+              hintText: 'vd: 123 Nguyen van troi',
+              initialValue: s.address.value,
+              onChanged: (address) {
+                context.read<ProfileEditBloc>().add(
+                      ProfileEditAddressChanged(address),
+                    );
+              },
+              errorText:
+                  s.address.invalid ? 'Xin hãy nhập tối thiểu 1 ký tự' : null,
+            ),
+            getSizeboxcolumn(),
+            input(
+              textInputAction: TextInputAction.next,
+              labelText: 'Email',
+              hintText: 'vd: abc@gmail.com',
+              initialValue: s.email.value,
+              onChanged: (email) {
+                context.read<ProfileEditBloc>().add(
+                      ProfileEditEmailChanged(email),
+                    );
+              },
+              errorText: s.email.invalid
+                  ? 'Xin hãy nhập theo dạng abc@gmail.com'
+                  : null,
+            ),
+            getSizeboxcolumn(),
+            InputContainer(
+              lable: 'Giới tính',
+              children: [
+                _RadioButtonGender(
+                  label: 'Nam',
+                  gender: Gender.male,
+                  value: s.gender,
                 ),
-                height: 150.h,
-                alignment: Alignment.centerLeft,
-                child: CustomText(
-                  text: '2021/12/12',
-                  fontSize: 50.sp,
+                _RadioButtonGender(
+                  label: 'Nữ',
+                  gender: Gender.female,
+                  value: s.gender,
                 ),
+              ],
+            ),
+            getSizeboxcolumn(),
+            InkWell(
+              onTap: onTapBirthday(context, s.birthDate.value),
+              child: InputContainer(
+                lable: 'Sinh nhật',
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 35.w,
+                    ),
+                    height: 150.h,
+                    alignment: Alignment.centerLeft,
+                    child: CustomText(
+                      text: s.birthDate.value != null
+                          ? CommonUtils.toStringDDMMYYY(s.birthDate.value!)
+                          : '__-__-____',
+                      fontSize: 50.sp,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        getSizeboxcolumn(),
-        submmitedButton(),
-      ],
+            ),
+            getSizeboxcolumn(),
+            submmitedButton(),
+          ],
+        );
+      },
     );
   }
 
-  void Function() onTapBirthday(BuildContext context) {
+  void Function() onTapBirthday(BuildContext context, DateTime? birthdate) {
     return () {
       showDatePicker(
-          context: context,
-          initialDate: DateTime(2019),
-          firstDate: DateTime(1910),
-          lastDate: DateTime.now());
+        context: context,
+        initialDate: birthdate ?? DateTime.now(),
+        firstDate: DateTime(1910),
+        lastDate: DateTime.now(),
+      ).then((value) {
+        if (value != null) {
+          context
+              .read<ProfileEditBloc>()
+              .add(ProfileEditBirthDateChanged(value));
+        }
+      });
     };
   }
 
@@ -133,21 +250,81 @@ class ProfileEditBody extends StatelessWidget {
   }
 
   Widget submmitedButton() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: AppColors.greenFF61C53D,
-        minimumSize: Size(
-          double.infinity,
-          WidgetConstants.buttonCommonHeight.h,
-        ),
-      ),
-      onPressed: () {},
-      child: CustomText(
-        text: 'Lưu',
-        fontSize: WidgetConstants.buttonCommonFrontSize.sp,
-        fontWeight: WidgetConstants.buttonCommonFrontWeight,
-      ),
+    return BlocBuilder<ProfileEditBloc, ProfileEditState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: AppColors.greenFF61C53D,
+            minimumSize: Size(
+              double.infinity,
+              WidgetConstants.buttonCommonHeight.h,
+            ),
+          ),
+          onPressed: state.status.isValid
+              ? () {
+                  context.read<ProfileEditBloc>().add(ProfileEditSubmmited());
+                }
+              : null,
+          child: CustomText(
+            text: 'Lưu',
+            fontSize: WidgetConstants.buttonCommonFrontSize.sp,
+            fontWeight: WidgetConstants.buttonCommonFrontWeight,
+          ),
+        );
+      },
     );
+  }
+
+  Future<List> getMetaDataImage(String imagePath) async {
+    var bearerToken = NetworkUtils.getBearerToken();
+    var url = NetworkUtils.getUrlWithQueryString(
+      APIServiceURI.imageGet,
+      {'imageUrl': imagePath},
+    );
+    return [
+      url,
+      await bearerToken,
+    ];
+  }
+
+  Widget _getAvatar(
+    Gender gender, {
+    File? file,
+    String? url,
+  }) {
+    if (url != null) {
+      return FutureBuilder(
+        future: url.isNotEmpty
+            ? getMetaDataImage(url)
+            : Future.value(Symbols.empty),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data;
+            if (data is List) {
+              var image = NetworkImage(data[0], headers: {
+                HttpHeaders.authorizationHeader: data[1],
+              });
+              return AvatarWidget(
+                image: image,
+                isMale: gender == Gender.male,
+                width: 250,
+              );
+            }
+          }
+          return AvatarWidget(
+            isMale: gender == Gender.male,
+            width: 250,
+          );
+        },
+      );
+    } else if (file != null) {
+      return AvatarWidget(
+        image: FileImage(file),
+        isMale: gender == Gender.male,
+        width: 250,
+      );
+    }
+    throw Exception();
   }
 
   Widget avatar() {
@@ -166,8 +343,13 @@ class ProfileEditBody extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          const AvatarWidget(
-            isMale: true,
+          BlocBuilder<ProfileEditBloc, ProfileEditState>(
+            builder: (context, state) {
+              return _getAvatar(
+                state.gender,
+                url: state.imagePath ?? Symbols.empty,
+              );
+            },
           ),
           Container(
             decoration: BoxDecoration(
@@ -182,12 +364,27 @@ class ProfileEditBody extends StatelessWidget {
                 ),
               ],
             ),
-            child: IconButton(
-              icon: const Icon(
-                Icons.photo_camera,
-                color: Colors.black,
-              ),
-              onPressed: () {},
+            child: BlocBuilder<ProfileEditBloc, ProfileEditState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(
+                    Icons.photo_camera,
+                    color: Colors.black,
+                  ),
+                  onPressed: () async {
+                    final XFile? image = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
+
+                    if (image != null) {
+                      var path = image.path;
+                      var file = File(path);
+                      context
+                          .read<ProfileEditBloc>()
+                          .add(ProfileEditImageUpdated(file));
+                    }
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -307,7 +504,11 @@ class _RadioButtonGender extends StatelessWidget {
           activeColor: AppColors.greenFF61C53D,
           groupValue: value,
           value: gender,
-          onChanged: (value) {},
+          onChanged: (value) {
+            context.read<ProfileEditBloc>().add(
+                  ProfileEditGenderChanged(value!),
+                );
+          },
         ),
       ),
     );

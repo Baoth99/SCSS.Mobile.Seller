@@ -12,10 +12,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class CommonUtils {
+  static String? assignNullEmpty(String? value) {
+    if (value != null && value.trim().isEmpty) {
+      return null;
+    }
+    return value;
+  }
+
+  static void unfocus(context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
+  static String toStringDDMMYYY(DateTime date) {
+    return DateFormat(Others.ddMMyyyyPattern).format(date);
+  }
+
   static DateTime? convertDDMMYYYToDateTime(String date) {
     DateTime? result;
     try {
-      DateFormat format = DateFormat("dd-MM-yyyy");
+      DateFormat format = DateFormat(Others.ddMMyyyyPattern);
       result = format.parse(date);
     } catch (e) {}
     return result;
