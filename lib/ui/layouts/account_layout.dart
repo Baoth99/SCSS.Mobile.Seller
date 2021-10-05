@@ -211,15 +211,32 @@ class AccountBody extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          option(
-            'Chỉnh sửa hồ sơ',
-            () {
-              Navigator.of(context).pushNamed(
-                Routes.profileEdit,
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, s) {
+              return option(
+                'Chỉnh sửa hồ sơ',
+                () {
+                  Navigator.of(context)
+                      .pushNamed(
+                    Routes.profileEdit,
+                    arguments: ProfileEditArgs(
+                      name: s.name,
+                      imagePath: s.image,
+                      phoneNumber: s.phone,
+                      address: s.address ?? Symbols.empty,
+                      email: s.email ?? Symbols.empty,
+                      gender: s.gender,
+                      birthdate: s.birthDate,
+                    ),
+                  )
+                      .then((value) {
+                    context.read<ProfileBloc>().add(ProfileInitial());
+                  });
+                },
+                Colors.black,
+                Icons.arrow_forward_ios,
               );
             },
-            Colors.black,
-            Icons.arrow_forward_ios,
           ),
           BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {

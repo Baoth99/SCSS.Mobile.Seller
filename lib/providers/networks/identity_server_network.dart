@@ -6,12 +6,15 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/account_device_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/update_info_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/profile_info_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/refresh_token_response_model.dart';
+import 'package:seller_app/providers/networks/models/response/upload_image_account_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/env_util.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class IdentityServerNetwork {
   Future<ConnectTokenResponseModel?> connectToken(
@@ -42,6 +45,13 @@ abstract class IdentityServerNetwork {
   );
 
   Future<ProfileInfoResponseModel> getAccountInfo(Client client);
+
+  Future<UploadImageAccountResponseModel> uploadImage(
+    List<int> listIntImage,
+    Client client,
+  );
+
+  Future<int?> updateInfo(UpdateInfoRequestModel requestModel, Client client);
 }
 
 class IdentityServerNetworkImpl implements IdentityServerNetwork {
@@ -227,6 +237,59 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
     } else if (response.statusCode == NetworkConstants.badRequest400) {
       return NetworkConstants.badRequest400;
     }
+    return null;
+  }
+
+  @override
+  Future<UploadImageAccountResponseModel> uploadImage(
+      List<int> listIntImage, Client client) async {
+    var response = await NetworkUtils.postMultipart(
+      APIServiceURI.accountUploadImage,
+      {},
+      MultipartFile.fromBytes(
+        'Image',
+        listIntImage,
+        filename: '${Uuid().v1()}.jpg',
+      ),
+      client,
+    );
+
+    var responseModel =
+        await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+            UploadImageAccountResponseModel>(
+      response,
+      uploadImageAccountResponseModelFromJson,
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<int?> updateInfo(
+      UpdateInfoRequestModel requestModel, Client client) async {
+    var response = await NetworkUtils.putBodyWithBearerAuth(
+      uri: APIServiceURI.accountUpdate,
+      headers: {
+        HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
+      },
+      body: updateInfoRequestModelToJson(requestModel),
+      client: client,
+    );
+
+    // get model
+    var responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
+    );
+
+    if (responseModel.statusCode == NetworkConstants.ok200 &&
+        responseModel.isSuccess!) {
+      return NetworkConstants.ok200;
+    } else if (responseModel.statusCode == NetworkConstants.badRequest400) {
+      return NetworkConstants.badRequest400;
+    }
+
     return null;
   }
 }

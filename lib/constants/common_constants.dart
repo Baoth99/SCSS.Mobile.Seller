@@ -49,6 +49,10 @@ class Others {
   static const int otpLength = 6;
 
   static final emptyFile = File(Symbols.empty);
+
+  static final String ddMMyyyyPattern = 'dd-MM-yyyy';
+
+  static final String NA = 'N/A';
 }
 
 class VietnameseDate {

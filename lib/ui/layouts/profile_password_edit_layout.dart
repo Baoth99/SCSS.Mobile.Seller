@@ -168,7 +168,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
                       .add(EditPassRepeatPasswordShowOrHide());
                 },
                 icon: Icon(
-                  state.password.value.isHide
+                  state.repeatPassword.value.isHide
                       ? AppIcons.visibilityOff
                       : AppIcons.visibility,
                   size: 58.sp,
