@@ -8,6 +8,7 @@ import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/ui/layouts/layouts.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -173,7 +174,7 @@ class AccountBody extends StatelessWidget {
       future:
           url.isNotEmpty ? getMetaDataImage(url) : Future.value(Symbols.empty),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.hasData && snapshot.data is! String) {
           var data = snapshot.data;
           if (data is List) {
             var image = NetworkImage(data[0], headers: {
@@ -220,15 +221,18 @@ class AccountBody extends StatelessWidget {
             Colors.black,
             Icons.arrow_forward_ios,
           ),
-          option(
-            'Đổi mật khẩu',
-            () {
-              Navigator.of(context).pushNamed(
-                Routes.profilePasswordEdit,
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              return option(
+                'Đổi mật khẩu',
+                () {
+                  Navigator.of(context).pushNamed(Routes.profilePasswordEdit,
+                      arguments: ProfilePasswordEditArgs(state.id));
+                },
+                Colors.black,
+                Icons.arrow_forward_ios,
               );
             },
-            Colors.black,
-            Icons.arrow_forward_ios,
           ),
           option(
             'Đăng xuất',

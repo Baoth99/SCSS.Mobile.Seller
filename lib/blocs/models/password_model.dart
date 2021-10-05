@@ -37,7 +37,7 @@ class Password extends FormzInput<CommonPassword, PasswordError> {
         );
 
   bool _validate(CommonPassword value) {
-    return value.value.isNotEmpty;
+    return value.value.length >= 6;
   }
 
   @override
