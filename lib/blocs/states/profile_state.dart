@@ -2,6 +2,7 @@ part of '../profile_bloc.dart';
 
 class ProfileState extends Equatable {
   const ProfileState({
+    this.id = Symbols.empty,
     this.name = Symbols.empty,
     this.phone = Symbols.empty,
     this.email,
@@ -13,6 +14,7 @@ class ProfileState extends Equatable {
     this.status = FormzStatus.pure,
   });
 
+  final String id;
   final String name;
   final String phone;
   final String? email;
@@ -35,6 +37,7 @@ class ProfileState extends Equatable {
     FormzStatus? status,
   }) {
     return ProfileState(
+      id: id,
       name: name ?? this.name,
       phone: phone ?? this.phone,
       email: email ?? this.email,
@@ -49,6 +52,7 @@ class ProfileState extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         name,
         phone,
         email,

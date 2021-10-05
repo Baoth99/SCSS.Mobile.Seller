@@ -22,6 +22,9 @@ abstract class IdentityServerService {
 
   Future<bool> updateDeviceId(String deviceId);
   Future<ProfileState?> getProfile();
+
+  Future<int?> updatePassword(
+      String id, String oldPassword, String newPassword);
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -189,6 +192,7 @@ class IdentityServerServiceImpl implements IdentityServerService {
     var m = responseModel.resData;
     if (m != null) {
       result = ProfileState(
+        id: m.id,
         name: m.name ?? Symbols.empty,
         address: m.address,
         birthDate: m.birthDate == null
@@ -201,6 +205,23 @@ class IdentityServerServiceImpl implements IdentityServerService {
         totalPoint: m.totalPoint ?? 0,
       );
     }
+
+    return result;
+  }
+
+  @override
+  Future<int?> updatePassword(
+      String id, String oldPassword, String newPassword) async {
+    Client client = Client();
+
+    var result = await _identityServerNetwork
+        .updatePassword(
+          id,
+          oldPassword,
+          newPassword,
+          client,
+        )
+        .whenComplete(() => client.close());
 
     return result;
   }

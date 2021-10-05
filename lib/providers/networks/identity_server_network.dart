@@ -34,6 +34,13 @@ abstract class IdentityServerNetwork {
     Client client,
   );
 
+  Future<int?> updatePassword(
+    String id,
+    String oldPassword,
+    String newPassword,
+    Client client,
+  );
+
   Future<ProfileInfoResponseModel> getAccountInfo(Client client);
 }
 
@@ -185,5 +192,41 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
       profileInfoResponseModelFromJson,
     );
     return responseModel;
+  }
+
+  @override
+  Future<int?> updatePassword(
+    String id,
+    String oldPassword,
+    String newPassword,
+    Client client,
+  ) async {
+    var body = <String, String>{
+      'Id': id,
+      'OldPassword': oldPassword,
+      'NewPassword': newPassword,
+    };
+    //send request
+    var response = await NetworkUtils.postBody(
+      uri: IdentityAPIConstants.urlChangePassword,
+      headers: {
+        IdentityAPIConstants.clientIdParamName: EnvID4AppSettingValue.clientId,
+      },
+      body: body,
+      client: client,
+    );
+
+    // convert
+    // ignore: prefer_typing_uninitialized_variables
+    BaseResponseModel responseModel;
+    if (response.statusCode == NetworkConstants.ok200) {
+      responseModel = BaseResponseModel.fromJson(
+        await NetworkUtils.getMapFromResponse(response),
+      );
+      return NetworkConstants.ok200;
+    } else if (response.statusCode == NetworkConstants.badRequest400) {
+      return NetworkConstants.badRequest400;
+    }
+    return null;
   }
 }
