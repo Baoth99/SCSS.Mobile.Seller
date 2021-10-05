@@ -115,7 +115,21 @@ class ProfileEditBloc extends Bloc<ProfileEditEvent, ProfileEditState> {
       var gender = event.gender;
       yield state.copyWith(
         gender: gender,
+        status: Formz.validate([
+          state.address,
+          state.name,
+          state.email,
+          state.birthDate,
+        ]),
       );
+      if (state.address.valid &&
+          state.birthDate.valid &&
+          state.name.valid &&
+          state.email.valid) {
+        yield state.copyWith(
+          status: FormzStatus.valid,
+        );
+      }
     } else if (event is ProfileEditBirthDateChanged) {
       var birthdate = Birthdate.dirty(event.dateTime);
 
