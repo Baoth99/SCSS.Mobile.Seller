@@ -118,14 +118,14 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
                 ),
               );
             }
-
+            var collectingDateTime = nearestTime.onlyDate();
             yield state.copyWith(
-              date: nearestTime,
+              date: collectingDateTime,
               fromTime: fromTime,
               toTime: toTime,
               chosableDates: chosableDates,
               status: validate(
-                nearestTime,
+                collectingDateTime,
                 fromTime,
                 toTime,
                 operatingFromTime: operatingtime[0],
