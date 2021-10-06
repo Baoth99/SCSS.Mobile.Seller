@@ -17,6 +17,7 @@ enum RequestTimeStatus {
   notenough15fromtime,
   rangeTimeBetweenTwonotenough,
   pure,
+  notinrangetime,
 }
 
 class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
@@ -40,19 +41,37 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
     if (event is RequestTimeDatePicked) {
       yield state.copyWith(
         date: event.date,
-        status: validate(event.date, state.fromTime, state.toTime),
+        status: validate(
+          event.date,
+          state.fromTime,
+          state.toTime,
+          operatingFromTime: state.operatingFromTime!,
+          operatingToTime: state.operatingTotime!,
+        ),
       );
     } else if (event is RequestTimeTimeFromPicked) {
       final fromTime = TimeOfDay.fromDateTime(event.time);
       yield state.copyWith(
         fromTime: fromTime,
-        status: validate(state.date, fromTime, state.toTime),
+        status: validate(
+          state.date,
+          fromTime,
+          state.toTime,
+          operatingFromTime: state.operatingFromTime!,
+          operatingToTime: state.operatingTotime!,
+        ),
       );
     } else if (event is RequestTimeTimeToPicked) {
       final toTime = TimeOfDay.fromDateTime(event.time);
       yield state.copyWith(
         toTime: toTime,
-        status: validate(state.date, state.fromTime, toTime),
+        status: validate(
+          state.date,
+          state.fromTime,
+          toTime,
+          operatingFromTime: state.operatingFromTime!,
+          operatingToTime: state.operatingTotime!,
+        ),
       );
     } else if (event is RequestTimeInitial) {
       try {
@@ -61,9 +80,13 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
           blocStatus: FormzStatus.submissionInProgress,
         );
 
-        final chosableDates =
-            await _collectingRequestService.getChosableDates();
+        var fchosableDates = _collectingRequestService.getChosableDates();
 
+        // get Operating times
+        var foperatingtime = _getOperatingTime();
+
+        var chosableDates = await fchosableDates;
+        var operatingtime = await foperatingtime;
         // check currentTime
         var nearestTime = CommonUtils.getNearDateTime(
             RequestMapPickerLayoutConstants.minuteInterval);
@@ -76,34 +99,59 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
                 minutes: RequestMapPickerLayoutConstants.minuteInterval),
           );
         }
-
+        var currentTimeOfday = TimeOfDay.fromDateTime(DateTime.now());
         if (chosableDates.isNotEmpty) {
+          TimeOfDay fromTime;
+          TimeOfDay toTime;
           if (chosableDates[0].isSameDate(nearestTime)) {
-            final fromTime = TimeOfDay.fromDateTime(nearestTime);
-            final toTime = TimeOfDay.fromDateTime(
-              nearestTime.add(
-                const Duration(
-                  minutes: RequestMapPickerLayoutConstants.minuteInterval,
+            if (currentTimeOfday.isLessThan(operatingtime[0])) {
+              fromTime = operatingtime[0];
+              toTime = CommonUtils.addTimeOfDay(operatingtime[0],
+                  RequestMapPickerLayoutConstants.minuteInterval);
+            } else {
+              fromTime = TimeOfDay.fromDateTime(nearestTime);
+              toTime = TimeOfDay.fromDateTime(
+                nearestTime.add(
+                  const Duration(
+                    minutes: RequestMapPickerLayoutConstants.minuteInterval,
+                  ),
                 ),
-              ),
-            );
-
+              );
+            }
+            var collectingDateTime = nearestTime.onlyDate();
             yield state.copyWith(
-              date: nearestTime,
+              date: collectingDateTime,
               fromTime: fromTime,
               toTime: toTime,
               chosableDates: chosableDates,
-              status: validate(nearestTime, fromTime, toTime),
+              status: validate(
+                collectingDateTime,
+                fromTime,
+                toTime,
+                operatingFromTime: operatingtime[0],
+                operatingToTime: operatingtime[1],
+              ),
+              operatingFromTime: operatingtime[0],
+              operatingTotime: operatingtime[1],
             );
           } else {
-            final fromTime = const TimeOfDay(hour: 0, minute: 0);
-            final toTime = const TimeOfDay(hour: 0, minute: 15);
+            fromTime = operatingtime[0];
+            toTime = CommonUtils.addTimeOfDay(operatingtime[0],
+                RequestMapPickerLayoutConstants.minuteInterval);
             yield state.copyWith(
               date: chosableDates[0],
               fromTime: fromTime,
               toTime: toTime,
               chosableDates: chosableDates,
-              status: validate(chosableDates[0], fromTime, toTime),
+              status: validate(
+                chosableDates[0],
+                fromTime,
+                toTime,
+                operatingFromTime: operatingtime[0],
+                operatingToTime: operatingtime[1],
+              ),
+              operatingFromTime: operatingtime[0],
+              operatingTotime: operatingtime[1],
             );
           }
         }
@@ -114,6 +162,7 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
         );
       } catch (e) {
         //turn off progress bar
+        print(e);
         yield state.copyWith(
           blocStatus: FormzStatus.submissionFailure,
         );
@@ -142,9 +191,20 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
     // }
   }
 
+  Future<List<TimeOfDay>> _getOperatingTime() async {
+    var listTimeOfday = await _collectingRequestService.getOperatingTime();
+    return listTimeOfday;
+  }
+
   RequestTimeStatus validate(
-      DateTime date, TimeOfDay fromTime, TimeOfDay toTime,
-      [TimeOfDay? nowtime, DateTime? now]) {
+    DateTime date,
+    TimeOfDay fromTime,
+    TimeOfDay toTime, {
+    TimeOfDay? nowtime,
+    DateTime? now,
+    required TimeOfDay operatingToTime,
+    required TimeOfDay operatingFromTime,
+  }) {
     nowtime ??= TimeOfDay.now();
     now ??= DateTime.now();
 
@@ -159,7 +219,12 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
     if (CommonUtils.compareTwoTimeOfDays(fromTime, toTime) >= 0) {
       return RequestTimeStatus.rangeTimeBetweenTwonotenough;
     }
-
+    if (fromTime.isLargeThan(operatingToTime) ||
+        fromTime.isLessThan(operatingFromTime) ||
+        toTime.isLargeThan(operatingToTime) ||
+        toTime.isLessThan(operatingFromTime)) {
+      return RequestTimeStatus.notinrangetime;
+    }
     return RequestTimeStatus.valid;
   }
 }

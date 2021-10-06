@@ -8,6 +8,8 @@ class RequestTimeState extends Equatable {
     this.chosableDates = const [],
     this.status = RequestTimeStatus.pure,
     this.blocStatus = FormzStatus.pure,
+    this.operatingFromTime,
+    this.operatingTotime,
   });
 
   final DateTime date;
@@ -17,6 +19,9 @@ class RequestTimeState extends Equatable {
   final RequestTimeStatus status;
   final FormzStatus blocStatus;
 
+  final TimeOfDay? operatingFromTime;
+  final TimeOfDay? operatingTotime;
+
   RequestTimeState copyWith({
     DateTime? date,
     TimeOfDay? fromTime,
@@ -24,6 +29,8 @@ class RequestTimeState extends Equatable {
     List<DateTime>? chosableDates,
     RequestTimeStatus? status,
     FormzStatus? blocStatus,
+    TimeOfDay? operatingFromTime,
+    TimeOfDay? operatingTotime,
   }) {
     return RequestTimeState(
       date: date ?? this.date,
@@ -32,16 +39,20 @@ class RequestTimeState extends Equatable {
       chosableDates: chosableDates ?? this.chosableDates,
       status: status ?? this.status,
       blocStatus: blocStatus ?? this.blocStatus,
+      operatingFromTime: operatingFromTime ?? this.operatingFromTime,
+      operatingTotime: operatingTotime ?? this.operatingTotime,
     );
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         date,
         fromTime,
         toTime,
         chosableDates,
         status,
         blocStatus,
+        operatingFromTime,
+        operatingTotime,
       ];
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:seller_app/utils/extension_methods.dart';
+
 String updateInfoRequestModelToJson(UpdateInfoRequestModel data) =>
     json.encode(data.toJson());
 
@@ -24,7 +26,7 @@ class UpdateInfoRequestModel {
         "name": name,
         "email": email,
         "gender": gender,
-        "birthDate": birthDate?.toIso8601String(),
+        "birthDate": birthDate?.toDateString(),
         "address": address,
         "imageUrl": imageUrl,
       };

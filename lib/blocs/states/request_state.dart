@@ -10,6 +10,7 @@ class RequestState extends Equatable {
     this.bulky = YesNo.no,
     required this.imageFile,
     this.status = FormzStatus.pure,
+    this.errorCode = Symbols.empty,
   });
 
   final RequestAddress address;
@@ -20,16 +21,19 @@ class RequestState extends Equatable {
   final YesNo bulky;
   final File imageFile;
   final FormzStatus status;
+  final String errorCode;
 
-  RequestState copyWith(
-      {RequestAddress? address,
-      DateTime? date,
-      TimeOfDay? fromTime,
-      TimeOfDay? toTime,
-      String? note,
-      YesNo? bulky,
-      File? imageFile,
-      FormzStatus? status}) {
+  RequestState copyWith({
+    RequestAddress? address,
+    DateTime? date,
+    TimeOfDay? fromTime,
+    TimeOfDay? toTime,
+    String? note,
+    YesNo? bulky,
+    File? imageFile,
+    FormzStatus? status,
+    String? errorCode,
+  }) {
     return RequestState(
       address: address ?? this.address,
       date: date ?? this.date,
@@ -39,6 +43,7 @@ class RequestState extends Equatable {
       bulky: bulky ?? this.bulky,
       imageFile: imageFile ?? this.imageFile,
       status: status ?? this.status,
+      errorCode: errorCode ?? this.errorCode,
     );
   }
 
@@ -58,5 +63,6 @@ class RequestState extends Equatable {
         bulky,
         imageFile,
         status,
+        errorCode,
       ];
 }

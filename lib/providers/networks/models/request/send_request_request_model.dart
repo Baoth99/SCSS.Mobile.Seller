@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seller_app/utils/common_utils.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 class SendRequestRequestModel {
   SendRequestRequestModel({
@@ -31,9 +32,9 @@ class SendRequestRequestModel {
         "address": address,
         "latitude": latitude,
         "longtitude": longtitude,
-        "collectingRequestDate": collectingRequestDate.toIso8601String(),
-        "fromTime": CommonUtils.convertTimeToString(fromTime),
-        "toTime": CommonUtils.convertTimeToString(toTime),
+        "collectingRequestDate": collectingRequestDate.toDateString(),
+        "fromTime": fromTime.toFullString(),
+        "toTime": toTime.toFullString(),
         "note": note,
         "isBulky": isBulky,
         "collectingRequestImageUrl": collectingRequestImageUrl,

@@ -4,7 +4,9 @@ import 'package:http/http.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/send_request_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/operating_time_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/remaining_days_response_model.dart';
+import 'package:seller_app/providers/networks/models/response/requets_ability_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/send_request_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/upload_image_request_collecting_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -23,6 +25,10 @@ abstract class CollectingRequestNetwork {
     SendRequestRequestModel requestModel,
     Client client,
   );
+
+  Future<RequestAbilityResponseModel> requestAbility(Client client);
+
+  Future<OperatingTimeResponseModel> getOperatingTime(Client client);
 }
 
 class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
@@ -59,14 +65,40 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
       client: client,
     );
 
-    // get model
-    var responseModel = await NetworkUtils
-        .checkSuccessStatusCodeAPIMainResponseModel<SendRequestResponseModel>(
-      response,
-      sendRequestResponseModelFromJson,
-    );
+    var responseModel = _getSendRequestResponseModel(response);
 
     return responseModel;
+  }
+
+  Future<SendRequestResponseModel> _getSendRequestResponseModel(
+      Response response) async {
+    if (response.statusCode == NetworkConstants.ok200) {
+      SendRequestResponseModel responseModel;
+      Map<String, dynamic> jsonMap = json.decode(response.body);
+      //get status code
+      int statusCode = jsonMap["statusCode"];
+
+      // switch case status code
+
+      switch (statusCode) {
+        case NetworkConstants.ok200:
+          responseModel =
+              await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+                  SendRequestResponseModel>(
+            response,
+            sendRequestResponseModelFromJson200,
+          );
+          return responseModel;
+        case NetworkConstants.badRequest400:
+          responseModel = sendRequestResponseModelFromJson400(response.body);
+
+          return responseModel;
+        default:
+          throw Exception('${NetworkConstants.not200Exception} and 400');
+      }
+    } else {
+      throw Exception(NetworkConstants.not200Exception);
+    }
   }
 
   @override
@@ -92,6 +124,42 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
       uploadImageRequestCollectingResponseModelFromJson,
     );
 
+    return responseModel;
+  }
+
+  @override
+  Future<RequestAbilityResponseModel> requestAbility(Client client) async {
+    RequestAbilityResponseModel responseModel = RequestAbilityResponseModel(
+      isSuccess: false,
+      statusCode: 500,
+    );
+
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.requestAbility,
+      client: client,
+    );
+    // get model
+    responseModel =
+        await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+            RequestAbilityResponseModel>(
+      response,
+      requestAbilityResponseModelFromJson,
+    );
+    return responseModel;
+  }
+
+  @override
+  Future<OperatingTimeResponseModel> getOperatingTime(Client client) async {
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.operatingTime,
+      client: client,
+    );
+    // get model
+    var responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<OperatingTimeResponseModel>(
+      response,
+      operatingTimeResponseModelFromJson,
+    );
     return responseModel;
   }
 }
