@@ -41,6 +41,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       yield state.copyWith(
         statusCreateRequest: FormzStatus.pure,
       );
+    } else if (event is MainActivityChanged) {
+      yield state.copyWith(activityIndex: event.index);
     }
   }
 }

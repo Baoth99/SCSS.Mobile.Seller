@@ -16,3 +16,12 @@ class MainBarItemTapped extends MainEvent {
 }
 
 class MainCheckFullRequest extends MainEvent {}
+
+class MainActivityChanged extends MainEvent {
+  const MainActivityChanged(this.index);
+
+  final int index;
+
+  @override
+  List<int> get props => [index];
+}

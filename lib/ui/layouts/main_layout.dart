@@ -12,8 +12,29 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 
-class MainLayout extends StatelessWidget {
+class MainLayout extends StatefulWidget {
   const MainLayout({Key? key}) : super(key: key);
+
+  @override
+  _MainLayoutState createState() => _MainLayoutState();
+}
+
+class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
+  late TabController tabController;
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 3, vsync: this);
+    // tabController.addListener(() {
+    //   context.read<MainBloc>().add(MainActivityChanged(tabController.index));
+    // });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +78,14 @@ class MainLayout extends StatelessWidget {
                             context,
                             ModalRoute.withName(Routes.main),
                           );
-                          context.read<MainBloc>().add(
-                                const MainBarItemTapped(
-                                    MainLayoutConstants.activity),
-                              );
+                          if (state.screenIndex !=
+                              MainLayoutConstants.activity) {
+                            context.read<MainBloc>().add(
+                                  const MainBarItemTapped(
+                                      MainLayoutConstants.activity),
+                                );
+                          }
+                          tabController.animateTo(0);
                         },
                       ),
                       TextButton(
@@ -150,7 +175,9 @@ class MainLayout extends StatelessWidget {
                 case MainLayoutConstants.notification:
                   return const NotificationLayout();
                 case MainLayoutConstants.activity:
-                  return const ActivityLayout();
+                  return ActivityLayout(
+                    controller: tabController,
+                  );
                 case MainLayoutConstants.account:
                   return const AccountLayout();
                 default:

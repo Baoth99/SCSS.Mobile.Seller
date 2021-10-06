@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/activity_list_bloc.dart';
+import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/common_scaffold_title.dart';
@@ -13,58 +14,63 @@ import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'request_detail_layout.dart';
 
 class ActivityLayout extends StatelessWidget {
-  const ActivityLayout({Key? key}) : super(key: key);
+  const ActivityLayout({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+  final TabController controller;
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      // The number of tabs / content sections to display.
-
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const CommonScaffoldTitle('Hoạt động của tôi'),
-          bottom: TabBar(
-            indicatorColor: Colors.green[600],
-            isScrollable: true,
-            labelColor: Colors.green[600],
-            labelStyle: TextStyle(
-              fontSize: 44.sp,
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelColor: Colors.grey[600],
-            tabs: [
-              const Tab(
-                text: 'Yêu cầu thu gom',
-              ),
-              const Tab(
-                text: 'Xác nhận thu gom',
-              ),
-              const Tab(
-                text: 'Lịch sử',
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const CommonScaffoldTitle('Hoạt động của tôi'),
+        bottom: TabBar(
+          controller: controller,
+          indicatorColor: Colors.green[600],
+          isScrollable: true,
+          labelColor: Colors.green[600],
+          labelStyle: TextStyle(
+            fontSize: 44.sp,
+            fontWeight: FontWeight.w600,
           ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        body: const TabBarView(
-          children: [
-            CommonMarginContainer(
-              child: ActivityList(
-                status: ActivityLayoutConstants.tabPending,
-              ),
+          unselectedLabelColor: Colors.grey[600],
+          tabs: [
+            const Tab(
+              text: 'Yêu cầu thu gom',
             ),
-            CommonMarginContainer(
-              child: ActivityList(status: ActivityLayoutConstants.tabApproved),
+            const Tab(
+              text: 'Xác nhận thu gom',
             ),
-            CommonMarginContainer(
-              child: ActivityList(
-                status: ActivityLayoutConstants.tabCompleted,
-              ),
+            const Tab(
+              text: 'Lịch sử',
             ),
           ],
+          // onTap: (value) {
+          //
+          // },
         ),
-      ), // Complete this code in the next step.
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      body: TabBarView(
+        controller: controller,
+        children: [
+          const CommonMarginContainer(
+            child: ActivityList(
+              status: ActivityLayoutConstants.tabPending,
+            ),
+          ),
+          const CommonMarginContainer(
+            child: ActivityList(status: ActivityLayoutConstants.tabApproved),
+          ),
+          const CommonMarginContainer(
+            child: ActivityList(
+              status: ActivityLayoutConstants.tabCompleted,
+            ),
+          ),
+        ],
+      ),
+      // Complete this code in the next step.
     );
   }
 }
