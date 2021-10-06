@@ -4,3 +4,8 @@ class UnauthorizedException implements Exception {
   final String cause;
   UnauthorizedException([this.cause = Symbols.empty]);
 }
+
+class BadRequestException implements Exception {
+  final String cause;
+  BadRequestException([this.cause = Symbols.empty]);
+}

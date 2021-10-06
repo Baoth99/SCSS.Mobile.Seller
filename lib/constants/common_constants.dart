@@ -98,4 +98,9 @@ class NetworkConstants {
   static const data = '{data}';
   static const basicAuth = 'Basic $data';
   static const bearerPattern = 'Bearer $data';
+
+  //
+  static const not200Exception = 'Not ${NetworkConstants.ok200} status code';
+
+  static const systemError = 'E00000001';
 }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/exceptions/custom_exceptions.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/collecting_request_network.dart';
 import 'package:seller_app/providers/networks/models/request/send_request_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/send_request_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
 
 abstract class CollectingRequestService {
@@ -110,6 +112,15 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
     if (responseModle.statusCode == NetworkConstants.ok200 &&
         responseModle.isSuccess!) {
       return true;
+    } else if (responseModle.statusCode == NetworkConstants.badRequest400) {
+      var data = responseModle.resData;
+      if (data is List<SendRequestResDatum>) {
+        if (data.isNotEmpty) {
+          throw BadRequestException(data[0].code);
+        }
+      } else {
+        throw Exception(NetworkConstants.systemError);
+      }
     }
     return false;
   }

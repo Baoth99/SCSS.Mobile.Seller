@@ -69,3 +69,45 @@ class APIServiceURI {
   static final operatingTime =
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/operating-time';
 }
+
+class InvalidRequestCode {
+  static const moreThanDays = "MTDS001";
+  static const fromTimeGreaterThanToTime = "FTGTTT";
+  static const limitCR = "LIMITCR001";
+  static const lessThan15Minutes = "LT15MS";
+  static const timeRangeNotValid = "TRNVD001";
+  static const coordinate = "IVCDN001";
+  static const invalidDate = "IVDATE0001";
+  static const invalidTimeTo = "IVTIMETO0001";
+  static const invalidTimeFrom = "IVTIMEFRO0001";
+  static const overReceive = "OCR0001";
+
+  static const List<String> invalidRequestCodes = [
+    moreThanDays,
+    fromTimeGreaterThanToTime,
+    limitCR,
+    lessThan15Minutes,
+    timeRangeNotValid,
+    coordinate,
+    invalidDate,
+    invalidTimeTo,
+    invalidTimeFrom,
+    overReceive,
+  ];
+
+  static const Map<String, String> invalidRequestCodeMap = {
+    moreThanDays: 'Bạn không thể đặt trước quá thời hạn cho phép',
+    fromTimeGreaterThanToTime:
+        'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút',
+    limitCR: 'Bạn đã đặt tối đa số đơn trong ngày hôm nay',
+    lessThan15Minutes: 'Khoảng thời gian phải tối thiểu 15 phút',
+    timeRangeNotValid: 'Bạn đã đặt thời gian ngoài giờ hoạt động của chúng tôi',
+    coordinate: 'Địa điểm yêu cầu thu gom không hợp lệ',
+    invalidDate: 'Ngày đặt lịch yêu cầu thu gom không hợp lí',
+    invalidTimeTo: 'Thời gian hẹn kết thúc không hợp lệ',
+    invalidTimeFrom: 'Thời gian hẹn bắt đầu không hợp lệ',
+    overReceive: 'Đã nhận quá số đơn quy định',
+  };
+
+  static const errorSystem = 'Có lỗi đến từ hệ thống';
+}

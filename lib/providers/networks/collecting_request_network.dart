@@ -65,14 +65,44 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
       client: client,
     );
 
-    // get model
-    var responseModel = await NetworkUtils
-        .checkSuccessStatusCodeAPIMainResponseModel<SendRequestResponseModel>(
-      response,
-      sendRequestResponseModelFromJson,
-    );
+    var responseModel = _getSendRequestResponseModel(response);
 
     return responseModel;
+  }
+
+  Future<SendRequestResponseModel> _getSendRequestResponseModel(
+      Response response) async {
+    if (response.statusCode == NetworkConstants.ok200) {
+      SendRequestResponseModel responseModel;
+      Map<String, dynamic> jsonMap = json.decode(response.body);
+      //get status code
+      int statusCode = jsonMap["statusCode"];
+
+      // switch case status code
+
+      switch (statusCode) {
+        case NetworkConstants.ok200:
+          responseModel =
+              await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+                  SendRequestResponseModel>(
+            response,
+            sendRequestResponseModelFromJson200,
+          );
+          return responseModel;
+        case NetworkConstants.badRequest400:
+          responseModel =
+              await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+                  SendRequestResponseModel>(
+            response,
+            sendRequestResponseModelFromJson400,
+          );
+          return responseModel;
+        default:
+          throw Exception('${NetworkConstants.not200Exception} and 400');
+      }
+    } else {
+      throw Exception(NetworkConstants.not200Exception);
+    }
   }
 
   @override

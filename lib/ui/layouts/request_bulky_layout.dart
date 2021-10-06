@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
@@ -41,13 +42,20 @@ class RequestBulkyLayout extends StatelessWidget {
             confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
           );
         }
+        String errorText = InvalidRequestCode.errorSystem;
 
         if (state.status.isSubmissionFailure) {
+          if (InvalidRequestCode.invalidRequestCodeMap
+              .containsKey(state.errorCode)) {
+            errorText =
+                (InvalidRequestCode.invalidRequestCodeMap[state.errorCode])!;
+          }
+
           FunctionalWidgets.showCoolAlert(
             context: context,
             type: CoolAlertType.error,
             title: 'Thông Báo',
-            text: 'Có lỗi đến từ hệ thống',
+            text: errorText,
             confirmBtnColor: AppColors.greenFF61C53D,
             confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
             confirmBtnTapRoute: Routes.main,

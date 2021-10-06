@@ -99,17 +99,25 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
                 minutes: RequestMapPickerLayoutConstants.minuteInterval),
           );
         }
-
+        var currentTimeOfday = TimeOfDay.fromDateTime(DateTime.now());
         if (chosableDates.isNotEmpty) {
+          TimeOfDay fromTime;
+          TimeOfDay toTime;
           if (chosableDates[0].isSameDate(nearestTime)) {
-            final fromTime = TimeOfDay.fromDateTime(nearestTime);
-            final toTime = TimeOfDay.fromDateTime(
-              nearestTime.add(
-                const Duration(
-                  minutes: RequestMapPickerLayoutConstants.minuteInterval,
+            if (currentTimeOfday.isLessThan(operatingtime[0])) {
+              fromTime = operatingtime[0];
+              toTime = CommonUtils.addTimeOfDay(operatingtime[0],
+                  RequestMapPickerLayoutConstants.minuteInterval);
+            } else {
+              fromTime = TimeOfDay.fromDateTime(nearestTime);
+              toTime = TimeOfDay.fromDateTime(
+                nearestTime.add(
+                  const Duration(
+                    minutes: RequestMapPickerLayoutConstants.minuteInterval,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
 
             yield state.copyWith(
               date: nearestTime,
@@ -127,8 +135,9 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
               operatingTotime: operatingtime[1],
             );
           } else {
-            final fromTime = const TimeOfDay(hour: 0, minute: 0);
-            final toTime = const TimeOfDay(hour: 0, minute: 15);
+            fromTime = operatingtime[0];
+            toTime = CommonUtils.addTimeOfDay(operatingtime[0],
+                RequestMapPickerLayoutConstants.minuteInterval);
             yield state.copyWith(
               date: chosableDates[0],
               fromTime: fromTime,

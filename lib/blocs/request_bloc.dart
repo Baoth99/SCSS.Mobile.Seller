@@ -14,13 +14,13 @@ import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/providers/services/map_service.dart';
+import 'package:seller_app/utils/common_function.dart';
 part 'events/request_event.dart';
 part 'states/request_state.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
   late GoongMapService _goongMapService;
   late CollectingRequestService _collectingRequestService;
-  late IdentityServerService _identityServerService;
 
   RequestBloc({
     GoongMapService? goongMapService,
@@ -30,8 +30,6 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     _goongMapService = goongMapService ?? getIt.get<GoongMapService>();
     _collectingRequestService =
         collectingRequestService ?? getIt.get<CollectingRequestService>();
-    _identityServerService =
-        identityServerService ?? getIt.get<IdentityServerService>();
   }
 
   @override
@@ -127,10 +125,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           state.toTime,
         ).isValid) {
           //post data
-          bool result = await _sendRequest(state).timeout(
-            const Duration(minutes: 10),
-            onTimeout: () => throw Exception(),
-          );
+          bool result = await futureAppDuration<bool>(_sendRequest(state));
 
           //success
           if (result) {
@@ -145,7 +140,18 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
             throw Exception();
           }
         }
-      } on Exception {
+      } on BadRequestException catch (exception) {
+        print(exception);
+        //turn of dialog
+        yield state.copyWith(
+          status: FormzStatus.submissionFailure,
+          errorCode: exception.cause,
+        );
+        yield state.copyWith(
+          status: FormzStatus.pure,
+        );
+      } on Exception catch (exception) {
+        print(exception);
         //turn of dialog
         yield state.copyWith(
           status: FormzStatus.submissionFailure,
