@@ -90,12 +90,8 @@ class CollectingRequestNetworkImpl extends CollectingRequestNetwork {
           );
           return responseModel;
         case NetworkConstants.badRequest400:
-          responseModel =
-              await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
-                  SendRequestResponseModel>(
-            response,
-            sendRequestResponseModelFromJson400,
-          );
+          responseModel = sendRequestResponseModelFromJson400(response.body);
+
           return responseModel;
         default:
           throw Exception('${NetworkConstants.not200Exception} and 400');

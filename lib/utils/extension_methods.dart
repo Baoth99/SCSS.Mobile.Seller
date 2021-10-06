@@ -9,6 +9,16 @@ extension DateOnlyCompare on DateTime {
   DateTime onlyDate() {
     return DateTime(year, month, day);
   }
+
+  String toDateString() {
+    return '$year-${CommonUtils.toStringLeadingZero(month, 2)}-${CommonUtils.toStringLeadingZero(day, 2)}';
+  }
+}
+
+extension TimeOfDayExtension on TimeOfDay {
+  String toFullString() {
+    return '${CommonUtils.toStringLeadingZero(hour, 2)}:${CommonUtils.toStringLeadingZero(minute, 2)}';
+  }
 }
 
 extension TimeOfDayCompare on TimeOfDay {
