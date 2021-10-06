@@ -88,14 +88,15 @@ class ActivityServiceImpl implements ActivityService {
         fromTime: d.fromTime,
         toTime: d.toTime,
         isBulky: d.isBulky,
-        approvedDate: d.approvedDate,
-        approvedTime: d.approvedTime,
+        approvedDate: d.approvedDate ?? Symbols.empty,
+        approvedTime: d.approvedTime ?? Symbols.empty,
         // collectorInfo: d.collectorInfo,
-        doneActivityDate: d.doneActivityDate,
-        doneActivityTime: d.doneActivityTime,
+        doneActivityDate: d.doneActivityDate ?? Symbols.empty,
+        doneActivityTime: d.doneActivityTime ?? Symbols.empty,
         note: d.note ?? Symbols.empty,
         scrapCategoryImageUrl: d.scrapCategoryImageUrl,
         transaction: d.transaction,
+        isCancelable: d.isCancelable,
       );
       return result;
     }

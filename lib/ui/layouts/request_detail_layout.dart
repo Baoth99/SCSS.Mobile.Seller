@@ -68,37 +68,37 @@ class RequestDetailLayout extends StatelessWidget {
       builder: (c, s) => ListView(
         children: [
           const RequestDetailHeader(),
-          s.status == ActivityLayoutConstants.pending
-              ? const SizedBox.shrink()
-              : Column(
+          s.status == ActivityLayoutConstants.completed
+              ? Column(
                   children: [
                     const RequestDetailDivider(),
                     const RequestDetailRating(),
                   ],
-                ),
-          s.status == ActivityLayoutConstants.pending
-              ? const SizedBox.shrink()
-              : Column(
+                )
+              : const SizedBox.shrink(),
+          s.collectorName.isNotEmpty &&
+                  s.collectorPhoneNumber.isNotEmpty &&
+                  (s.status != ActivityLayoutConstants.pending)
+              ? Column(
                   children: [
                     const RequestDetailDivider(),
                     const RequestDetailCollectorInfo(),
                   ],
-                ),
+                )
+              : const SizedBox.shrink(),
           const RequestDetailDivider(),
           const RequestDetailBody(),
-          s.status == ActivityLayoutConstants.pending
-              ? const SizedBox.shrink()
-              : Column(
+          s.status == ActivityLayoutConstants.completed
+              ? Column(
                   children: [
                     const RequestDetailDivider(),
                     const RequestDetailBill(),
                   ],
-                ),
+                )
+              : const SizedBox.shrink(),
           const RequestDetailDivider(),
-          RequestDetailTime(
-            status: s.status,
-          ),
-          _getCancelButton(context),
+          const RequestDetailTime(),
+          s.isCancelable ? _getCancelButton(context) : const SizedBox.shrink(),
         ],
       ),
     );
@@ -220,25 +220,49 @@ class RequestDetailLayout extends StatelessWidget {
 }
 
 class RequestDetailTime extends StatelessWidget {
-  const RequestDetailTime({required this.status, Key? key}) : super(key: key);
-
-  final int status;
+  const RequestDetailTime({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CommonMarginContainer(
-      child: Column(
-        children: [
-          _getDataRow('Thời gian đặt', '08-08-2021 00:23'),
-          status == ActivityLayoutConstants.pending
-              ? const SizedBox.shrink()
-              : Column(
-                  children: [
-                    _getDataRow('Thời gian được xác nhận', '10-08-2021 08:23'),
-                    _getDataRow('Thời gian thu gom', '01-10-2021 07:23'),
-                  ],
-                )
-        ],
+      child: BlocBuilder<RequestDetailBloc, RequestDetailState>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              _getDataRow(
+                  'Thời gian đặt', '${state.createdDate} ${state.createdTime}'),
+              (state.status != ActivityLayoutConstants.pending &&
+                      state.approvedTime.isNotEmpty &&
+                      state.approvedDate.isNotEmpty)
+                  ? _getDataRow(
+                      'Thời gian được xác nhận',
+                      '${state.approvedDate} ${state.approvedTime}',
+                    )
+                  : const SizedBox.shrink(),
+              (state.doneActivityDate.isNotEmpty &&
+                      state.doneActivityTime.isNotEmpty &&
+                      state.status == ActivityLayoutConstants.completed)
+                  ? _getDataRow(
+                      'Thời gian thu gom',
+                      '${state.doneActivityDate} ${state.doneActivityTime}',
+                    )
+                  : const SizedBox.shrink(),
+              (state.doneActivityDate.isNotEmpty &&
+                      state.doneActivityTime.isNotEmpty &&
+                      (state.status ==
+                              ActivityLayoutConstants.cancelByCollect ||
+                          state.status ==
+                              ActivityLayoutConstants.cancelBySeller ||
+                          state.status ==
+                              ActivityLayoutConstants.cancelBySystem))
+                  ? _getDataRow(
+                      'Thời gian hủy',
+                      '${state.doneActivityDate} ${state.doneActivityTime}',
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          );
+        },
       ),
     );
   }
@@ -278,19 +302,26 @@ class RequestDetailRating extends StatelessWidget {
         children: [
           _getText('Bạn thấy dịch vụ như thế nào?'),
           _getText('(1 là thất vọng, 5 là tuyệt vời)'),
-          _getStarRaing(
-            onRatingUpdate: (rating) {
-              FunctionalWidgets.showCustomModalBottomSheet(
-                context: context,
-                child: _getFeedback(
-                  context,
-                  'https://znews-photo.zadn.vn/w660/Uploaded/ngogtn/2021_04_25/avatar_movie_Cropped.jpg',
-                  'Phạm Trung Hiếu',
-                  '0979637678',
-                  rating,
-                ),
-                routeClosed: Routes.requestDetail,
-                title: 'Đánh giá dịch vụ',
+          BlocBuilder<RequestDetailBloc, RequestDetailState>(
+            builder: (context, state) {
+              return _getStarRaing(
+                intialRating: state.ratingStar ?? 0,
+                ignoreGestures:
+                    (state.ratingStar != null && state.ratingStar != 0),
+                onRatingUpdate: (rating) {
+                  FunctionalWidgets.showCustomModalBottomSheet(
+                    context: context,
+                    child: _getFeedback(
+                      context,
+                      state.collectorAvatarUrl,
+                      state.collectorName,
+                      state.collectorPhoneNumber,
+                      rating,
+                    ),
+                    routeClosed: Routes.requestDetail,
+                    title: 'Đánh giá dịch vụ',
+                  );
+                },
               );
             },
           ),
@@ -322,10 +353,32 @@ class RequestDetailRating extends StatelessWidget {
           child: IntrinsicHeight(
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 80.0.r,
-                  backgroundImage: NetworkImage(image),
-                  backgroundColor: Colors.transparent,
+                FutureBuilder(
+                  future: image.isEmpty
+                      ? Future.value(Symbols.empty)
+                      : CommonUtils.getMetaDataImage(
+                          image,
+                        ),
+                  builder: (context, snapshot) {
+                    if (image.isNotEmpty && snapshot.hasData) {
+                      var data = snapshot.data as List;
+                      return CircleAvatar(
+                        radius: 110.0.r,
+                        foregroundImage: NetworkImage(data[0], headers: {
+                          HttpHeaders.authorizationHeader: data[1],
+                        }),
+                        backgroundImage: const AssetImage(
+                          ImagesPaths.maleProfile,
+                        ),
+                      );
+                    }
+                    return CircleAvatar(
+                      radius: 110.0.r,
+                      foregroundImage: const AssetImage(
+                        ImagesPaths.maleProfile,
+                      ),
+                    );
+                  },
                 ),
                 Container(
                   margin: EdgeInsets.only(
@@ -468,7 +521,11 @@ class RequestDetailBill extends StatelessWidget {
             Expanded(
               child: _getFinalText('Tổng cộng'),
             ),
-            _getFinalText('185.000 ₫')
+            BlocBuilder<RequestDetailBloc, RequestDetailState>(
+              builder: (context, state) {
+                return _getFinalText('${state.billTotal} ₫');
+              },
+            )
           ],
         )
       ],
@@ -484,19 +541,16 @@ class RequestDetailBill extends StatelessWidget {
   }
 
   Widget _getItems() {
-    return Column(
-      children: [
-        _getItem(
-          'Nhựa thau',
-          '10 kg',
-          '100.000 ₫',
-        ),
-        _getItem(
-          'Nhựa thau',
-          '-',
-          '100.000 ₫',
-        ),
-      ],
+    return BlocBuilder<RequestDetailBloc, RequestDetailState>(
+      builder: (context, state) {
+        return Column(
+          children: state.transaction
+              .map(
+                (e) => _getItem(e.name, e.unitInfo, '${e.total} ₫'),
+              )
+              .toList(),
+        );
+      },
     );
   }
 
@@ -539,21 +593,25 @@ class RequestDetailBill extends StatelessWidget {
   }
 
   Widget _getSubInfo() {
-    return Column(
-      children: [
-        _getSubInfoItem(
-          'Tạm tính',
-          '200.000 ₫',
-        ),
-        _getSubInfoItem(
-          'Phí dịch vụ',
-          '-15.000 ₫',
-        ),
-        _getSubInfoItem(
-          'Điểm thưởng',
-          '20 điểm',
-        ),
-      ],
+    return BlocBuilder<RequestDetailBloc, RequestDetailState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            _getSubInfoItem(
+              'Tạm tính',
+              '${state.itemTotal} ₫',
+            ),
+            _getSubInfoItem(
+              'Phí dịch vụ',
+              '-${state.serviceFee} ₫',
+            ),
+            _getSubInfoItem(
+              'Điểm thưởng',
+              '${state.point} điểm',
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -586,45 +644,87 @@ class RequestDetailCollectorInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonMarginContainer(
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 110.0.r,
-              backgroundImage: NetworkImage(
-                  'https://znews-photo.zadn.vn/w660/Uploaded/ngogtn/2021_04_25/avatar_movie_Cropped.jpg'),
-              backgroundColor: Colors.transparent,
+    return BlocBuilder<RequestDetailBloc, RequestDetailState>(
+      builder: (context, state) {
+        return CommonMarginContainer(
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                FutureBuilder(
+                  future: state.collectorAvatarUrl.isEmpty
+                      ? Future.value(Symbols.empty)
+                      : CommonUtils.getMetaDataImage(
+                          state.collectorAvatarUrl,
+                        ),
+                  builder: (context, snapshot) {
+                    if (state.collectorAvatarUrl.isNotEmpty &&
+                        snapshot.hasData) {
+                      var data = snapshot.data as List;
+                      return CircleAvatar(
+                        radius: 110.0.r,
+                        foregroundImage: NetworkImage(data[0], headers: {
+                          HttpHeaders.authorizationHeader: data[1],
+                        }),
+                        backgroundImage: const AssetImage(
+                          ImagesPaths.maleProfile,
+                        ),
+                      );
+                    }
+                    return CircleAvatar(
+                      radius: 110.0.r,
+                      foregroundImage: const AssetImage(
+                        ImagesPaths.maleProfile,
+                      ),
+                    );
+                  },
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    left: 50.w,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _getLineInfo(
+                              Icons.person_outline, state.collectorName),
+                          SizedBox(
+                            width: 100.w,
+                          ),
+                          _getLineInfo(
+                            Icons.star,
+                            state.collectorRating.toString(),
+                            Colors.yellow,
+                          ),
+                        ],
+                      ),
+                      _getLineInfo(
+                          Icons.phone_outlined, state.collectorPhoneNumber),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Container(
-              margin: EdgeInsets.only(
-                left: 50.w,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _getLineInfo(Icons.person_outline, 'Trần Đức Tiến'),
-                  _getLineInfo(Icons.phone_outlined, '09767234215'),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _getLineInfo(IconData icon, String data) {
+  Widget _getLineInfo(IconData icon, String data,
+      [Color? colorIcon = AppColors.greenFF61C53D]) {
     return Row(
       children: [
         Icon(
           icon,
-          color: AppColors.greenFF61C53D,
+          color: colorIcon,
         ),
         Container(
           margin: EdgeInsets.only(
-            left: 30.w,
+            left: 10.w,
           ),
           child: CustomText(
             text: data,
@@ -924,10 +1024,11 @@ class RequestDetailHeader extends StatelessWidget {
       case ActivityLayoutConstants.completed:
         return _getStepper(context, status);
       case ActivityLayoutConstants.cancelByCollect:
-      case ActivityLayoutConstants.cancelBySystem:
         return _getStatusTextHeader('Bị hủy');
       case ActivityLayoutConstants.cancelBySeller:
         return _getStatusTextHeader('Đã hủy');
+      case ActivityLayoutConstants.cancelBySystem:
+        return _getStatusTextHeader('Bị hủy bởi hệ thống');
       default:
         return const SizedBox.shrink();
     }
