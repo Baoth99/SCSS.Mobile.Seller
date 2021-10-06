@@ -55,6 +55,7 @@ class ResData {
     this.transaction,
     this.doneActivityDate,
     this.doneActivityTime,
+    required this.isCancelable,
   });
 
   String id;
@@ -68,14 +69,15 @@ class ResData {
   String collectingRequestDate;
   String fromTime;
   String toTime;
-  dynamic approvedDate;
-  dynamic approvedTime;
+  String? approvedDate;
+  String? approvedTime;
   bool isBulky;
   String? scrapCategoryImageUrl;
   String? note;
   dynamic transaction;
-  dynamic doneActivityDate;
-  dynamic doneActivityTime;
+  String? doneActivityDate;
+  String? doneActivityTime;
+  bool isCancelable;
 
   factory ResData.fromJson(Map<String, dynamic> json) => ResData(
         id: json["id"],
@@ -97,5 +99,6 @@ class ResData {
         transaction: json["transaction"],
         doneActivityDate: json["doneActivityDate"],
         doneActivityTime: json["doneActivityTime"],
+        isCancelable: json["isCancelable"],
       );
 }

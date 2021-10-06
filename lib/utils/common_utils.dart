@@ -12,6 +12,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class CommonUtils {
+  static Future<List> getMetaDataImage(String imagePath) async {
+    var bearerToken = NetworkUtils.getBearerToken();
+    var url = NetworkUtils.getUrlWithQueryString(
+      APIServiceURI.imageGet,
+      {'imageUrl': imagePath},
+    );
+    return [
+      url,
+      await bearerToken,
+    ];
+  }
+
   static String toStringLeadingZero(int value, int number) {
     return value.toString().padLeft(number, '0');
   }

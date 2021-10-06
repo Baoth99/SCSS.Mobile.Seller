@@ -10,6 +10,8 @@ class RequestDetailState extends Equatable {
     this.ratingStar,
     this.collectorName = Symbols.empty,
     this.collectorPhoneNumber = Symbols.empty,
+    this.collectorRating = 0,
+    this.collectorAvatarUrl = Symbols.empty,
     this.addressName = Symbols.empty,
     this.address = Symbols.empty,
     this.collectingRequestDate = Symbols.empty,
@@ -27,6 +29,7 @@ class RequestDetailState extends Equatable {
     this.billTotal = Symbols.empty,
     this.doneActivityDate = Symbols.empty,
     this.doneActivityTime = Symbols.empty,
+    this.isCancelable = false,
     this.stateStatus = FormzStatus.pure,
   }) {
     this.transaction = transaction ?? [];
@@ -37,9 +40,11 @@ class RequestDetailState extends Equatable {
   String createdTime;
   String collectingRequestCode;
   int status;
-  int? ratingStar;
+  double? ratingStar;
   String collectorName;
   String collectorPhoneNumber;
+  double collectorRating;
+  String collectorAvatarUrl;
   String addressName;
   String address;
   String collectingRequestDate;
@@ -57,6 +62,7 @@ class RequestDetailState extends Equatable {
   String billTotal;
   String doneActivityDate;
   String doneActivityTime;
+  bool isCancelable;
   FormzStatus stateStatus;
 
   RequestDetailState copyWith({
@@ -64,9 +70,11 @@ class RequestDetailState extends Equatable {
     String? createdTime,
     String? collectingRequestCode,
     int? status,
-    int? ratingStar,
+    double? ratingStar,
     String? collectorName,
     String? collectorPhoneNumber,
+    double? collectorRating,
+    String? collectorAvatarUrl,
     String? addressName,
     String? address,
     String? collectingRequestDate,
@@ -84,9 +92,10 @@ class RequestDetailState extends Equatable {
     String? billTotal,
     String? doneActivityDate,
     String? doneActivityTime,
+    bool? isCancelable,
     FormzStatus? stateStatus,
   }) {
-    return RequestDetailState(
+    var state = RequestDetailState(
       id: id,
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,
@@ -96,6 +105,8 @@ class RequestDetailState extends Equatable {
       ratingStar: ratingStar ?? this.ratingStar,
       collectorName: collectorName ?? this.collectorName,
       collectorPhoneNumber: collectorPhoneNumber ?? this.collectorPhoneNumber,
+      collectorRating: collectorRating ?? this.collectorRating,
+      collectorAvatarUrl: collectorAvatarUrl ?? this.collectorAvatarUrl,
       addressName: addressName ?? this.addressName,
       address: address ?? this.address,
       collectingRequestDate:
@@ -115,8 +126,10 @@ class RequestDetailState extends Equatable {
       billTotal: billTotal ?? this.billTotal,
       doneActivityDate: doneActivityDate ?? this.doneActivityDate,
       doneActivityTime: doneActivityTime ?? this.doneActivityTime,
+      isCancelable: isCancelable ?? this.isCancelable,
       stateStatus: stateStatus ?? this.stateStatus,
     );
+    return state;
   }
 
   @override
@@ -129,6 +142,8 @@ class RequestDetailState extends Equatable {
         ratingStar,
         collectorName,
         collectorPhoneNumber,
+        collectorRating,
+        collectorAvatarUrl,
         addressName,
         address,
         collectingRequestDate,
@@ -146,6 +161,7 @@ class RequestDetailState extends Equatable {
         billTotal,
         doneActivityDate,
         doneActivityTime,
+        isCancelable,
         stateStatus,
       ];
 }
