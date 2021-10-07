@@ -3,11 +3,13 @@ import 'package:seller_app/providers/networks/activity_network.dart';
 import 'package:seller_app/providers/networks/collecting_request_network.dart';
 import 'package:seller_app/providers/networks/goong_map_network.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
+import 'package:seller_app/providers/networks/notification_network.dart';
 import 'package:seller_app/providers/services/activity_service.dart';
 import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/providers/services/firebase_service.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
+import 'package:seller_app/providers/services/notification_service.dart';
 
 final getIt = GetIt.instance;
 Future<void> configureDependencies() async {
@@ -24,6 +26,9 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<ActivityNetwork>(
     () => ActivityNetworkImpl(),
   );
+  getIt.registerLazySingleton<NotificationNetwork>(
+    () => NotificationNetworkImpl(),
+  );
 
   // Service
   getIt.registerLazySingleton<GoongMapService>(
@@ -37,6 +42,9 @@ Future<void> configureDependencies() async {
   );
   getIt.registerLazySingleton<ActivityService>(
     () => ActivityServiceImpl(),
+  );
+  getIt.registerLazySingleton<NotificationService>(
+    () => NotificationServiceImp(),
   );
 
   //firebase
