@@ -10,6 +10,8 @@ abstract class NotificationService {
     int page,
     int pageSize,
   );
+
+  Future<int> getUnreadCount();
 }
 
 class NotificationServiceImp extends NotificationService {
@@ -64,5 +66,21 @@ class NotificationServiceImp extends NotificationService {
     }).whenComplete(() => client.close());
 
     return listNoti;
+  }
+
+  @override
+  Future<int> getUnreadCount() async {
+    Client client = Client();
+    var countResult = await _notificationNetwork
+        .getUnreadCount(
+          client,
+        )
+        .then(
+          (responseModel) => responseModel.resData,
+        )
+        .whenComplete(
+          () => client.close(),
+        );
+    return countResult;
   }
 }

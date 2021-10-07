@@ -127,8 +127,19 @@ class ActivityListData extends StatefulWidget {
 }
 
 class _ActivityListDataState extends State<ActivityListData> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  late RefreshController _refreshController;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshController = RefreshController(initialRefresh: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _refreshController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

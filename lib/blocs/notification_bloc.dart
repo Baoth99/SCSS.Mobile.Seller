@@ -26,6 +26,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   @override
   Stream<NotificationState> mapEventToState(NotificationEvent event) async* {
     if (event is NotificationInitial) {
+      if (state.listNotificationData.isEmpty) {
+        add(NotificationGetFirst());
+      }
+    } else if (event is NotificationGetFirst) {
       int pageSize = initialAbstractPage * sizeList;
 
       try {
@@ -85,6 +89,13 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         yield state.copyWith(
           loadStatus: LoadStatus.idle,
         );
+      }
+    } else if (event is NotificationUncountGet) {
+      try {
+        var count = await _notificationService.getUnreadCount();
+        yield state.copyWith(unreadCount: count);
+      } catch (e) {
+        print(e);
       }
     }
   }

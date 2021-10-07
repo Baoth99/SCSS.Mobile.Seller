@@ -16,11 +16,8 @@ class NotificationLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NotificationBloc()
-        ..add(
-          NotificationInitial(),
-        ),
+    return BlocProvider.value(
+      value: context.read<NotificationBloc>()..add(NotificationInitial()),
       child: Scaffold(
         appBar: AppBar(
           title: const CommonScaffoldTitle('Thông báo'),
@@ -50,8 +47,19 @@ class NotificationBody extends StatefulWidget {
 }
 
 class _NotificationBodyState extends State<NotificationBody> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  late RefreshController _refreshController;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshController = RefreshController(initialRefresh: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _refreshController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,15 +86,15 @@ class _NotificationBodyState extends State<NotificationBody> {
               builder: (context, mode) {
                 Widget body;
                 if (mode == LoadStatus.idle) {
-                  body = Text("Kéo lên để tải thêm thông tin");
+                  body = Text("");
                 } else if (mode == LoadStatus.loading) {
                   body = const CupertinoActivityIndicator();
                 } else if (mode == LoadStatus.failed) {
-                  body = Text("Load Failed!Click retry!");
+                  body = Text("");
                 } else if (mode == LoadStatus.canLoading) {
-                  body = Text("release to load more");
+                  body = Text("");
                 } else {
-                  body = Text("No more Data");
+                  body = Text("");
                 }
                 return Container(
                   height: 55.0,
@@ -99,6 +107,10 @@ class _NotificationBodyState extends State<NotificationBody> {
             onLoading: _onLoading(context),
             child: state.listNotificationData.isNotEmpty
                 ? ListView.separated(
+                    padding: EdgeInsets.only(
+                      top: kFloatingActionButtonMargin + 5.h,
+                      bottom: kFloatingActionButtonMargin + 48.h,
+                    ),
                     itemBuilder: (context, index) {
                       var noti = state.listNotificationData[index];
                       return NotificationElement(

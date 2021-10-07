@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
+import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/account_layout.dart';
 import 'package:seller_app/ui/layouts/activity_layout.dart';
@@ -29,6 +30,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     //   context.read<MainBloc>().add(MainActivityChanged(tabController.index));
     // });
     context.read<MainBloc>().add(MainInitial());
+
+    // Get number of  unread notifcation count
+    context.read<NotificationBloc>().add(NotificationUncountGet());
   }
 
   @override
@@ -118,25 +122,73 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                 unselectedFontSize: 23.sp,
                 selectedFontSize: 26.sp,
                 currentIndex: state.screenIndex,
-                items: const <BottomNavigationBarItem>[
+                items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
+                    icon: Icon(
+                      state.screenIndex == MainLayoutConstants.home
+                          ? Icons.home
+                          : Icons.home_outlined,
+                    ),
                     label: 'Trang chủ',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications_outlined),
+                    icon: BlocBuilder<NotificationBloc, NotificationState>(
+                      builder: (context, sno) {
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(
+                              state.screenIndex ==
+                                      MainLayoutConstants.notification
+                                  ? Icons.notifications
+                                  : Icons.notifications_outlined,
+                            ),
+                            sno.unreadCount > 0
+                                ? Positioned(
+                                    // draw a red marble
+                                    top: -15.0.h,
+                                    right: -15.0.w,
+                                    child: Container(
+                                      padding: EdgeInsets.all(
+                                        5.r,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.red,
+                                      ),
+                                      child: CustomText(
+                                        color: Colors.white,
+                                        text: '${sno.unreadCount}',
+                                        fontSize: 30.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
+                        );
+                      },
+                    ),
                     label: 'Thông báo',
                   ),
-                  BottomNavigationBarItem(
+                  const BottomNavigationBarItem(
                     icon: Icon(null),
                     label: Symbols.empty,
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.history_outlined),
+                    icon: Icon(
+                      state.screenIndex == MainLayoutConstants.activity
+                          ? Icons.history
+                          : Icons.history_outlined,
+                    ),
                     label: 'Hoạt động',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline),
+                    icon: Icon(
+                      state.screenIndex == MainLayoutConstants.account
+                          ? Icons.person
+                          : Icons.person_outline,
+                    ),
                     label: 'Tài khoản',
                   ),
                 ],

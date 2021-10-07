@@ -9,3 +9,7 @@ class NotificationInitial extends NotificationEvent {}
 class NotificationRefresh extends NotificationEvent {}
 
 class NotificationLoading extends NotificationEvent {}
+
+class NotificationUncountGet extends NotificationEvent {}
+
+class NotificationGetFirst extends NotificationEvent {}

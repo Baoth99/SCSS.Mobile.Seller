@@ -70,6 +70,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/operating-time';
   static final notificationGet =
       '${EnvBaseAppSettingValue.baseApiUrl}notification/get';
+  static final notificationUnreadCount =
+      '${EnvBaseAppSettingValue.baseApiUrl}notification/unread-count';
 }
 
 class InvalidRequestCode {
