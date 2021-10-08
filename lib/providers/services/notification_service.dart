@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/notification_network.dart';
 
@@ -12,6 +13,8 @@ abstract class NotificationService {
   );
 
   Future<int> getUnreadCount();
+
+  Future<bool> readNotification(String id);
 }
 
 class NotificationServiceImp extends NotificationService {
@@ -82,5 +85,28 @@ class NotificationServiceImp extends NotificationService {
           () => client.close(),
         );
     return countResult;
+  }
+
+  @override
+  Future<bool> readNotification(String id) async {
+    Client client = Client();
+    var result = await _notificationNetwork
+        .readNotification(
+      id,
+      client,
+    )
+        .then(
+      (responseModel) {
+        if (responseModel.isSuccess != null &&
+            responseModel.statusCode != null) {
+          return responseModel.isSuccess! &&
+              responseModel.statusCode == NetworkConstants.ok200;
+        }
+        return false;
+      },
+    ).whenComplete(
+      () => client.close(),
+    );
+    return result;
   }
 }

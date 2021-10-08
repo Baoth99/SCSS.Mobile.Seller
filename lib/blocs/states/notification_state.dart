@@ -67,6 +67,28 @@ class NotificationData extends Equatable {
   final int notiType;
   final String time;
 
+  NotificationData copyWith({
+    String? id,
+    String? title,
+    String? body,
+    int? screenId,
+    String? screenDataId,
+    bool? isRead,
+    int? notiType,
+    String? time,
+  }) {
+    return NotificationData(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      screenId: screenId ?? this.screenId,
+      screenDataId: screenDataId ?? this.screenDataId,
+      isRead: isRead ?? this.isRead,
+      notiType: notiType ?? this.notiType,
+      time: time ?? this.time,
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,

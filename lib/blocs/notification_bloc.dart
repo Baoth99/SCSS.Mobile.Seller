@@ -29,6 +29,26 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       if (state.listNotificationData.isEmpty) {
         add(NotificationGetFirst());
       }
+    } else if (event is NotificationRead) {
+      try {
+        var noti = state.listNotificationData.elementAt(event.index);
+
+        if (!noti.isRead) {
+          bool readResult = await futureAppDuration(
+            _notificationService.readNotification(event.id),
+          );
+
+          if (readResult) {
+            noti = noti.copyWith(isRead: readResult);
+
+            var listNotificationData = state.listNotificationData;
+            listNotificationData[event.index] = noti;
+            yield state.copyWith(listNotificationData: listNotificationData);
+          }
+        }
+      } catch (e) {
+        print(e);
+      }
     } else if (event is NotificationGetFirst) {
       int pageSize = initialAbstractPage * sizeList;
 

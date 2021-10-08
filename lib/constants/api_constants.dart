@@ -72,6 +72,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}notification/get';
   static final notificationUnreadCount =
       '${EnvBaseAppSettingValue.baseApiUrl}notification/unread-count';
+  static final notificationRead =
+      '${EnvBaseAppSettingValue.baseApiUrl}notification/read';
 }
 
 class InvalidRequestCode {

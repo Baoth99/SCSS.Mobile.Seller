@@ -14,7 +14,7 @@ abstract class NotificationNetwork {
 
   Future<NotificationUnreadCountResponseModel> getUnreadCount(Client client);
 
-  Future<BaseResponseModel> readNotification(Client client);
+  Future<BaseResponseModel> readNotification(String id, Client client);
 }
 
 class NotificationNetworkImpl extends NotificationNetwork {
@@ -63,9 +63,12 @@ class NotificationNetworkImpl extends NotificationNetwork {
   }
 
   @override
-  Future<BaseResponseModel> readNotification(Client client) async {
-    var response = await NetworkUtils.getNetworkWithBearer(
-      uri: APIServiceURI.notificationRead,
+  Future<BaseResponseModel> readNotification(String id, Client client) async {
+    String url =
+        NetworkUtils.toStringUrl(APIServiceURI.notificationRead, {"id": id});
+
+    var response = await NetworkUtils.putBodyWithBearerAuth(
+      uri: url,
       client: client,
     );
     var responseModel = await NetworkUtils

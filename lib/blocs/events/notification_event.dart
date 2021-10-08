@@ -13,3 +13,10 @@ class NotificationLoading extends NotificationEvent {}
 class NotificationUncountGet extends NotificationEvent {}
 
 class NotificationGetFirst extends NotificationEvent {}
+
+class NotificationRead extends NotificationEvent {
+  final String id;
+  final int index;
+
+  const NotificationRead(this.id, this.index);
+}
