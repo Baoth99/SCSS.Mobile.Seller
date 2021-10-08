@@ -39,11 +39,13 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           );
 
           if (readResult) {
-            noti = noti.copyWith(isRead: readResult);
+            add(NotificationUncountGet());
 
             var listNotificationData = state.listNotificationData;
             listNotificationData[event.index] = noti;
-            yield state.copyWith(listNotificationData: listNotificationData);
+            yield state.copyWith(
+              listNotificationData: listNotificationData,
+            );
           }
         }
       } catch (e) {
@@ -113,7 +115,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     } else if (event is NotificationUncountGet) {
       try {
         var count = await _notificationService.getUnreadCount();
-        yield state.copyWith(unreadCount: count);
+        yield state.copyWith(
+          unreadCount: count,
+        );
       } catch (e) {
         print(e);
       }

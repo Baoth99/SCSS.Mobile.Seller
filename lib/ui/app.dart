@@ -13,6 +13,8 @@ import 'layouts/layouts.dart';
 import '../constants/constants.dart';
 
 class SellerApp extends StatelessWidget {
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class SellerApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           title: AppConstants.appTitle,
           localizationsDelegates: [
             GlobalMaterialLocalizations.delegate,
