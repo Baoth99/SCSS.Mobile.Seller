@@ -288,7 +288,7 @@ class CurrentActivity extends StatelessWidget {
   final bool bulky;
   final int privateStatus;
   final int tabStatus;
-  final String? price;
+  final int? price;
 
   @override
   Widget build(BuildContext context) {
@@ -375,12 +375,12 @@ class CurrentActivity extends StatelessWidget {
                           top: 15.h,
                           right: 20.w,
                         ),
-                        width: 200.w,
+                        width: 260.w,
                         child: CustomText(
                           text: _getCompletedText(privateStatus),
                           color: _getCompletedColor(privateStatus),
                           fontWeight: FontWeight.w500,
-                          fontSize: 36.sp,
+                          fontSize: 35.sp,
                         ),
                         alignment: Alignment.topRight)
                     : const SizedBox.shrink(),

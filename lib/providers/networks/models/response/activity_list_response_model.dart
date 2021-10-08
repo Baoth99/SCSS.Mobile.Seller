@@ -58,7 +58,7 @@ class ResDatum {
   int status;
   bool isBulky;
   String addressName;
-  dynamic total;
+  int? total;
 
   factory ResDatum.fromJson(Map<String, dynamic> json) => ResDatum(
         collectingRequestId: json["collectingRequestId"],
