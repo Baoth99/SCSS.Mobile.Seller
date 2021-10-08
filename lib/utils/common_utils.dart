@@ -160,6 +160,11 @@ class CommonUtils {
 }
 
 class NetworkUtils {
+  static String toStringUrl(String uri, Map<String, dynamic>? queries) {
+    var uRI = Uri.parse(uri).replace(queryParameters: queries);
+    return uRI.toString();
+  }
+
   static String getUrlWithQueryString(String uri, Map<String, String> queries) {
     // ignore: non_constant_identifier_names
     var URI = Uri.parse(uri);

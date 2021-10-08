@@ -4,6 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
+import 'package:seller_app/providers/services/firebase_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/utils/common_utils.dart';
 part 'events/account_event.dart';
@@ -34,6 +35,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             yield state.copyWith(
               status: FormzStatus.submissionSuccess,
             );
+            FirebaseNotification.removeMessagingHandler();
           } else {
             throw Exception();
           }

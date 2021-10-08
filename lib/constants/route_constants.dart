@@ -27,4 +27,8 @@ class Routes {
   //activity
   static const profileEdit = 'profileEdit';
   static const profilePasswordEdit = 'profilePasswordEdit';
+
+  // static const routeNotiMap = {
+  //   1: requestDetail,
+  // };
 }

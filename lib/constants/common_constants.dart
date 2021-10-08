@@ -91,6 +91,7 @@ class NetworkConstants {
   static const ok200 = 200;
   static const badRequest400 = 400;
   static const unauthorized401 = 401;
+  static const notFound404 = 404;
   static const statusCode = 'statusCode';
   static const isSuccess = 'isSuccess';
 

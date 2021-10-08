@@ -2,9 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:seller_app/blocs/notification_bloc.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
+import 'package:seller_app/ui/app.dart';
+import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/utils/common_function.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message : ${message.messageId}");
@@ -62,6 +67,41 @@ Future<void> _firebaseLocalMessagingHandler() async {
   });
 }
 
+void handleMessage(RemoteMessage message) {
+  SellerApp.navigatorKey.currentContext
+      ?.read<NotificationBloc>()
+      .add(NotificationUncountGet());
+  //get new messagelist
+  SellerApp.navigatorKey.currentContext
+      ?.read<NotificationBloc>()
+      .add(NotificationGetFirst());
+
+  //solve problem
+
+  String? screenId = message.data['screen'];
+  String? screenDataId = message.data['id'];
+  if (screenId != null && screenDataId != null) {
+    int? screenIdInt = int.tryParse(screenId);
+    if (screenIdInt != null) {
+      try {
+        switch (screenIdInt) {
+          case 1:
+            SellerApp.navigatorKey.currentState?.pushNamed(
+              Routes.requestDetail,
+              arguments: RequestDetailArguments(
+                requestId: screenDataId,
+              ),
+            );
+            break;
+          default:
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+}
+
 Future<void> _firebaseOnRefreshToken(
     Future<bool> Function(String) updateFunction) async {
   FirebaseMessaging.instance.onTokenRefresh.listen((deviceID) async {
@@ -94,6 +134,10 @@ class FirebaseNotification {
     await _firebaseLocalMessagingHandler();
 
     await _firebaseOnRefreshToken(_identityServerService.updateDeviceId);
+    // add listner to notification service
+    await FirebaseNotification.addMessagingHandler();
+    // TODO: REVIEW this
+    await FirebaseNotification.getNotificationAfterTerminated();
   }
 
   Future<String?> getToken() async {
@@ -115,5 +159,42 @@ class FirebaseNotification {
     }).catchError((e) {
       print(e);
     }));
+  }
+
+  static Future<void> firebaseForegroundMessagingHandler() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      //get uncount
+      SellerApp.navigatorKey.currentContext
+          ?.read<NotificationBloc>()
+          .add(NotificationUncountGet());
+      //get new messagelist
+      SellerApp.navigatorKey.currentContext
+          ?.read<NotificationBloc>()
+          .add(NotificationGetFirst());
+    });
+  }
+
+  static Future<void> firebaseonMessageOpenedAppHandler() async {
+    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+  }
+
+  static Future<void> getNotificationAfterTerminated() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      handleMessage(initialMessage);
+    }
+  }
+
+  static Future<void> addMessagingHandler() async {
+    firebaseForegroundMessagingHandler();
+    firebaseonMessageOpenedAppHandler();
+  }
+
+  static Future<void> removeMessagingHandler() async {
+    FirebaseMessaging.instance.deleteToken();
   }
 }
