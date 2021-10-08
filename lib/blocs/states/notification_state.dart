@@ -8,7 +8,6 @@ class NotificationState extends Equatable {
     this.refreshStatus = RefreshStatus.idle,
     this.screenStatus = FormzStatus.pure,
     this.unreadCount = 0,
-    this.isChanged = false,
   });
 
   final List<NotificationData> listNotificationData;
@@ -17,7 +16,6 @@ class NotificationState extends Equatable {
   final RefreshStatus refreshStatus;
   final FormzStatus screenStatus;
   final int unreadCount;
-  final bool isChanged;
 
   NotificationState copyWith({
     List<NotificationData>? listNotificationData,
@@ -35,7 +33,6 @@ class NotificationState extends Equatable {
       refreshStatus: refreshStatus ?? this.refreshStatus,
       screenStatus: screenStatus ?? this.screenStatus,
       unreadCount: unreadCount ?? this.unreadCount,
-      isChanged: isChanged ?? this.isChanged,
     );
   }
 
@@ -47,7 +44,6 @@ class NotificationState extends Equatable {
         refreshStatus,
         screenStatus,
         unreadCount,
-        isChanged,
       ];
 }
 
