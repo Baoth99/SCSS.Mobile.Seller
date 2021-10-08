@@ -22,6 +22,7 @@ class NotificationLayout extends StatelessWidget {
       appBar: AppBar(
         title: const CommonScaffoldTitle('Thông báo'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 1,
       ),
       body: CommonMarginContainer(
         child: BlocBuilder<NotificationBloc, NotificationState>(
@@ -177,7 +178,8 @@ class _NotificationBodyState extends State<NotificationBody> {
         vertical: 10.h,
       ),
       child: Divider(
-        thickness: 6.h,
+        thickness: 1.h,
+        color: AppColors.greyFFEEEEEE,
       ),
     );
   }
@@ -246,13 +248,35 @@ class _NotificationElementState extends State<NotificationElement> {
       child: IntrinsicHeight(
         child: Row(
           children: [
-            Icon(
-              isRead ? Icons.drafts_outlined : Icons.email_outlined,
+            Container(
+              margin: EdgeInsets.only(left: 20.w),
+              padding: EdgeInsets.all(20.sp),
+              decoration: BoxDecoration(
+                // color: AppColors.greenFF61C53D.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(30.0),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment
+                      .bottomRight, // 10% of the width, so there are ten blinds.
+                  colors: <Color>[
+                    isRead
+                        ? AppColors.greenFF39AC8F.withOpacity(0.6)
+                        : AppColors.greenFF39AC8F.withOpacity(0.9),
+                    isRead
+                        ? AppColors.greenFF61C53D.withOpacity(0.6)
+                        : AppColors.greenFF61C53D.withOpacity(0.9),
+                  ], // red to yellow
+                ),
+              ),
+              child: Icon(
+                isRead ? Icons.drafts_outlined : Icons.email_outlined,
+                color: AppColors.white,
+              ),
             ),
             Container(
-              child: const VerticalDivider(color: Colors.black, width: 20),
+              child: const VerticalDivider(color: Colors.white, width: 14),
               margin: EdgeInsets.symmetric(
-                horizontal: 20.w,
+                horizontal: 10.w,
               ),
             ),
             Expanded(
@@ -261,9 +285,9 @@ class _NotificationElementState extends State<NotificationElement> {
                 children: [
                   CustomText(
                     text: widget.title,
-                    fontSize: 45.sp,
-                    color: isRead ? AppColors.black : AppColors.greenFF61C53D,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 47.sp,
+                    color: isRead ? AppColors.greyFF939393 : AppColors.black,
+                    fontWeight: isRead ? FontWeight.w500 : FontWeight.w600,
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(
@@ -271,12 +295,18 @@ class _NotificationElementState extends State<NotificationElement> {
                     ),
                     child: CustomText(
                       text: widget.content,
-                      color: Colors.grey[700],
+                      fontWeight: isRead ? FontWeight.w400 : FontWeight.w400,
+                      color: isRead
+                          ? AppColors.black.withOpacity(0.7)
+                          : AppColors.black,
+                      fontSize: 37.sp,
                     ),
                   ),
                   CustomText(
                     text: widget.time,
                     fontSize: 34.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey[700],
                   ),
                 ],
               ),
