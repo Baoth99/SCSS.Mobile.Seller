@@ -79,7 +79,7 @@ class Activity extends Equatable {
   int status;
   bool isBulky;
   String addressName;
-  dynamic total;
+  int? total;
 
   @override
   List<Object?> get props => [
