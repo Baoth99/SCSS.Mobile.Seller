@@ -34,25 +34,7 @@ class RequestDetailBloc extends Bloc<RequestDetailEvent, RequestDetailState> {
         );
 
         if (data != null) {
-          yield state.copyWith(
-            createdDate: data.createdDate,
-            createdTime: data.createdTime,
-            collectingRequestCode: data.collectingRequestCode,
-            status: data.status,
-            addressName: data.addressName,
-            address: data.address,
-            collectingRequestDate: data.collectingRequestDate,
-            fromTime: data.fromTime,
-            toTime: data.toTime,
-            isBulky: data.isBulky,
-            approvedDate: data.approvedDate,
-            approvedTime: data.approvedTime,
-            // collectorInfo: d.collectorInfo,
-            doneActivityDate: data.doneActivityDate,
-            doneActivityTime: data.doneActivityTime,
-            note: data.note,
-            scrapCategoryImageUrl: data.scrapCategoryImageUrl,
-            isCancelable: data.isCancelable,
+          yield data.copyWith(
             stateStatus: FormzStatus.submissionSuccess,
           );
         } else {
@@ -72,7 +54,7 @@ class RequestDetailBloc extends Bloc<RequestDetailEvent, RequestDetailState> {
 
         await CommonTest.delay();
 
-        RequestDetailState? data = null;
+        RequestDetailState? data;
 
         data = getState();
 
@@ -284,15 +266,16 @@ class RequestDetailBloc extends Bloc<RequestDetailEvent, RequestDetailState> {
       approvedTime: '11:00',
       doneActivityDate: '21 thg8, 2021',
       doneActivityTime: '12:00',
-      point: "30",
-      serviceFee: '23.000',
-      itemTotal: '250.000',
-      billTotal: '300.000',
+      point: 30,
+      serviceFee: 23000,
+      itemTotal: 250000,
+      billTotal: 300000,
       // ratingStar: 4.5,
       transaction: [
-        TransactionItem(name: 'Nhựa', total: '100.000'),
-        TransactionItem(name: 'Đá', total: '200.000', unitInfo: '100kg'),
-        TransactionItem(name: 'Dầu', total: '300.000', unitInfo: '200kg'),
+        TransactionItem(name: 'Nhựa', total: 100000),
+        TransactionItem(name: 'Đá', total: 200000, unitInfo: 'kg', quantity: 5),
+        TransactionItem(
+            name: 'Dầu', total: 300000, unitInfo: "kg", quantity: 10),
       ],
     );
 

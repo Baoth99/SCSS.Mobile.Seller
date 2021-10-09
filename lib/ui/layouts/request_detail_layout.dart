@@ -14,6 +14,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/ui/widgets/view_image_layout.dart';
 import 'package:seller_app/utils/common_utils.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 class RequestDetailArguments {
   final String requestId;
@@ -66,9 +67,16 @@ class RequestDetailLayout extends StatelessWidget {
   Widget _body(BuildContext context) {
     return BlocBuilder<RequestDetailBloc, RequestDetailState>(
       builder: (c, s) => ListView(
+        padding: EdgeInsets.only(
+          top: kFloatingActionButtonMargin + 5.h,
+          bottom: kFloatingActionButtonMargin + 48.h,
+        ),
         children: [
           const RequestDetailHeader(),
-          s.status == ActivityLayoutConstants.completed
+          s.status == ActivityLayoutConstants.completed &&
+                  (s.feedbackStatus == FeedbackStatus.haveGivenFeedback ||
+                      s.feedbackStatus ==
+                          FeedbackStatus.haveNotGivenFeedbackYet)
               ? Column(
                   children: [
                     const RequestDetailDivider(),
@@ -99,7 +107,32 @@ class RequestDetailLayout extends StatelessWidget {
           const RequestDetailDivider(),
           const RequestDetailTime(),
           s.isCancelable ? _getCancelButton(context) : const SizedBox.shrink(),
+          s.feedbackType == FeedbackType.feedbackToAdmin
+              ? const SizedBox.shrink()
+              : _getFeedbackToAdmin(),
         ],
+      ),
+    );
+  }
+
+  Widget _getFeedbackToAdmin() {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.centerRight,
+      margin: EdgeInsets.only(
+        top: 40.h,
+      ),
+      child: CommonMarginContainer(
+        child: TextButton(
+          onPressed: () {},
+          child: const CustomText(
+            text: 'Phản hồi',
+            color: AppColors.orangeFFF5670A,
+          ),
+          style: TextButton.styleFrom(
+            primary: AppColors.orangeFFF5670A,
+          ),
+        ),
       ),
     );
   }
@@ -305,9 +338,9 @@ class RequestDetailRating extends StatelessWidget {
           BlocBuilder<RequestDetailBloc, RequestDetailState>(
             builder: (context, state) {
               return _getStarRaing(
-                intialRating: state.ratingStar ?? 0,
+                intialRating: state.ratingFeedback,
                 ignoreGestures:
-                    (state.ratingStar != null && state.ratingStar != 0),
+                    (state.feedbackStatus == FeedbackStatus.haveGivenFeedback),
                 onRatingUpdate: (rating) {
                   FunctionalWidgets.showCustomModalBottomSheet(
                     context: context,
@@ -546,7 +579,7 @@ class RequestDetailBill extends StatelessWidget {
         return Column(
           children: state.transaction
               .map(
-                (e) => _getItem(e.name, e.unitInfo, '${e.total} ₫'),
+                (e) => _getItem(e.name, e.quantity, e.unitInfo, '${e.total} ₫'),
               )
               .toList(),
         );
@@ -554,7 +587,7 @@ class RequestDetailBill extends StatelessWidget {
     );
   }
 
-  Widget _getItem(String name, String quantity, String price) {
+  Widget _getItem(String name, int quantity, String unit, String price) {
     return Container(
       height: 130.h,
       decoration: BoxDecoration(
@@ -570,8 +603,15 @@ class RequestDetailBill extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _getItemText(name),
-          _getItemText(quantity),
+          Container(
+            child: _getItemText(
+              name.isNotEmpty ? name : 'Chưa phân loại',
+            ),
+            width: 350.w,
+          ),
+          _getItemText(quantity == 0 && unit.isEmpty
+              ? Symbols.minus
+              : '$quantity $unit'),
           _getItemText(price),
         ],
       ),
@@ -696,7 +736,7 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                           ),
                           _getLineInfo(
                             Icons.star,
-                            state.collectorRating.toString(),
+                            state.collectorRating.toStringOneFixed(),
                             Colors.yellow,
                           ),
                         ],
@@ -1009,11 +1049,51 @@ class RequestDetailHeader extends StatelessWidget {
                   s.collectingRequestCode,
                 ),
                 _getHeaderStatus(context, s.status),
+                (s.cancelReason.isNotEmpty &&
+                        (s.status == ActivityLayoutConstants.cancelByCollect ||
+                            s.status ==
+                                ActivityLayoutConstants.cancelBySeller) &&
+                        !s.isCancelable)
+                    ? _cancelReason(
+                        context,
+                        s.cancelReason,
+                      )
+                    : const SizedBox.shrink()
               ],
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget _cancelReason(BuildContext context, String cancelReason) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 50.h,
+        left: 80.w,
+      ),
+      width: double.infinity,
+      child: RichText(
+        text: TextSpan(
+            text: 'Lý do: ',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 45.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            children: [
+              TextSpan(
+                text: cancelReason,
+                style: TextStyle(fontWeight: FontWeight.w400),
+              ),
+            ]),
+      ),
+      // child: CustomText(
+      //   text: 'Lý do: $cancelReason',
+      //   textAlign: TextAlign.start,
+      //   fontSize: 40.sp,
+      // ),
     );
   }
 

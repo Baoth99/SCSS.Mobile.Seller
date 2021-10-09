@@ -105,3 +105,14 @@ class NetworkConstants {
 
   static const systemError = 'E00000001';
 }
+
+class FeedbackType {
+  static const int transaction = 1;
+  static const int feedbackToAdmin = 2;
+}
+
+class FeedbackStatus {
+  static const int haveNotGivenFeedbackYet = 1;
+  static const int haveGivenFeedback = 2;
+  static const int timeUpToGiveFeedback = 3;
+}
