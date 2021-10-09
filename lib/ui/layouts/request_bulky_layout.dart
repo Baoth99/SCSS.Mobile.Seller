@@ -7,6 +7,7 @@ import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -42,6 +43,13 @@ class RequestBulkyLayout extends StatelessWidget {
             confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
           );
         }
+
+        //  onConfirmBtnTap: () =>
+        //       Navigator.of(context).pushNamedAndRemoveUntil(
+        //     Routes.requestDetail,
+        //     ModalRoute.withName(Routes.main),
+        //     arguments: RequestDetailArguments(requestId: requestId),
+        //   ),
         String errorText = InvalidRequestCode.errorSystem;
 
         if (state.status.isSubmissionFailure) {
