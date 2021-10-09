@@ -95,8 +95,29 @@ class ActivityServiceImpl implements ActivityService {
         doneActivityTime: d.doneActivityTime ?? Symbols.empty,
         note: d.note ?? Symbols.empty,
         scrapCategoryImageUrl: d.scrapCategoryImageUrl,
-        transaction: d.transaction,
+        transaction: d.transaction?.details
+            .map(
+              (e) => TransactionItem(
+                name: e.scrapCategoryName ?? Symbols.empty,
+                unitInfo: e.unit ?? Symbols.empty,
+                quantity: e.quantity ?? 0,
+                total: e.total,
+              ),
+            )
+            .toList(),
         isCancelable: d.isCancelable,
+        billTotal: d.transaction?.total ?? 0,
+        point: d.transaction?.awardPoint ?? 0,
+        serviceFee: d.transaction?.fee ?? 0,
+        itemTotal: (d.transaction?.total ?? 0) - (d.transaction?.fee ?? 0),
+        collectorName: d.collectorInfo?.name ?? Symbols.empty,
+        collectorRating: d.collectorInfo?.rating ?? 0,
+        collectorPhoneNumber: d.collectorInfo?.phone ?? Symbols.empty,
+        collectorAvatarUrl: d.collectorInfo?.imageUrl ?? Symbols.empty,
+        feedbackStatus: d.transaction?.feedbackInfo.feedbackStatus ?? 0,
+        feedbackType: d.transaction?.feedbackInfo.feedbackType ?? 0,
+        ratingFeedback: d.transaction?.feedbackInfo.ratingFeedback ?? 0,
+        cancelReason: d.cancelReasoin ?? Symbols.empty,
       );
       return result;
     }

@@ -30,3 +30,9 @@ extension TimeOfDayCompare on TimeOfDay {
     return CommonUtils.compareTwoTimeOfDays(this, time) < 0;
   }
 }
+
+extension DoubleExtension on double {
+  String toStringOneFixed() {
+    return toStringAsFixed(1);
+  }
+}

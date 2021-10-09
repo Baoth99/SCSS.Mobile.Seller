@@ -7,7 +7,6 @@ class RequestDetailState extends Equatable {
     this.createdTime = Symbols.empty,
     this.collectingRequestCode = Symbols.empty,
     this.status = 0,
-    this.ratingStar,
     this.collectorName = Symbols.empty,
     this.collectorPhoneNumber = Symbols.empty,
     this.collectorRating = 0,
@@ -23,14 +22,18 @@ class RequestDetailState extends Equatable {
     this.scrapCategoryImageUrl,
     this.note = Symbols.empty,
     List<TransactionItem>? transaction,
-    this.itemTotal = Symbols.empty,
-    this.serviceFee = Symbols.empty,
-    this.point = Symbols.empty,
-    this.billTotal = Symbols.empty,
+    this.itemTotal = 0,
+    this.serviceFee = 0,
+    this.point = 0,
+    this.billTotal = 0,
     this.doneActivityDate = Symbols.empty,
     this.doneActivityTime = Symbols.empty,
     this.isCancelable = false,
+    this.cancelReason = Symbols.empty,
     this.stateStatus = FormzStatus.pure,
+    this.feedbackStatus = 0,
+    this.feedbackType = 0,
+    this.ratingFeedback = 0,
   }) {
     this.transaction = transaction ?? [];
   }
@@ -40,7 +43,7 @@ class RequestDetailState extends Equatable {
   String createdTime;
   String collectingRequestCode;
   int status;
-  double? ratingStar;
+
   String collectorName;
   String collectorPhoneNumber;
   double collectorRating;
@@ -56,13 +59,17 @@ class RequestDetailState extends Equatable {
   String? scrapCategoryImageUrl;
   String note;
   late List<TransactionItem> transaction;
-  String itemTotal;
-  String serviceFee;
-  String point;
-  String billTotal;
+  int itemTotal;
+  int serviceFee;
+  int point;
+  int billTotal;
   String doneActivityDate;
   String doneActivityTime;
   bool isCancelable;
+  String cancelReason;
+  int feedbackStatus;
+  int feedbackType;
+  double ratingFeedback;
   FormzStatus stateStatus;
 
   RequestDetailState copyWith({
@@ -86,13 +93,17 @@ class RequestDetailState extends Equatable {
     String? scrapCategoryImageUrl,
     String? note,
     List<TransactionItem>? transaction,
-    String? itemTotal,
-    String? serviceFee,
-    String? point,
-    String? billTotal,
+    int? itemTotal,
+    int? serviceFee,
+    int? point,
+    int? billTotal,
     String? doneActivityDate,
     String? doneActivityTime,
     bool? isCancelable,
+    String? cancelReason,
+    int? feedbackStatus,
+    int? feedbackType,
+    double? ratingFeedback,
     FormzStatus? stateStatus,
   }) {
     var state = RequestDetailState(
@@ -102,7 +113,6 @@ class RequestDetailState extends Equatable {
       collectingRequestCode:
           collectingRequestCode ?? this.collectingRequestCode,
       status: status ?? this.status,
-      ratingStar: ratingStar ?? this.ratingStar,
       collectorName: collectorName ?? this.collectorName,
       collectorPhoneNumber: collectorPhoneNumber ?? this.collectorPhoneNumber,
       collectorRating: collectorRating ?? this.collectorRating,
@@ -127,6 +137,10 @@ class RequestDetailState extends Equatable {
       doneActivityDate: doneActivityDate ?? this.doneActivityDate,
       doneActivityTime: doneActivityTime ?? this.doneActivityTime,
       isCancelable: isCancelable ?? this.isCancelable,
+      cancelReason: cancelReason ?? this.cancelReason,
+      feedbackStatus: feedbackStatus ?? this.feedbackStatus,
+      feedbackType: feedbackType ?? this.feedbackType,
+      ratingFeedback: ratingFeedback ?? this.ratingFeedback,
       stateStatus: stateStatus ?? this.stateStatus,
     );
     return state;
@@ -139,7 +153,6 @@ class RequestDetailState extends Equatable {
         createdTime,
         collectingRequestCode,
         status,
-        ratingStar,
         collectorName,
         collectorPhoneNumber,
         collectorRating,
@@ -162,24 +175,31 @@ class RequestDetailState extends Equatable {
         doneActivityDate,
         doneActivityTime,
         isCancelable,
+        cancelReason,
+        feedbackStatus,
+        feedbackType,
+        ratingFeedback,
         stateStatus,
       ];
 }
 
 class TransactionItem extends Equatable {
   TransactionItem({
-    required this.name,
+    this.name = Symbols.empty,
     this.unitInfo = '-',
+    this.quantity = 0,
     required this.total,
   });
   String name;
   String unitInfo;
-  String total;
+  int quantity;
+  int total;
 
   @override
-  List<String> get props => [
+  List<Object> get props => [
         name,
         unitInfo,
+        quantity,
         total,
       ];
 }

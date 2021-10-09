@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 RequestDetailResponseModel requestDetailResponseModelFromJson(String str) =>
     RequestDetailResponseModel.fromJson(json.decode(str));
@@ -52,6 +53,7 @@ class ResData {
     required this.isBulky,
     this.scrapCategoryImageUrl,
     this.note,
+    this.cancelReasoin,
     this.transaction,
     this.doneActivityDate,
     this.doneActivityTime,
@@ -63,7 +65,7 @@ class ResData {
   String createdTime;
   String collectingRequestCode;
   int status;
-  dynamic collectorInfo;
+  CollectorInfo? collectorInfo;
   String addressName;
   String address;
   String collectingRequestDate;
@@ -74,7 +76,8 @@ class ResData {
   bool isBulky;
   String? scrapCategoryImageUrl;
   String? note;
-  dynamic transaction;
+  String? cancelReasoin;
+  Transaction? transaction;
   String? doneActivityDate;
   String? doneActivityTime;
   bool isCancelable;
@@ -85,7 +88,9 @@ class ResData {
         createdTime: json["createdTime"],
         collectingRequestCode: json["collectingRequestCode"],
         status: json["status"],
-        collectorInfo: json["collectorInfo"],
+        collectorInfo: json["collectorInfo"] == null
+            ? null
+            : CollectorInfo.fromJson(json["collectorInfo"]),
         addressName: json["addressName"],
         address: json["address"],
         collectingRequestDate: json["collectingRequestDate"],
@@ -96,9 +101,106 @@ class ResData {
         isBulky: json["isBulky"],
         scrapCategoryImageUrl: json["scrapCategoryImageUrl"],
         note: json["note"],
-        transaction: json["transaction"],
+        cancelReasoin: json["cancelReasoin"],
+        transaction: json["transaction"] == null
+            ? null
+            : Transaction.fromJson(json["transaction"]),
         doneActivityDate: json["doneActivityDate"],
         doneActivityTime: json["doneActivityTime"],
         isCancelable: json["isCancelable"],
+      );
+}
+
+class CollectorInfo {
+  CollectorInfo({
+    required this.name,
+    this.imageUrl,
+    required this.phone,
+    this.rating,
+  });
+
+  String name;
+  String? imageUrl;
+  String phone;
+  double? rating;
+
+  factory CollectorInfo.fromJson(Map<String, dynamic> json) => CollectorInfo(
+        name: json["name"],
+        imageUrl: json["imageURL"],
+        phone: json["phone"],
+        rating: json["rating"].toDouble(),
+      );
+}
+
+class Transaction {
+  Transaction({
+    required this.transactionId,
+    required this.transactionDate,
+    required this.transactionTime,
+    required this.total,
+    required this.fee,
+    required this.awardPoint,
+    required this.feedbackInfo,
+    required this.details,
+  });
+
+  String transactionId;
+  String transactionDate;
+  String transactionTime;
+  int total;
+  int fee;
+  int awardPoint;
+  FeedbackInfo feedbackInfo;
+  List<Detail> details;
+
+  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
+        transactionId: json["transactionId"],
+        transactionDate: json["transactionDate"],
+        transactionTime: json["transactionTime"],
+        total: json["total"],
+        fee: json["fee"],
+        awardPoint: json["awardPoint"],
+        feedbackInfo: FeedbackInfo.fromJson(json["feedbackInfo"]),
+        details:
+            List<Detail>.from(json["details"].map((x) => Detail.fromJson(x))),
+      );
+}
+
+class Detail {
+  Detail({
+    this.scrapCategoryName,
+    this.quantity,
+    this.unit,
+    required this.total,
+  });
+
+  String? scrapCategoryName;
+  int? quantity;
+  String? unit;
+  int total;
+
+  factory Detail.fromJson(Map<String, dynamic> json) => Detail(
+        scrapCategoryName: json["scrapCategoryName"],
+        quantity: json["quantity"],
+        unit: json["unit"],
+        total: json["total"],
+      );
+}
+
+class FeedbackInfo {
+  FeedbackInfo({
+    required this.feedbackStatus,
+    this.feedbackType,
+    this.ratingFeedback,
+  });
+
+  int feedbackStatus;
+  int? feedbackType;
+  double? ratingFeedback;
+
+  factory FeedbackInfo.fromJson(Map<String, dynamic> json) => FeedbackInfo(
+        feedbackStatus: json["feedbackStatus"],
+        feedbackType: json["feedbackType"],
+        ratingFeedback: json["ratingFeedback"].toDouble(),
       );
 }

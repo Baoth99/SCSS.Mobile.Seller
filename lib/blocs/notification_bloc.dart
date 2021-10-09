@@ -73,6 +73,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         );
       }
     } else if (event is NotificationRefresh) {
+      add(NotificationUncountGet());
+
       int pageSize = initialAbstractPage * sizeList;
 
       try {
