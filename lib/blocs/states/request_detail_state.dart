@@ -21,6 +21,7 @@ class RequestDetailState extends Equatable {
     this.isBulky = false,
     this.scrapCategoryImageUrl,
     this.note = Symbols.empty,
+    this.transactionId = Symbols.empty,
     List<TransactionItem>? transaction,
     this.itemTotal = 0,
     this.serviceFee = 0,
@@ -58,6 +59,7 @@ class RequestDetailState extends Equatable {
   bool isBulky;
   String? scrapCategoryImageUrl;
   String note;
+  String transactionId;
   late List<TransactionItem> transaction;
   int itemTotal;
   int serviceFee;
@@ -92,6 +94,7 @@ class RequestDetailState extends Equatable {
     bool? isBulky,
     String? scrapCategoryImageUrl,
     String? note,
+    transactionId,
     List<TransactionItem>? transaction,
     int? itemTotal,
     int? serviceFee,
@@ -129,6 +132,7 @@ class RequestDetailState extends Equatable {
       scrapCategoryImageUrl:
           scrapCategoryImageUrl ?? this.scrapCategoryImageUrl,
       note: note ?? this.note,
+      transactionId: transactionId ?? this.transactionId,
       transaction: transaction ?? this.transaction,
       itemTotal: itemTotal ?? this.itemTotal,
       serviceFee: serviceFee ?? this.serviceFee,
@@ -167,6 +171,7 @@ class RequestDetailState extends Equatable {
         isBulky,
         scrapCategoryImageUrl,
         note,
+        transactionId,
         transaction,
         itemTotal,
         serviceFee,
