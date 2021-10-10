@@ -55,6 +55,7 @@ class ResData {
     this.note,
     this.cancelReasoin,
     this.transaction,
+    required this.feedbackToSystemInfo,
     this.doneActivityDate,
     this.doneActivityTime,
     required this.isCancelable,
@@ -78,6 +79,7 @@ class ResData {
   String? note;
   String? cancelReasoin;
   Transaction? transaction;
+  FeedbackToSystemInfo feedbackToSystemInfo;
   String? doneActivityDate;
   String? doneActivityTime;
   bool isCancelable;
@@ -105,6 +107,8 @@ class ResData {
         transaction: json["transaction"] == null
             ? null
             : Transaction.fromJson(json["transaction"]),
+        feedbackToSystemInfo:
+            FeedbackToSystemInfo.fromJson(json["feedbackToSystemInfo"]),
         doneActivityDate: json["doneActivityDate"],
         doneActivityTime: json["doneActivityTime"],
         isCancelable: json["isCancelable"],
@@ -128,7 +132,7 @@ class CollectorInfo {
         name: json["name"],
         imageUrl: json["imageURL"],
         phone: json["phone"],
-        rating: json["rating"].toDouble(),
+        rating: json["rating"] == null ? 0.0 : json["rating"].toDouble(),
       );
 }
 
@@ -201,6 +205,27 @@ class FeedbackInfo {
   factory FeedbackInfo.fromJson(Map<String, dynamic> json) => FeedbackInfo(
         feedbackStatus: json["feedbackStatus"],
         feedbackType: json["feedbackType"],
-        ratingFeedback: json["ratingFeedback"].toDouble(),
+        ratingFeedback: json["ratingFeedback"] == null
+            ? 0.0
+            : json["ratingFeedback"].toDouble(),
+      );
+}
+
+class FeedbackToSystemInfo {
+  FeedbackToSystemInfo({
+    required this.feedbackStatus,
+    this.sellingFeedback,
+    this.adminReply,
+  });
+
+  int feedbackStatus;
+  String? sellingFeedback;
+  String? adminReply;
+
+  factory FeedbackToSystemInfo.fromJson(Map<String, dynamic> json) =>
+      FeedbackToSystemInfo(
+        feedbackStatus: json["feedbackStatus"],
+        sellingFeedback: json["sellingFeedback"],
+        adminReply: json["adminReply"],
       );
 }

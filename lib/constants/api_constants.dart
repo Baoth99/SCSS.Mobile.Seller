@@ -74,6 +74,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}notification/unread-count';
   static final notificationRead =
       '${EnvBaseAppSettingValue.baseApiUrl}notification/read';
+  static final feedbackAdmin =
+      '${EnvBaseAppSettingValue.baseApiUrl}feedback/feedback-admin/create';
 }
 
 class InvalidRequestCode {

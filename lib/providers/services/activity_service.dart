@@ -4,6 +4,7 @@ import 'package:seller_app/blocs/request_detail_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/activity_network.dart';
+import 'package:seller_app/providers/networks/models/request/feedback_admin_request_model.dart';
 
 abstract class ActivityService {
   Future<List<Activity>> getListActivityByStatus(
@@ -13,6 +14,8 @@ abstract class ActivityService {
   );
 
   Future<RequestDetailState?> getRequetsDetail(String id);
+
+  Future<bool> feedbackAdmin(String requetsId, String sellingFeedback);
 }
 
 class ActivityServiceImpl implements ActivityService {
@@ -115,12 +118,31 @@ class ActivityServiceImpl implements ActivityService {
         collectorPhoneNumber: d.collectorInfo?.phone ?? Symbols.empty,
         collectorAvatarUrl: d.collectorInfo?.imageUrl ?? Symbols.empty,
         feedbackStatus: d.transaction?.feedbackInfo.feedbackStatus ?? 0,
-        feedbackType: d.transaction?.feedbackInfo.feedbackType ?? 0,
         ratingFeedback: d.transaction?.feedbackInfo.ratingFeedback ?? 0,
         cancelReason: d.cancelReasoin ?? Symbols.empty,
+        feedbackToSystemInfo: FeedbackToSystemInfo(
+          feedbackStatus: d.feedbackToSystemInfo.feedbackStatus,
+          sellingFeedback:
+              d.feedbackToSystemInfo.sellingFeedback ?? Symbols.empty,
+          adminReply: d.feedbackToSystemInfo.adminReply ?? Symbols.empty,
+        ),
       );
       return result;
     }
     return null;
+  }
+
+  @override
+  Future<bool> feedbackAdmin(String requetsId, String sellingFeedback) async {
+    Client client = Client();
+    var result = await _activityNetwork
+        .feedbackAdmin(
+            FeedbackAdminRequestModel(
+                collectingRequestId: requetsId,
+                sellingFeedback: sellingFeedback),
+            client)
+        .whenComplete(() => client.close());
+
+    return result.isSuccess! && result.statusCode == NetworkConstants.ok200;
   }
 }

@@ -36,3 +36,17 @@ extension DoubleExtension on double {
     return toStringAsFixed(1);
   }
 }
+
+extension DynamicExtension on dynamic {
+  double? toDoubleOrNull() {
+    if (this == null) {
+      return null;
+    }
+
+    try {
+      return this.toDouble();
+    } catch (e) {
+      return null;
+    }
+  }
+}
