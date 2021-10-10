@@ -6,4 +6,6 @@ class RequestDetailEvent extends AbstractEvent {
 
 class RequestDetailInitial extends RequestDetailEvent {}
 
+class RequestDetailAfterCanceled extends RequestDetailEvent {}
+
 class RequestDetailInitialTest extends RequestDetailEvent {}

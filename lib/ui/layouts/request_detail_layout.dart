@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seller_app/blocs/cancel_request_bloc.dart';
 import 'package:seller_app/blocs/feedback_admin_bloc.dart';
 import 'package:seller_app/blocs/request_detail_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
@@ -161,22 +162,26 @@ class RequestDetailLayout extends StatelessWidget {
         bottom: 40.h,
         top: 40.h,
       ),
-      child: CommonMarginContainer(
-        child: ElevatedButton(
-          onPressed: _cancelPressed(context),
-          style: ElevatedButton.styleFrom(
-            primary: AppColors.orangeFFF5670A,
-            minimumSize: Size(
-              double.infinity,
-              WidgetConstants.buttonCommonHeight.h,
+      child: BlocBuilder<RequestDetailBloc, RequestDetailState>(
+        builder: (context, state) {
+          return CommonMarginContainer(
+            child: ElevatedButton(
+              onPressed: _cancelPressed(context, state.id),
+              style: ElevatedButton.styleFrom(
+                primary: AppColors.orangeFFF5670A,
+                minimumSize: Size(
+                  double.infinity,
+                  WidgetConstants.buttonCommonHeight.h,
+                ),
+              ),
+              child: CustomText(
+                text: 'Hủy đơn hẹn',
+                fontSize: WidgetConstants.buttonCommonFrontSize.sp,
+                fontWeight: WidgetConstants.buttonCommonFrontWeight,
+              ),
             ),
-          ),
-          child: CustomText(
-            text: 'Hủy đơn hẹn',
-            fontSize: WidgetConstants.buttonCommonFrontSize.sp,
-            fontWeight: WidgetConstants.buttonCommonFrontWeight,
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -230,18 +235,76 @@ class RequestDetailLayout extends StatelessWidget {
     );
   }
 
-  void Function() _cancelPressed(BuildContext context) {
+  void Function() _cancelPressed(BuildContext context, String requestId) {
     return () {
       FunctionalWidgets.showCustomModalBottomSheet(
         context: context,
-        child: _getCancelWidget(context),
+        child: BlocProvider(
+          create: (context) => CancelRequestBloc(requestId: requestId),
+          child: const CancelRequestWidget(),
+        ),
         title: 'Hủy Đơn Hẹn',
         routeClosed: Routes.requestDetail,
-      );
+      ).then((value) {
+        if (value != null && value) {
+          context.read<RequestDetailBloc>().add(RequestDetailAfterCanceled());
+        }
+      });
     };
   }
+}
 
-  Widget _getCancelWidget(BuildContext context) {
+class CancelRequestWidget extends StatelessWidget {
+  const CancelRequestWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<CancelRequestBloc, CancelRequestState>(
+      listener: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          showDialog(
+            context: context,
+            builder: (context) => const CustomProgressIndicatorDialog(),
+          );
+        }
+
+        if (state.status.isSubmissionSuccess) {
+          Navigator.pop(context);
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.success,
+            title: 'Thông Báo',
+            text: 'Hủy yêu cầu thu gom thành công',
+            confirmBtnColor: AppColors.greenFF61C53D,
+            confirmBtnText: 'Đóng',
+            onConfirmBtnTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
+            },
+          );
+        }
+        if (state.status.isSubmissionFailure) {
+          Navigator.pop(context);
+
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            title: 'Thông Báo',
+            text: 'Có lỗi đến từ hệ thống',
+            confirmBtnColor: AppColors.greenFF61C53D,
+            confirmBtnText: 'Đóng',
+            onConfirmBtnTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(false);
+            },
+          );
+        }
+      },
+      child: _body(context),
+    );
+  }
+
+  Widget _body(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -275,12 +338,17 @@ class RequestDetailLayout extends StatelessWidget {
             ],
           ),
         ),
-        const CommonMarginContainer(
+        CommonMarginContainer(
           child: TextField(
+            onChanged: (value) {
+              context.read<CancelRequestBloc>().add(
+                    CancelReasonChanged(value),
+                  );
+            },
             keyboardType: TextInputType.multiline,
             maxLines: 5,
             maxLength: 200,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Lý do hủy',
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -298,20 +366,30 @@ class RequestDetailLayout extends StatelessWidget {
           ),
         ),
         CommonMarginContainer(
-          child: ElevatedButton(
-            onPressed: () {},
-            child: CustomText(
-              text: 'Đồng ý',
-              fontSize: WidgetConstants.buttonCommonFrontSize.sp,
-              fontWeight: WidgetConstants.buttonCommonFrontWeight,
-            ),
-            style: ElevatedButton.styleFrom(
-              minimumSize: Size(
-                double.infinity,
-                WidgetConstants.buttonCommonHeight.h,
-              ),
-              primary: AppColors.greenFF61C53D,
-            ),
+          child: BlocBuilder<CancelRequestBloc, CancelRequestState>(
+            builder: (context, state) {
+              return ElevatedButton(
+                onPressed: state.status.isValid
+                    ? () {
+                        context.read<CancelRequestBloc>().add(
+                              CancelRequestSubmmited(),
+                            );
+                      }
+                    : null,
+                child: CustomText(
+                  text: 'Đồng ý',
+                  fontSize: WidgetConstants.buttonCommonFrontSize.sp,
+                  fontWeight: WidgetConstants.buttonCommonFrontWeight,
+                ),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(
+                    double.infinity,
+                    WidgetConstants.buttonCommonHeight.h,
+                  ),
+                  primary: AppColors.greenFF61C53D,
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -1353,7 +1431,7 @@ class FeedbackAdminWidget extends StatelessWidget {
           Navigator.pop(context);
           CoolAlert.show(
             context: context,
-            type: CoolAlertType.error,
+            type: CoolAlertType.success,
             title: 'Thông Báo',
             text: 'Bạn đã gửi phản hồi đến hệ thống',
             confirmBtnColor: AppColors.greenFF61C53D,

@@ -76,6 +76,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}notification/read';
   static final feedbackAdmin =
       '${EnvBaseAppSettingValue.baseApiUrl}feedback/feedback-admin/create';
+  static final cancelRequest =
+      '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/cancel';
 }
 
 class InvalidRequestCode {

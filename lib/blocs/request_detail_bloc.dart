@@ -70,6 +70,8 @@ class RequestDetailBloc extends Bloc<RequestDetailEvent, RequestDetailState> {
           stateStatus: FormzStatus.submissionFailure,
         );
       }
+    } else if (event is RequestDetailAfterCanceled) {
+      add(RequestDetailInitial());
     }
   }
 

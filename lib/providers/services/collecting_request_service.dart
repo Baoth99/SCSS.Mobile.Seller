@@ -7,6 +7,7 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/exceptions/custom_exceptions.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/collecting_request_network.dart';
+import 'package:seller_app/providers/networks/models/request/cancel_request_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/send_request_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/send_request_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -29,6 +30,8 @@ abstract class CollectingRequestService {
   Future<bool> getRequestAbility();
 
   Future<List<TimeOfDay>> getOperatingTime();
+
+  Future<bool> cancelRequest(String requestId, String cancelReason);
 }
 
 class CollectingRequestServiceImpl implements CollectingRequestService {
@@ -156,5 +159,22 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
       return [fromTime, toTime];
     }
     throw Exception('Do not have operating time');
+  }
+
+  @override
+  Future<bool> cancelRequest(String requestId, String cancelReason) async {
+    Client client = Client();
+    var responseModel = await _collectingRequestNetwork
+        .cancelRequest(
+          CancelRequestRequestModel(
+            id: requestId,
+            cancelReason: cancelReason,
+          ),
+          client,
+        )
+        .whenComplete(() => client.close());
+
+    return responseModel.statusCode == NetworkConstants.ok200 &&
+        responseModel.isSuccess!;
   }
 }
