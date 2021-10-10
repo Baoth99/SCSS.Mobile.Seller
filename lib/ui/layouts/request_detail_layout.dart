@@ -544,7 +544,6 @@ class Feedback extends StatelessWidget {
         }
 
         if (state.status.isSubmissionSuccess) {
-          Navigator.pop(context);
           CoolAlert.show(
             context: context,
             type: CoolAlertType.success,
@@ -559,8 +558,6 @@ class Feedback extends StatelessWidget {
           );
         }
         if (state.status.isSubmissionFailure) {
-          Navigator.pop(context);
-
           CoolAlert.show(
             context: context,
             type: CoolAlertType.error,
