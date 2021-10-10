@@ -3,6 +3,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/api_constants.dart';
@@ -33,14 +34,23 @@ class RequestBulkyLayout extends StatelessWidget {
         }
 
         if (state.status.isSubmissionSuccess) {
-          FunctionalWidgets.showCoolAlert(
+          CoolAlert.show(
             context: context,
-            confirmBtnTapRoute: Routes.main,
             type: CoolAlertType.success,
             title: 'Thông Báo',
             text: 'Tạo yêu cầu thành công!',
             confirmBtnColor: AppColors.greenFF61C53D,
             confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
+            onConfirmBtnTap: () {
+              context.read<RequestBloc>().add(RequestStateInitial());
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                Routes.requestDetail,
+                ModalRoute.withName(Routes.main),
+                arguments: RequestDetailArguments(
+                  requestId: state.requestId,
+                ),
+              );
+            },
           );
         }
 

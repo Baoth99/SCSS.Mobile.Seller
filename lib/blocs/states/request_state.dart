@@ -11,6 +11,7 @@ class RequestState extends Equatable {
     required this.imageFile,
     this.status = FormzStatus.pure,
     this.errorCode = Symbols.empty,
+    this.requestId = Symbols.empty,
   });
 
   final RequestAddress address;
@@ -22,6 +23,7 @@ class RequestState extends Equatable {
   final File imageFile;
   final FormzStatus status;
   final String errorCode;
+  final String requestId;
 
   RequestState copyWith({
     RequestAddress? address,
@@ -33,6 +35,7 @@ class RequestState extends Equatable {
     File? imageFile,
     FormzStatus? status,
     String? errorCode,
+    String? requestId,
   }) {
     return RequestState(
       address: address ?? this.address,
@@ -44,6 +47,7 @@ class RequestState extends Equatable {
       imageFile: imageFile ?? this.imageFile,
       status: status ?? this.status,
       errorCode: errorCode ?? this.errorCode,
+      requestId: requestId ?? this.requestId,
     );
   }
 
@@ -64,5 +68,6 @@ class RequestState extends Equatable {
         imageFile,
         status,
         errorCode,
+        requestId,
       ];
 }
