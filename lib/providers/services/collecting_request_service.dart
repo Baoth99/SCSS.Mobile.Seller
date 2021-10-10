@@ -14,7 +14,7 @@ import 'package:seller_app/utils/common_utils.dart';
 
 abstract class CollectingRequestService {
   Future<List<DateTime>> getChosableDates();
-  Future<bool> sendRequest(
+  Future<String> sendRequest(
     String addressName,
     String address,
     double latitude,
@@ -61,7 +61,7 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
   }
 
   @override
-  Future<bool> sendRequest(
+  Future<String> sendRequest(
     String addressName,
     String address,
     double latitude,
@@ -114,7 +114,7 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
         .whenComplete(() => client.close());
     if (responseModle.statusCode == NetworkConstants.ok200 &&
         responseModle.isSuccess!) {
-      return true;
+      return responseModle.resData;
     } else if (responseModle.statusCode == NetworkConstants.badRequest400) {
       var data = responseModle.resData;
       if (data is List<SendRequestResDatum>) {
@@ -125,7 +125,7 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
         throw Exception(NetworkConstants.systemError);
       }
     }
-    return false;
+    throw Exception(NetworkConstants.systemError);
   }
 
   @override

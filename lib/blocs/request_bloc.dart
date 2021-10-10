@@ -125,16 +125,13 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           state.toTime,
         ).isValid) {
           //post data
-          bool result = await futureAppDuration<bool>(_sendRequest(state));
+          String result = await futureAppDuration<String>(_sendRequest(state));
 
           //success
-          if (result) {
-            //refresh
-            add(RequestStateInitial());
-
-            //
+          if (result.isNotEmpty) {
             yield state.copyWith(
               status: FormzStatus.submissionSuccess,
+              requestId: result,
             );
           } else {
             throw Exception();
@@ -163,7 +160,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     }
   }
 
-  Future<bool> _sendRequest(RequestState state) async {
+  Future<String> _sendRequest(RequestState state) async {
     return _collectingRequestService.sendRequest(
       state.address.value.name!,
       state.address.value.address!,

@@ -31,7 +31,7 @@ class SendRequestResponseModel extends BaseResponseModel {
         msgCode: json["msgCode"],
         msgDetail: json["msgDetail"],
         total: json["total"],
-        resData: json["resData"],
+        resData: json["resData"] as String,
       );
 
   factory SendRequestResponseModel.fromJson400(Map<String, dynamic> json) =>
