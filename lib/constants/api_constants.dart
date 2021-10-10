@@ -24,6 +24,9 @@ class IdentityAPIConstants {
   static final urlChangePassword =
       '${EnvID4AppSettingValue.apiUrl}api/identity/account/change-password';
 
+  static final accountSendOTP =
+      '${EnvID4AppSettingValue.apiUrl}api/identity/account/send-otp';
+
   //Query parameter name
   static const clientIdParamName = 'client_id';
   static const clientSecretParamName = 'client_secret';
@@ -78,6 +81,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}feedback/feedback-admin/create';
   static final cancelRequest =
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/cancel';
+  static final feedbackTransaction =
+      '${EnvBaseAppSettingValue.baseApiUrl}feedback/trans-feedback/create';
 }
 
 class InvalidRequestCode {

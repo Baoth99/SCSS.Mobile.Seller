@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/cancel_request_bloc.dart';
 import 'package:seller_app/blocs/feedback_admin_bloc.dart';
+import 'package:seller_app/blocs/feedback_transaction_bloc.dart';
 import 'package:seller_app/blocs/request_detail_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
@@ -482,23 +483,30 @@ class RequestDetailRating extends StatelessWidget {
           _getText('(1 là thất vọng, 5 là tuyệt vời)'),
           BlocBuilder<RequestDetailBloc, RequestDetailState>(
             builder: (context, state) {
-              return _getStarRaing(
+              return StarRating(
                 intialRating: state.ratingFeedback,
                 ignoreGestures:
                     (state.feedbackStatus == FeedbackStatus.haveGivenFeedback),
                 onRatingUpdate: (rating) {
                   FunctionalWidgets.showCustomModalBottomSheet(
                     context: context,
-                    child: _getFeedback(
-                      context,
-                      state.collectorAvatarUrl,
-                      state.collectorName,
-                      state.collectorPhoneNumber,
-                      rating,
+                    child: BlocProvider(
+                      create: (context) => FeedbackTransactionBloc(
+                        transactionId: state.transactionId,
+                        rates: rating,
+                      ),
+                      child: Feedback(
+                        state.collectorAvatarUrl,
+                        state.collectorName,
+                        state.collectorPhoneNumber,
+                        rating,
+                      ),
                     ),
                     routeClosed: Routes.requestDetail,
                     title: 'Đánh giá dịch vụ',
-                  );
+                  ).then((value) => context
+                      .read<RequestDetailBloc>()
+                      .add(RequestDetailInitial()));
                 },
               );
             },
@@ -508,13 +516,70 @@ class RequestDetailRating extends StatelessWidget {
     );
   }
 
-  Widget _getFeedback(
-    BuildContext context,
-    String image,
-    String name,
-    String phone,
-    double initialStar,
-  ) {
+  Widget _getText(String text) {
+    return CustomText(
+      text: text,
+      fontWeight: FontWeight.w500,
+      fontSize: 40.sp,
+    );
+  }
+}
+
+class Feedback extends StatelessWidget {
+  Feedback(this.image, this.name, this.phone, this.initialStar, {Key? key})
+      : super(key: key);
+  String image;
+  String name;
+  String phone;
+  double initialStar;
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<FeedbackTransactionBloc, FeedbackTransactionState>(
+      listener: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          showDialog(
+            context: context,
+            builder: (context) => const CustomProgressIndicatorDialog(),
+          );
+        }
+
+        if (state.status.isSubmissionSuccess) {
+          Navigator.pop(context);
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.success,
+            title: 'Thông Báo',
+            text: 'Cảm ơn bạn đã đánh giá',
+            confirmBtnColor: AppColors.greenFF61C53D,
+            confirmBtnText: 'Đóng',
+            onConfirmBtnTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
+            },
+          );
+        }
+        if (state.status.isSubmissionFailure) {
+          Navigator.pop(context);
+
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            title: 'Thông Báo',
+            text: 'Có lỗi đến từ hệ thống',
+            confirmBtnColor: AppColors.greenFF61C53D,
+            confirmBtnText: 'Đóng',
+            onConfirmBtnTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+          );
+        }
+      },
+      child: _body(context),
+    );
+  }
+
+  Widget _body(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -581,8 +646,12 @@ class RequestDetailRating extends StatelessWidget {
             vertical: 20.h,
           ),
         ),
-        _getStarRaing(
-          onRatingUpdate: (value) {},
+        StarRating(
+          onRatingUpdate: (value) {
+            context
+                .read<FeedbackTransactionBloc>()
+                .add(FeedbackRateChanged(value));
+          },
           intialRating: initialStar,
         ),
         Container(
@@ -595,12 +664,17 @@ class RequestDetailRating extends StatelessWidget {
             bottom: 20.h,
           ),
         ),
-        const CommonMarginContainer(
+        CommonMarginContainer(
           child: TextField(
+            onChanged: (value) {
+              context.read<FeedbackTransactionBloc>().add(
+                    FeedbackReviewChanged(value),
+                  );
+            },
             keyboardType: TextInputType.multiline,
             maxLines: null,
             maxLength: 200,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Hãy chia sẻ trải nghiệm của bạn nhé',
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -617,7 +691,11 @@ class RequestDetailRating extends StatelessWidget {
         ),
         CommonMarginContainer(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              context
+                  .read<FeedbackTransactionBloc>()
+                  .add(FeedbackTransactionSubmmited());
+            },
             child: CustomText(
               text: 'Gửi đánh giá',
               fontSize: WidgetConstants.buttonCommonFrontSize.sp,
@@ -635,12 +713,20 @@ class RequestDetailRating extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _getStarRaing({
-    bool ignoreGestures = false,
-    double intialRating = 0,
-    required void Function(double) onRatingUpdate,
-  }) {
+class StarRating extends StatelessWidget {
+  StarRating({
+    this.ignoreGestures = false,
+    this.intialRating = 0,
+    required this.onRatingUpdate,
+    Key? key,
+  }) : super(key: key);
+  bool ignoreGestures;
+  double intialRating;
+  void Function(double) onRatingUpdate;
+  @override
+  Widget build(BuildContext context) {
     return RatingBar.builder(
       initialRating: intialRating,
       minRating: 1,
@@ -648,20 +734,12 @@ class RequestDetailRating extends StatelessWidget {
       allowHalfRating: true,
       itemCount: 5,
       itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => const Icon(
+      itemBuilder: (_, __) => const Icon(
         Icons.star,
         color: Colors.amber,
       ),
       ignoreGestures: ignoreGestures,
       onRatingUpdate: onRatingUpdate,
-    );
-  }
-
-  Widget _getText(String text) {
-    return CustomText(
-      text: text,
-      fontWeight: FontWeight.w500,
-      fontSize: 40.sp,
     );
   }
 }
