@@ -3,10 +3,11 @@ import 'package:seller_app/utils/env_util.dart';
 class GoongMapAPIConstants {
   //URL
   static final urlPlacesSearchByKeywordURL =
-      '${EnvMapSettingValue.apiUrl}Place/AutoComplete';
-  static final urlReverseGeocoding = '${EnvMapSettingValue.apiUrl}Geocode';
+      '${EnvBaseAppSettingValue.baseApiUrl}map/place/autocomplete';
+  static final urlReverseGeocoding =
+      '${EnvBaseAppSettingValue.baseApiUrl}map/geocode';
   static final urlGetPlaceDetailById =
-      '${EnvMapSettingValue.apiUrl}Place/Detail';
+      '${EnvBaseAppSettingValue.baseApiUrl}map/place/detail';
 
   //Query parameter name
   static const apiKeyParamName = 'api_key';
