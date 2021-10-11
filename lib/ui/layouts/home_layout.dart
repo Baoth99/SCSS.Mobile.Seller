@@ -1,29 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/blocs/main_bloc.dart';
+import 'package:seller_app/blocs/models/gender_model.dart';
+import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeLayout extends StatelessWidget {
-  const HomeLayout({Key? key}) : super(key: key);
-
+  HomeLayout({Key? key, required this.tabController}) : super(key: key);
+  TabController tabController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AccountBody(),
+      body: AccountBody(
+        tabController: tabController,
+      ),
     );
   }
 }
 
 class AccountBody extends StatelessWidget {
-  const AccountBody({Key? key}) : super(key: key);
-
+  const AccountBody({Key? key, required this.tabController}) : super(key: key);
+  final TabController tabController;
   @override
   Widget build(BuildContext context) {
+    context.read<ProfileBloc>().add(ProfileInitial());
     return Column(
       children: [
         avatar(context),
-        waitToCollect(context, '8'),
+        waitToCollect(context),
       ],
     );
   }
@@ -44,73 +51,62 @@ class AccountBody extends StatelessWidget {
           tileMode: TileMode.repeated, // repeats the gradient over the canvas
         ),
       ),
-      child: Row(
-        children: [
-          Container(
-            child: AvatarWidget(
-              image: NetworkImage(
-                'https://cdn2.iconfinder.com/data/icons/flatfaces-everyday-people-square/128/beard_male_man_face_avatar-512.png',
-              ),
-              isMale: false,
-              width: 250,
-            ),
-            margin: EdgeInsets.only(
-                left: 70.w, top: 170.h, right: 40.w, bottom: 40.h),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          return Row(
             children: [
               Container(
-                child: CustomText(
-                  text: 'Vũ Xuân Thiên',
-                  color: AppColors.white,
-                  fontSize: 70.sp,
-                  fontWeight: FontWeight.w500,
+                child: AvatarWidget(
+                  image: state.imageProfile,
+                  isMale: state.gender == Gender.male,
+                  width: 250,
                 ),
-                margin: EdgeInsets.only(top: 170.h, right: 80.w, bottom: 20.h),
+                margin: EdgeInsets.only(
+                    left: 70.w, top: 170.h, right: 40.w, bottom: 40.h),
               ),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(right: 10.w),
-                    child: Icon(
-                      Icons.control_point_duplicate_outlined,
-                      color: Colors.amber,
-                      size: 50.sp,
+                    child: CustomText(
+                      text: state.name,
+                      color: AppColors.white,
+                      fontSize: 70.sp,
+                      fontWeight: FontWeight.w500,
                     ),
+                    margin:
+                        EdgeInsets.only(top: 170.h, right: 80.w, bottom: 20.h),
                   ),
-                  CustomText(
-                    text: '56',
-                    fontSize: 50.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.white,
-                  ),
-                  Container(
-                    child: Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 50.sp,
-                    ),
-                    margin: EdgeInsets.only(left: 40.w, right: 10.w),
-                  ),
-                  CustomText(
-                    text: '4.9',
-                    color: AppColors.white,
-                    fontSize: 50.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(right: 10.w),
+                        child: Icon(
+                          Icons.control_point_duplicate_outlined,
+                          color: Colors.amber,
+                          size: 50.sp,
+                        ),
+                      ),
+                      CustomText(
+                        text: '${state.totalPoint}',
+                        fontSize: 50.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.white,
+                      ),
+                    ],
+                  )
                 ],
-              )
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget waitToCollect(BuildContext context, String totalRequest) {
+  Widget waitToCollect(BuildContext context) {
     return Material(
       elevation: 1,
       child: Container(
@@ -122,7 +118,7 @@ class AccountBody extends StatelessWidget {
               Container(
                 padding: EdgeInsets.only(top: 30.h, left: 45.w),
                 child: CustomText(
-                  text: 'Yêu cầu chờ thu gom',
+                  text: 'Yêu cầu thu gom đã xác nhận',
                   fontSize: 45.sp,
                   fontWeight: FontWeight.w500,
                 ),
@@ -143,14 +139,20 @@ class AccountBody extends StatelessWidget {
               ],
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                context.read<MainBloc>().add(
+                      const MainBarItemTapped(MainLayoutConstants.activity),
+                    );
+
+                tabController.animateTo(1);
+              },
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.only(bottom: 20.h),
                       child: CustomText(
-                        text: 'Xem tất cả ' + totalRequest + ' yêu cầu',
+                        text: 'Xem tất cả yêu cầu',
                         fontSize: 45.sp,
                         fontWeight: FontWeight.w500,
                         textAlign: TextAlign.right,

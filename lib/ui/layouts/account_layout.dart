@@ -21,6 +21,7 @@ class AccountLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProfileBloc>().add(ProfileInitial());
     return BlocProvider<AccountBloc>(
       create: (context) => AccountBloc(),
       child: BlocListener<AccountBloc, AccountState>(
@@ -51,19 +52,13 @@ class AccountLayout extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: Color(0XFFF8F8F8),
-          body: BlocProvider(
-            create: (context) => ProfileBloc()
-              ..add(
-                ProfileInitial(),
-              ),
-            child: BlocBuilder<ProfileBloc, ProfileState>(
-              builder: (context, s) {
-                return s.status.isSubmissionSuccess ||
-                        s.status.isSubmissionFailure
-                    ? const AccountBody()
-                    : FunctionalWidgets.getLoadingAnimation();
-              },
-            ),
+          body: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, s) {
+              return s.status.isSubmissionSuccess ||
+                      s.status.isSubmissionFailure
+                  ? const AccountBody()
+                  : FunctionalWidgets.getLoadingAnimation();
+            },
           ),
         ),
       ),
@@ -106,8 +101,10 @@ class AccountBody extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                child:
-                    _getAvatarFutureBuilder(s.gender, s.image ?? Symbols.empty),
+                child: _getAvatarFutureBuilder(
+                  s.gender,
+                  s.imageProfile,
+                ),
                 margin: EdgeInsets.symmetric(
                   horizontal: 50.w,
                 ),
@@ -140,9 +137,9 @@ class AccountBody extends StatelessWidget {
                       ),
                       CustomText(
                         text: s.totalPoint.toString(),
-                        fontSize: 50.sp,
-                        fontWeight: FontWeight.w500,
                         color: Colors.white70,
+                        fontSize: 50.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                       Container(
                         child: Icon(
@@ -157,6 +154,8 @@ class AccountBody extends StatelessWidget {
                       CustomText(
                         text: s.phone,
                         color: Colors.white70,
+                        fontSize: 50.sp,
+                        fontWeight: FontWeight.w600,
                       ),
                     ],
                   )
@@ -169,42 +168,12 @@ class AccountBody extends StatelessWidget {
     );
   }
 
-  Widget _getAvatarFutureBuilder(Gender gender, String url) {
-    return FutureBuilder(
-      future:
-          url.isNotEmpty ? getMetaDataImage(url) : Future.value(Symbols.empty),
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data is! String) {
-          var data = snapshot.data;
-          if (data is List) {
-            var image = NetworkImage(data[0], headers: {
-              HttpHeaders.authorizationHeader: data[1],
-            });
-            return AvatarWidget(
-              image: image,
-              isMale: gender == Gender.male,
-              width: 250,
-            );
-          }
-        }
-        return AvatarWidget(
-          isMale: gender == Gender.male,
-          width: 250,
-        );
-      },
+  Widget _getAvatarFutureBuilder(Gender gender, ImageProvider<Object> image) {
+    return AvatarWidget(
+      image: image,
+      isMale: gender == Gender.male,
+      width: 250,
     );
-  }
-
-  Future<List> getMetaDataImage(String imagePath) async {
-    var bearerToken = NetworkUtils.getBearerToken();
-    var url = NetworkUtils.getUrlWithQueryString(
-      APIServiceURI.imageGet,
-      {'imageUrl': imagePath},
-    );
-    return [
-      url,
-      await bearerToken,
-    ];
   }
 
   Widget options(BuildContext context) {
@@ -230,7 +199,7 @@ class AccountBody extends StatelessWidget {
                     ),
                   )
                       .then((value) {
-                    context.read<ProfileBloc>().add(ProfileInitial());
+                    context.read<ProfileBloc>().add(ProfileInitialAll());
                   });
                 },
                 Colors.black,

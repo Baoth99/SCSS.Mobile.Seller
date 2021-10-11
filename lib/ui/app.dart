@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
+import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/ui/layouts/request_detail_layout.dart';
@@ -34,6 +35,9 @@ class SellerApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => NotificationBloc(),
+          ),
+          BlocProvider(
+            create: (context) => ProfileBloc(),
           ),
         ],
         child: MaterialApp(

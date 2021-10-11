@@ -1,7 +1,7 @@
 part of '../profile_bloc.dart';
 
 class ProfileState extends Equatable {
-  const ProfileState({
+  ProfileState({
     this.id = Symbols.empty,
     this.name = Symbols.empty,
     this.phone = Symbols.empty,
@@ -12,7 +12,15 @@ class ProfileState extends Equatable {
     this.image,
     this.totalPoint = 0,
     this.status = FormzStatus.pure,
-  });
+    ImageProvider<Object>? imageProfile,
+  }) {
+    this.imageProfile = imageProfile ??
+        AssetImage(
+          gender == Gender.male
+              ? ImagesPaths.maleProfile
+              : ImagesPaths.femaleProfile,
+        );
+  }
 
   final String id;
   final String name;
@@ -24,6 +32,7 @@ class ProfileState extends Equatable {
   final String? image;
   final int totalPoint;
   final FormzStatus status;
+  late ImageProvider<Object> imageProfile;
 
   ProfileState copyWith({
     String? name,
@@ -35,6 +44,7 @@ class ProfileState extends Equatable {
     String? image,
     int? totalPoint,
     FormzStatus? status,
+    ImageProvider<Object>? imageProfile,
   }) {
     return ProfileState(
       id: id,
@@ -47,6 +57,7 @@ class ProfileState extends Equatable {
       image: image ?? this.image,
       totalPoint: totalPoint ?? this.totalPoint,
       status: status ?? this.status,
+      imageProfile: imageProfile ?? this.imageProfile,
     );
   }
 
@@ -62,5 +73,6 @@ class ProfileState extends Equatable {
         image,
         totalPoint,
         status,
+        imageProfile,
       ];
 }

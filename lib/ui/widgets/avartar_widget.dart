@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/utils/common_utils.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
@@ -22,7 +20,7 @@ class AvatarWidget extends StatelessWidget {
     return Container(
       width: width.w,
       child: CircleAvatar(
-        radius: (width / 2).r,
+        radius: (width / 2.2).r,
         onForegroundImageError: (exception, stackTrace) => print(exception),
         foregroundImage: (image != null) ? image : getFalloutImage(),
         backgroundImage: getFalloutImage(),
@@ -31,7 +29,7 @@ class AvatarWidget extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           color: Colors.white,
-          width: 6.0,
+          width: 2.0,
         ),
       ),
     );
