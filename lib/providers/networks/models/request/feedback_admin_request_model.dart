@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-String feedbackTransactionRequestModelToJson(FeedbackAdminRequestModel data) =>
+String feedbackAdminRequestModelToJson(FeedbackAdminRequestModel data) =>
     json.encode(data.toJson());
 
 class FeedbackAdminRequestModel {

@@ -5,6 +5,7 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/activity_network.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_admin_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/feedback_transaction_requets_model.dart';
 
 abstract class ActivityService {
   Future<List<Activity>> getListActivityByStatus(
@@ -16,6 +17,8 @@ abstract class ActivityService {
   Future<RequestDetailState?> getRequetsDetail(String id);
 
   Future<bool> feedbackAdmin(String requetsId, String sellingFeedback);
+  Future<bool> feedbackTransaction(
+      String transactionId, double rate, String sellingReview);
 }
 
 class ActivityServiceImpl implements ActivityService {
@@ -126,6 +129,7 @@ class ActivityServiceImpl implements ActivityService {
               d.feedbackToSystemInfo.sellingFeedback ?? Symbols.empty,
           adminReply: d.feedbackToSystemInfo.adminReply ?? Symbols.empty,
         ),
+        transactionId: d.transaction?.transactionId ?? Symbols.empty,
       );
       return result;
     }
@@ -144,5 +148,23 @@ class ActivityServiceImpl implements ActivityService {
         .whenComplete(() => client.close());
 
     return result.isSuccess! && result.statusCode == NetworkConstants.ok200;
+  }
+
+  @override
+  Future<bool> feedbackTransaction(
+      String transactionId, double rate, String sellingReview) async {
+    Client client = Client();
+    var responseModel = await _activityNetwork
+        .feedbackTransaction(
+          FeedbackTransactionRequestModel(
+              sellCollectTransactionId: transactionId,
+              rate: rate,
+              sellingReview: sellingReview),
+          client,
+        )
+        .whenComplete(() => client.close());
+
+    return responseModel.isSuccess! &&
+        responseModel.statusCode == NetworkConstants.ok200;
   }
 }
