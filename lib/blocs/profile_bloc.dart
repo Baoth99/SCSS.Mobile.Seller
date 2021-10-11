@@ -42,6 +42,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
           if (newState != null) {
             yield state.copyWith(
+              id: newState.id,
               address: newState.address,
               birthDate: newState.birthDate,
               email: newState.email,

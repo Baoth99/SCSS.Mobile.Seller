@@ -202,7 +202,7 @@ class CollectingRequest extends StatelessWidget {
           color: AppColors.white,
           borderRadius: BorderRadius.circular(30.0.r),
           boxShadow: [
-            BoxShadow(
+            const BoxShadow(
               color: AppColors.greyFFDADADA,
               blurRadius: 2.0,
               spreadRadius: 0.0,

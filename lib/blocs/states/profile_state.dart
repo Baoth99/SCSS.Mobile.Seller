@@ -35,6 +35,7 @@ class ProfileState extends Equatable {
   late ImageProvider<Object> imageProfile;
 
   ProfileState copyWith({
+    String? id,
     String? name,
     String? phone,
     String? email,
@@ -47,7 +48,7 @@ class ProfileState extends Equatable {
     ImageProvider<Object>? imageProfile,
   }) {
     return ProfileState(
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
       phone: phone ?? this.phone,
       email: email ?? this.email,
