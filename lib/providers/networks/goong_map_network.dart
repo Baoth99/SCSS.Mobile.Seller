@@ -35,30 +35,21 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
     http.Client client,
   ) async {
     // query string in url
-    final queryParameters;
+    final Map<String, String> queryParameters;
+
+    queryParameters = {
+      'KeyWord': requestModel.predictValue,
+    };
 
     if (requestModel.latitude != null && requestModel.longitude != null) {
-      String locationValue = CommonUtils.concatString(
-        [
-          requestModel.latitude.toString(),
-          requestModel.longitude.toString(),
-        ],
-        Symbols.comma,
-      );
-
-      queryParameters = {
-        GoongMapAPIConstants.apiKeyParamName: EnvMapSettingValue.apiKey,
-        GoongMapAPIConstants.inputParamName: requestModel.predictValue,
-        GoongMapAPIConstants.locationParamName: locationValue
-      };
-    } else {
-      queryParameters = {
-        GoongMapAPIConstants.apiKeyParamName: EnvMapSettingValue.apiKey,
-        GoongMapAPIConstants.inputParamName: requestModel.predictValue,
-      };
+      queryParameters.addAll({
+        'Latitude': requestModel.latitude.toString(),
+        'Longtitude': requestModel.longitude.toString(),
+      });
     }
+
     // call api
-    var response = await NetworkUtils.getNetwork(
+    var response = await NetworkUtils.getNetworkWithBearer(
       uri: GoongMapAPIConstants.urlPlacesSearchByKeywordURL,
       client: client,
       queries: queryParameters,
@@ -77,23 +68,14 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
     ReverseGeocodingRequestModel requestModel,
     http.Client client,
   ) async {
-    // query string in url
-    final latlng = CommonUtils.concatString(
-      [
-        requestModel.latitude.toString(),
-        requestModel.longitude.toString(),
-      ],
-      Symbols.comma,
-    );
-
     // create query param
     final queryParameters = {
-      GoongMapAPIConstants.latlngParamName: latlng,
-      GoongMapAPIConstants.apiKeyParamName: EnvMapSettingValue.apiKey,
+      'Latitude': requestModel.latitude.toString(),
+      'Longtitude': requestModel.longitude.toString(),
     };
 
     // call api
-    var response = await NetworkUtils.getNetwork(
+    var response = await NetworkUtils.getNetworkWithBearer(
       uri: GoongMapAPIConstants.urlReverseGeocoding,
       client: client,
       queries: queryParameters,
@@ -113,12 +95,11 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
   ) async {
     // create query param
     final queryParameters = {
-      GoongMapAPIConstants.placeIdParamName: requestModel.placeId,
-      GoongMapAPIConstants.apiKeyParamName: EnvMapSettingValue.apiKey,
+      'placeid': requestModel.placeId,
     };
 
     // call api
-    var response = await NetworkUtils.getNetwork(
+    var response = await NetworkUtils.getNetworkWithBearer(
       uri: GoongMapAPIConstants.urlGetPlaceDetailById,
       client: client,
       queries: queryParameters,
