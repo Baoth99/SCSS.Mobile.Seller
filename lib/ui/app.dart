@@ -8,6 +8,7 @@ import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_time_bloc.dart';
+import 'package:seller_app/ui/layouts/forget_password_phone_number_layout.dart';
 import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/ui/layouts/main_layout.dart';
 import 'layouts/layouts.dart';
@@ -83,6 +84,8 @@ class SellerApp extends StatelessWidget {
             Routes.profileEdit: (_) => const ProfileEditLayout(),
             Routes.profilePasswordEdit: (_) =>
                 const ProfilePasswordEditLayout(),
+            Routes.editPasswordPhoneNumber: (_) =>
+                const ForgetPasswordPhoneNumberLayout(),
           },
         ),
       ),

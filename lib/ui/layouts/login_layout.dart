@@ -100,7 +100,11 @@ class _Body extends StatelessWidget {
           const _Form(),
           CustomTextButton(
             text: LoginLayoutConstants.forgetPassword,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                Routes.editPasswordPhoneNumber,
+              );
+            },
           ),
           Container(
             margin: EdgeInsets.symmetric(
