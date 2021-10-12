@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/forget_password_phonenumber_bloc.dart';
+import 'package:seller_app/ui/layouts/forget_password_otp_layout.dart';
 import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -158,7 +159,10 @@ class ForgetPasswordPhoneNumberLayout extends StatelessWidget {
     );
   }
 
-  void _onSubmit(BuildContext context) {}
+  void _onSubmit(BuildContext context) {
+    Navigator.of(context).pushNamed(Routes.forgetPasswordOTP,
+        arguments: ForgetPasswordOTPArgument('', ''));
+  }
 }
 
 class NextButton extends StatelessWidget {

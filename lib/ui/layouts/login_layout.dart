@@ -102,7 +102,7 @@ class _Body extends StatelessWidget {
             text: LoginLayoutConstants.forgetPassword,
             onPressed: () {
               Navigator.of(context).pushNamed(
-                Routes.editPasswordPhoneNumber,
+                Routes.forgetPasswordPhoneNumber,
               );
             },
           ),

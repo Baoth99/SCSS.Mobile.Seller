@@ -29,5 +29,6 @@ class Routes {
   static const profilePasswordEdit = 'profilePasswordEdit';
 
   //edit password
-  static const editPasswordPhoneNumber = 'editPasswordPhoneNumber';
+  static const forgetPasswordPhoneNumber = 'editPasswordPhoneNumber';
+  static const forgetPasswordOTP = 'forgetPasswordOTP';
 }
