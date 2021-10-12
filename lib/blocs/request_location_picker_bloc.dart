@@ -44,6 +44,7 @@ class RequestLocationPickerBloc
             status: FormzStatus.submissionSuccess,
           );
         } catch (e) {
+          print(e);
           yield state.copyWith(
             status: FormzStatus.submissionFailure,
           );

@@ -201,15 +201,15 @@ class _ActivityListDataState extends State<ActivityListData> {
         builder: (context, mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text("Kéo lên để tải thêm thông tin");
+            body = Text("");
           } else if (mode == LoadStatus.loading) {
             body = const CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text("Load Failed!Click retry!");
+            body = Text("");
           } else if (mode == LoadStatus.canLoading) {
-            body = Text("release to load more");
+            body = Text("");
           } else {
-            body = Text("No more Data");
+            body = Text("");
           }
           return Container(
             height: 55.0,
@@ -222,6 +222,10 @@ class _ActivityListDataState extends State<ActivityListData> {
       onLoading: _onLoading(context),
       child: isNotEmpty
           ? ListView.separated(
+              padding: EdgeInsets.only(
+                top: kFloatingActionButtonMargin + 5.h,
+                bottom: kFloatingActionButtonMargin + 48.h,
+              ),
               itemBuilder: (context, index) => _buildActivity(
                 state,
                 index,
@@ -258,6 +262,7 @@ class _ActivityListDataState extends State<ActivityListData> {
       fromTime: a.fromTime,
       toTime: a.toTime,
       placeName: a.addressName,
+      address: a.address,
       bulky: a.isBulky,
       privateStatus: a.status,
       tabStatus: tabStatus,
@@ -274,6 +279,7 @@ class CurrentActivity extends StatelessWidget {
     required this.fromTime,
     required this.toTime,
     required this.placeName,
+    required this.address,
     required this.bulky,
     required this.privateStatus,
     required this.tabStatus,
@@ -285,6 +291,7 @@ class CurrentActivity extends StatelessWidget {
   final String fromTime;
   final String toTime;
   final String placeName;
+  final String address;
   final bool bulky;
   final int privateStatus;
   final int tabStatus;
@@ -293,14 +300,20 @@ class CurrentActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 20.h),
+      margin: EdgeInsets.symmetric(vertical: 35.h),
       constraints: BoxConstraints(
         minHeight: 200.h,
       ),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
-        ),
+        color: AppColors.white,
+        boxShadow: [
+          const BoxShadow(
+            color: AppColors.greyFFDADADA,
+            blurRadius: 2.0,
+            spreadRadius: 0.0,
+            offset: Offset(2.0, 2.0), // shadow direction: bottom right
+          )
+        ],
         borderRadius: BorderRadius.circular(30.0.r),
       ),
       child: InkWell(
@@ -313,31 +326,38 @@ class CurrentActivity extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 25.w,
+                    horizontal: 30.w,
                   ),
                   child: Image.asset(
                     bulky
                         ? ActivityLayoutConstants.bulkyImage
                         : ActivityLayoutConstants.notBulkyImage,
-                    width: 65.w,
+                    width: 90.w,
                   ),
                   decoration: BoxDecoration(
                     color: bulky
-                        ? AppColors.yellowFFF3F09A
+                        ? AppColors.orangeFFF9CB79
                         : AppColors.greenFF66D095,
                   ),
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                    ),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                     constraints: BoxConstraints(minHeight: 130.h),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _getContainerColumn(
+                          CustomText(
+                            text: '$time, $fromTime-$toTime',
+                            color: Colors.green[600],
+                            fontSize: 42.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         _getContainerColumn(
                           CustomText(
                             text: placeName,
@@ -347,10 +367,10 @@ class CurrentActivity extends StatelessWidget {
                         ),
                         _getContainerColumn(
                           CustomText(
-                            text: '$time, $fromTime-$toTime',
-                            color: Colors.green[600],
-                            fontSize: 37.sp,
-                            fontWeight: FontWeight.w500,
+                            text: address,
+                            fontSize: 38.sp,
+                            fontWeight: FontWeight.w400,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         privateStatus == ActivityLayoutConstants.completed &&

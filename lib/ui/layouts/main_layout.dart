@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
+import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/account_layout.dart';
 import 'package:seller_app/ui/layouts/activity_layout.dart';
@@ -33,6 +34,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
 
     // Get number of  unread notifcation count
     context.read<NotificationBloc>().add(NotificationUncountGet());
+
+    //profile
+    context.read<ProfileBloc>().add(ProfileInitialAll());
   }
 
   @override
@@ -217,7 +221,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
             int index = state.screenIndex;
             switch (index) {
               case MainLayoutConstants.home:
-                return const HomeLayout();
+                return HomeLayout(
+                  tabController: tabController,
+                );
               case MainLayoutConstants.notification:
                 return const NotificationLayout();
               case MainLayoutConstants.activity:

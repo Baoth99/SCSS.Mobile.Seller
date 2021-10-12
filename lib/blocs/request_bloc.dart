@@ -90,24 +90,28 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     } else if (event is RequestStateInitial) {
       yield state.refresh();
     } else if (event is RequestAddressInitial) {
-      final currentLatLng = await acquireCurrentLocation();
-      if (currentLatLng != null) {
-        final model = await _goongMapService.getPlaceNameByLatlng(
-            currentLatLng.latitude, currentLatLng.longitude);
+      try {
+        final currentLatLng = await acquireCurrentLocation();
+        if (currentLatLng != null) {
+          final model = await _goongMapService.getPlaceNameByLatlng(
+              currentLatLng.latitude, currentLatLng.longitude);
 
-        var address = RequestAddress.dirty(
-          RequestAddressInfo(
-            address: model.address,
-            name: model.name,
-            latitude: currentLatLng.latitude,
-            longitude: currentLatLng.longitude,
-          ),
-        );
+          var address = RequestAddress.dirty(
+            RequestAddressInfo(
+              address: model.address,
+              name: model.name,
+              latitude: currentLatLng.latitude,
+              longitude: currentLatLng.longitude,
+            ),
+          );
 
-        yield state.copyWith(
-          address: address,
-          status: validate(address, state.date, state.fromTime, state.toTime),
-        );
+          yield state.copyWith(
+            address: address,
+            status: validate(address, state.date, state.fromTime, state.toTime),
+          );
+        }
+      } catch (e) {
+        print(e);
       }
     } else if (event is RequestSummited) {
       // show progress dialog
