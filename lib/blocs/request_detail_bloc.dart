@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/activity_service.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
@@ -41,7 +42,7 @@ class RequestDetailBloc extends Bloc<RequestDetailEvent, RequestDetailState> {
           throw Exception();
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           stateStatus: FormzStatus.submissionFailure,
         );
@@ -66,6 +67,7 @@ class RequestDetailBloc extends Bloc<RequestDetailEvent, RequestDetailState> {
           throw Exception();
         }
       } catch (e) {
+        AppLog.error(e);
         yield state.copyWith(
           stateStatus: FormzStatus.submissionFailure,
         );

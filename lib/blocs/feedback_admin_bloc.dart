@@ -4,6 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/feedback_admin_model.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/activity_service.dart';
 
@@ -33,7 +34,7 @@ class FeedbackAdminBloc extends Bloc<FeedbackAdminEvent, FeedbackAdminState> {
           status: Formz.validate([feedback]),
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     } else if (event is FeedbackAdminSubmmited) {
       try {
@@ -63,7 +64,7 @@ class FeedbackAdminBloc extends Bloc<FeedbackAdminEvent, FeedbackAdminState> {
           throw Exception('Feedback admin is not valid');
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           status: FormzStatus.submissionFailure,
         );

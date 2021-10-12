@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
@@ -21,7 +22,8 @@ class AvatarWidget extends StatelessWidget {
       width: width.w,
       child: CircleAvatar(
         radius: (width / 2.2).r,
-        onForegroundImageError: (exception, stackTrace) => print(exception),
+        onForegroundImageError: (exception, stackTrace) =>
+            AppLog.error(exception),
         foregroundImage: (image != null) ? image : getFalloutImage(),
         backgroundImage: getFalloutImage(),
       ),

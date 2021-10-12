@@ -5,6 +5,7 @@ import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
@@ -149,7 +150,7 @@ class IdentityServerServiceImpl implements IdentityServerService {
         );
       }
     }).catchError((error, stackTrace) {
-      print(error);
+      AppLog.error(error);
     });
 
     //get refresh Token

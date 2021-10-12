@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/ui/app.dart';
@@ -96,7 +97,7 @@ void handleMessage(RemoteMessage message) {
           default:
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     }
   }
@@ -107,12 +108,12 @@ Future<void> _firebaseOnRefreshToken(
   FirebaseMessaging.instance.onTokenRefresh.listen((deviceID) async {
     if (deviceID.isNotEmpty) {
       var result = await updateFunction(deviceID).catchError((e) {
-        print(e);
+        AppLog.error(e);
       });
-      print('Onrefreshtoken ${result}');
+      AppLog.info('Onrefreshtoken ${result}');
     }
   }).onError((e) {
-    print(e);
+    AppLog.error(e);
   });
 }
 
@@ -149,7 +150,7 @@ class FirebaseNotification {
     futureAppDuration(getToken().then((deviceID) async {
       if (deviceID != null && deviceID.isNotEmpty) {
         var result = await _identityServerService.updateDeviceId(deviceID);
-        print('Update token ${result}');
+        AppLog.info('Update token $result');
         if (!result) {
           throw Exception();
         }
@@ -157,7 +158,7 @@ class FirebaseNotification {
         throw Exception();
       }
     }).catchError((e) {
-      print(e);
+      AppLog.error(e);
     }));
   }
 

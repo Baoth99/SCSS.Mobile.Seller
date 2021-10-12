@@ -4,6 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/cancel_reason_model.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/collecting_request_service.dart';
 
@@ -34,7 +35,7 @@ class CancelRequestBloc extends Bloc<CancelRequestEvent, CancelRequestState> {
           status: Formz.validate([cancelReason]),
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     } else if (event is CancelRequestSubmmited) {
       try {
@@ -64,7 +65,7 @@ class CancelRequestBloc extends Bloc<CancelRequestEvent, CancelRequestState> {
           throw Exception('cancelReason is not valid');
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           status: FormzStatus.submissionFailure,
         );

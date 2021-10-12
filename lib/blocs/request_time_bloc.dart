@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/utils/common_utils.dart';
@@ -162,7 +163,7 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
         );
       } catch (e) {
         //turn off progress bar
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           blocStatus: FormzStatus.submissionFailure,
         );

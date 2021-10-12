@@ -197,7 +197,7 @@ class _AccountBodyState extends State<AccountBody> {
                       ],
                     );
                   } catch (e) {
-                    print(e);
+                    AppLog.error(e);
                     return _getEmptyActivity();
                   }
                 } else {

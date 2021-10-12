@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
 
@@ -44,7 +45,7 @@ class RequestLocationPickerBloc
             status: FormzStatus.submissionSuccess,
           );
         } catch (e) {
-          print(e);
+          AppLog.error(e);
           yield state.copyWith(
             status: FormzStatus.submissionFailure,
           );

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/notification_service.dart';
 import 'package:seller_app/utils/common_function.dart';
@@ -49,7 +50,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           }
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     } else if (event is NotificationGetFirst) {
       int pageSize = initialAbstractPage * sizeList;
@@ -67,7 +68,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           page: listNotificationData.isNotEmpty ? initialAbstractPage : 0,
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           screenStatus: FormzStatus.submissionFailure,
         );
@@ -89,7 +90,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           page: listNotificationData.isNotEmpty ? initialAbstractPage : 0,
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           refreshStatus: RefreshStatus.failed,
         );
@@ -109,7 +110,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           page: listNotificationData.isNotEmpty ? state.page + 1 : state.page,
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           loadStatus: LoadStatus.idle,
         );
@@ -121,7 +122,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           unreadCount: count,
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     }
   }

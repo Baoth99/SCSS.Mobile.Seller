@@ -8,6 +8,7 @@ import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/utils/common_function.dart';
@@ -57,6 +58,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             throw Exception();
           }
         } catch (e) {
+          AppLog.error(e);
           yield state.copyWith(
             status: FormzStatus.submissionFailure,
           );
@@ -74,7 +76,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           }
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     }
   }

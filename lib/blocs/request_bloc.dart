@@ -9,6 +9,7 @@ import 'package:seller_app/blocs/models/request_model.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/exceptions/custom_exceptions.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/collecting_request_service.dart';
 import 'package:seller_app/providers/services/goong_map_service.dart';
@@ -111,7 +112,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           );
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     } else if (event is RequestSummited) {
       // show progress dialog
@@ -142,7 +143,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           }
         }
       } on BadRequestException catch (exception) {
-        print(exception);
+        AppLog.warning(exception);
         //turn of dialog
         yield state.copyWith(
           status: FormzStatus.submissionFailure,
@@ -152,7 +153,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           status: FormzStatus.pure,
         );
       } on Exception catch (exception) {
-        print(exception);
+        AppLog.error(exception);
         //turn of dialog
         yield state.copyWith(
           status: FormzStatus.submissionFailure,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/activity_service.dart';
 
@@ -34,7 +35,7 @@ class FeedbackTransactionBloc
           review: event.review,
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     } else if (event is FeedbackRateChanged) {
       try {
@@ -42,7 +43,7 @@ class FeedbackTransactionBloc
           rate: event.rate,
         );
       } catch (e) {
-        print(e);
+        AppLog.error(e);
       }
     } else if (event is FeedbackTransactionSubmmited) {
       try {
@@ -60,7 +61,7 @@ class FeedbackTransactionBloc
           throw Exception('feedbackAdmin is false');
         }
       } catch (e) {
-        print(e);
+        AppLog.error(e);
         yield state.copyWith(
           status: FormzStatus.submissionFailure,
         );
