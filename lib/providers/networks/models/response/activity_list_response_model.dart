@@ -47,6 +47,7 @@ class ResDatum {
     required this.status,
     required this.isBulky,
     required this.addressName,
+    required this.address,
     this.total,
   });
 
@@ -58,6 +59,7 @@ class ResDatum {
   int status;
   bool isBulky;
   String addressName;
+  String address;
   int? total;
 
   factory ResDatum.fromJson(Map<String, dynamic> json) => ResDatum(
@@ -69,6 +71,7 @@ class ResDatum {
         status: json["status"],
         isBulky: json["isBulky"],
         addressName: json["addressName"],
+        address: json["address"],
         total: json["total"],
       );
 }

@@ -60,6 +60,7 @@ class ActivityServiceImpl implements ActivityService {
             status: m.status,
             isBulky: m.isBulky,
             addressName: m.addressName,
+            address: m.address,
             total: m.total,
           ),
         );

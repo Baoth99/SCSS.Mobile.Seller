@@ -68,6 +68,7 @@ class Activity extends Equatable {
     required this.status,
     required this.isBulky,
     required this.addressName,
+    required this.address,
     this.total,
   });
 
@@ -79,6 +80,7 @@ class Activity extends Equatable {
   int status;
   bool isBulky;
   String addressName;
+  String address;
   int? total;
 
   @override
@@ -91,6 +93,7 @@ class Activity extends Equatable {
         status,
         isBulky,
         addressName,
+        address,
         total,
       ];
 }
