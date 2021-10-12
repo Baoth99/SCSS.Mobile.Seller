@@ -31,4 +31,5 @@ class Routes {
   //edit password
   static const forgetPasswordPhoneNumber = 'editPasswordPhoneNumber';
   static const forgetPasswordOTP = 'forgetPasswordOTP';
+  static const forgetPasswordNewPassword = 'forgetPasswordNewPassword';
 }

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/signup_otp_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
+import 'package:seller_app/ui/layouts/forget_password_new_password_layout.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
@@ -62,14 +63,13 @@ class ForgetPasswordOTPLayout extends StatelessWidget {
             }
 
             if (state.status.isSubmissionSuccess) {
-              Navigator.of(context).popUntil(
-                (route) => route.settings.name == Routes.forgetPasswordOTP,
-              );
-              // Navigator.popAndPushNamed(
-              //   context,
-              //   Routes.signupInformation,
+              // Navigator.of(context).popUntil(
+              //   (route) => route.settings.name == Routes.forgetPasswordOTP,
               // );
-
+              Navigator.of(context).pushNamed(
+                Routes.forgetPasswordNewPassword,
+                arguments: ForgetPasswordNewPasswordArgs('43423'),
+              );
             }
 
             if (state.timerStatus == TimerStatus.resent) {
