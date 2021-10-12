@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/blocs/home_bloc.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
@@ -7,15 +8,20 @@ import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+import 'package:seller_app/ui/widgets/function_widgets.dart';
 
 class HomeLayout extends StatelessWidget {
   HomeLayout({Key? key, required this.tabController}) : super(key: key);
   TabController tabController;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AccountBody(
-        tabController: tabController,
+    return BlocProvider(
+      create: (context) => HomeBloc()..add(HomeInitial()),
+      child: Scaffold(
+        body: AccountBody(
+          tabController: tabController,
+        ),
       ),
     );
   }
@@ -30,7 +36,15 @@ class AccountBody extends StatelessWidget {
     return Column(
       children: [
         avatar(context),
-        waitToCollect(context),
+        BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return state.status.isSubmissionSuccess
+                ? waitToCollect(context)
+                : (state.status.isSubmissionInProgress || state.status.isPure)
+                    ? FunctionalWidgets.getLoadingAnimation()
+                    : FunctionalWidgets.getErrorIcon();
+          },
+        )
       ],
     );
   }
@@ -124,19 +138,34 @@ class AccountBody extends StatelessWidget {
                 ),
               ),
             ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Expanded(
-                  child: CollectingRequest(
-                    bookingId: 'SC00000001',
-                    bulky: false,
-                    time: 'Th 4, 25/08/2021  10:00 - 12:00',
-                    placeTitle: 'EJ Sporting House',
-                    placeName: 'Lô D chung cư Nguyễn Trãi, phường 8, quận 5',
-                  ),
-                )
-              ],
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                var a = state.activity;
+                if (a != null) {
+                  try {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: CollectingRequest(
+                            bookingId: a.collectingRequestId,
+                            bulky: a.isBulky,
+                            time:
+                                '${a.collectingRequestDate}, ${a.fromTime}-${a.toTime}',
+                            placeTitle: a.addressName,
+                            placeName: a.address,
+                          ),
+                        )
+                      ],
+                    );
+                  } catch (e) {
+                    print(e);
+                    return _getEmptyActivity();
+                  }
+                } else {
+                  return _getEmptyActivity();
+                }
+              },
             ),
             InkWell(
               onTap: () {
@@ -171,6 +200,13 @@ class AccountBody extends StatelessWidget {
               ),
             )
           ])),
+    );
+  }
+
+  Widget _getEmptyActivity() {
+    return Image.asset(
+      ImagesPaths.emptyActivityList,
+      height: 200.h,
     );
   }
 }
