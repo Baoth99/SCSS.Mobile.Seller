@@ -6,6 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/activity_list_bloc.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/common_scaffold_title.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -101,17 +102,22 @@ class ActivityList extends StatelessWidget {
     BuildContext context,
     ActivityListState state,
   ) {
-    switch (state.status) {
-      case ActivityListStatus.completed:
-        return ActivityListData(
-          tabStatus: status,
-        );
-      case ActivityListStatus.progress:
-        return FunctionalWidgets.getLoadingAnimation();
-      case ActivityListStatus.error:
-        return FunctionalWidgets.getErrorIcon();
-      default:
-        return const SizedBox.shrink();
+    try {
+      switch (state.status) {
+        case ActivityListStatus.completed:
+          return ActivityListData(
+            tabStatus: status,
+          );
+        case ActivityListStatus.progress:
+          return FunctionalWidgets.getLoadingAnimation();
+        case ActivityListStatus.error:
+          return FunctionalWidgets.getErrorIcon();
+        default:
+          return const SizedBox.shrink();
+      }
+    } catch (e) {
+      AppLog.error(e);
+      return FunctionalWidgets.getErrorIcon();
     }
   }
 }
@@ -137,8 +143,8 @@ class _ActivityListDataState extends State<ActivityListData> {
 
   @override
   void dispose() {
-    super.dispose();
     _refreshController.dispose();
+    super.dispose();
   }
 
   @override

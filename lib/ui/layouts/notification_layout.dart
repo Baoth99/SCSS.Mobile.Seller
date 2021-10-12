@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/common_scaffold_title.dart';
@@ -28,7 +29,7 @@ class NotificationLayout extends StatelessWidget {
         child: BlocBuilder<NotificationBloc, NotificationState>(
           builder: (context, state) {
             return state.screenStatus.isSubmissionSuccess
-                ? NotificationBody()
+                ? _getBody()
                 : state.screenStatus.isSubmissionInProgress
                     ? FunctionalWidgets.getLoadingAnimation()
                     : const SizedBox.shrink();
@@ -36,6 +37,15 @@ class NotificationLayout extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _getBody() {
+    try {
+      return NotificationBody();
+    } catch (e) {
+      AppLog.error(e);
+      return FunctionalWidgets.getErrorIcon();
+    }
   }
 }
 
