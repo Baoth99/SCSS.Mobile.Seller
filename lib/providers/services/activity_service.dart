@@ -19,6 +19,8 @@ abstract class ActivityService {
   Future<bool> feedbackAdmin(String requetsId, String sellingFeedback);
   Future<bool> feedbackTransaction(
       String transactionId, double rate, String sellingReview);
+
+  Future<Activity?> getNearestApprovedRequets();
 }
 
 class ActivityServiceImpl implements ActivityService {
@@ -167,5 +169,30 @@ class ActivityServiceImpl implements ActivityService {
 
     return responseModel.isSuccess! &&
         responseModel.statusCode == NetworkConstants.ok200;
+  }
+
+  @override
+  Future<Activity?> getNearestApprovedRequets() async {
+    Client client = Client();
+    var reseponseModel =
+        await _activityNetwork.getNearestApprovedRequest(client);
+
+    var activity;
+
+    var data = reseponseModel.resData;
+    if (data != null) {
+      activity = Activity(
+        collectingRequestId: data.collectingRequestId,
+        collectingRequestCode: data.collectingRequestCode,
+        collectingRequestDate: data.collectingRequestDate,
+        fromTime: data.fromTime,
+        toTime: data.toTime,
+        status: data.status,
+        isBulky: data.isBulky,
+        addressName: data.addressName,
+        address: data.address,
+      );
+    }
+    return activity;
   }
 }

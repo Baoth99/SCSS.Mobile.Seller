@@ -84,6 +84,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}collecting-request/cancel';
   static final feedbackTransaction =
       '${EnvBaseAppSettingValue.baseApiUrl}feedback/trans-feedback/create';
+  static final nearestApprovedRequest =
+      '${EnvBaseAppSettingValue.baseApiUrl}dashboard/nearest-approved-request';
 }
 
 class InvalidRequestCode {

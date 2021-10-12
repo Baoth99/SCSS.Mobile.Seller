@@ -5,6 +5,7 @@ import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_admin_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_transaction_requets_model.dart';
+import 'package:seller_app/providers/networks/models/request/nearest_approved_requets_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/activity_detail_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/activity_list_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
@@ -28,6 +29,10 @@ abstract class ActivityNetwork {
 
   Future<BaseResponseModel> feedbackTransaction(
       FeedbackTransactionRequestModel requestModel, Client client);
+
+  Future<NearestApprovedRequestResponseModel> getNearestApprovedRequest(
+    Client client,
+  );
 }
 
 class ActivityNetworkImpl implements ActivityNetwork {
@@ -116,6 +121,23 @@ class ActivityNetworkImpl implements ActivityNetwork {
       baseResponseModelFromJson,
     );
 
+    return responseModel;
+  }
+
+  @override
+  Future<NearestApprovedRequestResponseModel> getNearestApprovedRequest(
+      Client client) async {
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.nearestApprovedRequest,
+      client: client,
+    );
+    // get model
+    var responseModel =
+        await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+            NearestApprovedRequestResponseModel>(
+      response,
+      nearestApprovedRequestResponseModelFromJson,
+    );
     return responseModel;
   }
 }
