@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:seller_app/blocs/home_bloc.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,9 +30,43 @@ class HomeLayout extends StatelessWidget {
   }
 }
 
-class AccountBody extends StatelessWidget {
+class AccountBody extends StatefulWidget {
   const AccountBody({Key? key, required this.tabController}) : super(key: key);
   final TabController tabController;
+
+  @override
+  _AccountBodyState createState() => _AccountBodyState();
+}
+
+class _AccountBodyState extends State<AccountBody> {
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    try {
+      _timer = Timer.periodic(
+        const Duration(seconds: 10),
+        (timer) {
+          try {
+            context.read<HomeBloc>().add(HomeFetch());
+          } catch (e) {
+            AppLog.error(e);
+          }
+        },
+      );
+    } catch (e) {
+      AppLog.error(e);
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     context.read<ProfileBloc>().add(ProfileInitial());
@@ -124,10 +161,11 @@ class AccountBody extends StatelessWidget {
     return Material(
       elevation: 1,
       child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-          ),
-          child: Column(children: [
+        decoration: BoxDecoration(
+          color: AppColors.white,
+        ),
+        child: Column(
+          children: [
             Row(children: [
               Container(
                 padding: EdgeInsets.only(top: 30.h, left: 45.w),
@@ -167,46 +205,76 @@ class AccountBody extends StatelessWidget {
                 }
               },
             ),
-            InkWell(
-              onTap: () {
-                context.read<MainBloc>().add(
-                      const MainBarItemTapped(MainLayoutConstants.activity),
-                    );
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return state.activity != null
+                    ? InkWell(
+                        onTap: () {
+                          context.read<MainBloc>().add(
+                                const MainBarItemTapped(
+                                    MainLayoutConstants.activity),
+                              );
 
-                tabController.animateTo(1);
+                          widget.tabController.animateTo(1);
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 20.h),
+                                child: CustomText(
+                                  text: 'Xem tất cả yêu cầu',
+                                  fontSize: 45.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin:
+                                  EdgeInsets.only(right: 30.w, bottom: 20.h),
+                              child: Icon(
+                                Icons.chevron_right,
+                                color: AppColors.greyFF9098B1,
+                                size: 80.sp,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink();
               },
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 20.h),
-                      child: CustomText(
-                        text: 'Xem tất cả yêu cầu',
-                        fontSize: 45.sp,
-                        fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 30.w, bottom: 20.h),
-                    child: Icon(
-                      Icons.chevron_right,
-                      color: AppColors.greyFF9098B1,
-                      size: 80.sp,
-                    ),
-                  )
-                ],
-              ),
             )
-          ])),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _getEmptyActivity() {
-    return Image.asset(
-      ImagesPaths.emptyActivityList,
-      height: 200.h,
+    return Column(
+      children: [
+        SizedBox(
+          height: 200.h,
+        ),
+        Image.asset(
+          ImagesPaths.emptyActivityList,
+          height: 200.h,
+        ),
+        Container(
+          child: CustomText(
+            text: 'Chưa có yêu cầu',
+            fontSize: 40.sp,
+            fontWeight: FontWeight.w400,
+            color: Colors.grey[600],
+            textAlign: TextAlign.center,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: 100.w,
+            vertical: 50.w,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -32,7 +32,8 @@ class NearestApprovedRequestResponseModel extends BaseResponseModel {
         msgCode: json["msgCode"],
         msgDetail: json["msgDetail"],
         total: json["total"],
-        resData: ResData.fromJson(json["resData"]),
+        resData:
+            json["resData"] != null ? ResData.fromJson(json["resData"]) : null,
       );
 }
 
