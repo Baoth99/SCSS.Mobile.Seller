@@ -32,4 +32,7 @@ class Routes {
   static const forgetPasswordPhoneNumber = 'editPasswordPhoneNumber';
   static const forgetPasswordOTP = 'forgetPasswordOTP';
   static const forgetPasswordNewPassword = 'forgetPasswordNewPassword';
+
+  //splash screen
+  static const splashScreen = 'splashScreen';
 }

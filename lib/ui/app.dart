@@ -13,6 +13,7 @@ import 'package:seller_app/ui/layouts/forget_password_otp_layout.dart';
 import 'package:seller_app/ui/layouts/forget_password_phone_number_layout.dart';
 import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/ui/layouts/main_layout.dart';
+import 'package:seller_app/ui/layouts/splash_screen_layout.dart';
 import 'layouts/layouts.dart';
 import '../constants/constants.dart';
 
@@ -59,8 +60,11 @@ class SellerApp extends StatelessWidget {
             primaryColor: AppConstants.primaryColor,
             accentColor: AppConstants.accentColor,
           ),
-          initialRoute: Routes.initial,
+          initialRoute: Routes.splashScreen,
           routes: {
+            //Splash screen
+            Routes.splashScreen: (_) => SplashScreenLayout(),
+
             //login
             Routes.login: (_) => const LoginLayout(),
 
