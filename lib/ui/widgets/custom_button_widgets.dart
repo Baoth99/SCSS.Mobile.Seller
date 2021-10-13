@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/constants/constants.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -10,6 +11,7 @@ class CustomButton extends StatelessWidget {
     this.height,
     this.fontSize,
     this.color,
+    this.textColor,
     this.padding,
     this.margin,
     this.circularBorderRadius,
@@ -21,6 +23,7 @@ class CustomButton extends StatelessWidget {
   final double? height;
   final double? fontSize;
   final Color? color;
+  final Color? textColor;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final double? circularBorderRadius;
@@ -36,9 +39,12 @@ class CustomButton extends StatelessWidget {
           text,
           style: TextStyle(
             fontSize: fontSize,
+            color: textColor,
+            fontWeight: FontWeight.w700
           ),
         ),
         style: ElevatedButton.styleFrom(
+          shadowColor: AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(circularBorderRadius ?? 0.r),
           ),
