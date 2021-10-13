@@ -3,17 +3,17 @@ part of '../login_bloc.dart';
 class LoginState extends Equatable {
   const LoginState({
     this.phoneNumber = const LoginPhoneNumber.pure(),
-    this.password = const Password.pure(),
+    this.password = const PasswordLogin.pure(),
     this.status = FormzStatus.pure,
   });
 
   final LoginPhoneNumber phoneNumber;
-  final Password password;
+  final PasswordLogin password;
   final FormzStatus status;
 
   LoginState copyWith({
     LoginPhoneNumber? phoneNumber,
-    Password? password,
+    PasswordLogin? password,
     FormzStatus? status,
   }) {
     return LoginState(
