@@ -21,10 +21,7 @@ class LoginLayout extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc()
-          ..add(
-            LoginIntial(),
-          ),
+        create: (context) => LoginBloc(),
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state.status.isSubmissionInProgress) {
