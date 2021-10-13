@@ -12,6 +12,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class CommonUtils {
+  static String addZeroBeforePhoneNumber(String phoneNumber) {
+    if (phoneNumber.length == 9) {
+      phoneNumber = '0$phoneNumber';
+    }
+
+    return phoneNumber;
+  }
+
   static Future<List> getMetaDataImage(String imagePath) async {
     var bearerToken = NetworkUtils.getBearerToken();
     var url = NetworkUtils.getUrlWithQueryString(

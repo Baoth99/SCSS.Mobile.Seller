@@ -10,6 +10,7 @@ import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/restore_pass_otp_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/update_info_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
 import 'package:seller_app/providers/services/models/get_token_service_model.dart';
@@ -39,6 +40,8 @@ abstract class IdentityServerService {
     String? address,
     String? imageUrl,
   );
+
+  Future<bool> restorePassSendingOTP(String phoneNumber);
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -293,5 +296,20 @@ class IdentityServerServiceImpl implements IdentityServerService {
         );
 
     return result;
+  }
+
+  @override
+  Future<bool> restorePassSendingOTP(String phoneNumber) async {
+    phoneNumber = CommonUtils.addZeroBeforePhoneNumber(phoneNumber);
+
+    Client client = Client();
+    var result = await _identityServerNetwork
+        .restorePassOTP(
+          RestorePassOtpRequestModel(phone: phoneNumber),
+          client,
+        )
+        .whenComplete(() => client.close());
+
+    return result.isSuccess! && result.statusCode == NetworkConstants.ok200;
   }
 }

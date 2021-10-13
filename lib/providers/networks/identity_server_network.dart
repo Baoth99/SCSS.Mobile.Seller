@@ -6,6 +6,7 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/account_device_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/restore_pass_otp_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/update_info_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
@@ -52,6 +53,11 @@ abstract class IdentityServerNetwork {
   );
 
   Future<int?> updateInfo(UpdateInfoRequestModel requestModel, Client client);
+
+  Future<BaseResponseModel> restorePassOTP(
+    RestorePassOtpRequestModel requestModel,
+    Client client,
+  );
 }
 
 class IdentityServerNetworkImpl implements IdentityServerNetwork {
@@ -291,5 +297,28 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
     }
 
     return null;
+  }
+
+  @override
+  Future<BaseResponseModel> restorePassOTP(
+      RestorePassOtpRequestModel requestModel, Client client) async {
+    var response = await NetworkUtils.postBody(
+      uri: APIServiceURI.restorePassOTP,
+      headers: {
+        HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
+      },
+      body: restorePassOtpRequestModelToJson(
+        requestModel,
+      ),
+      client: client,
+    );
+
+    var responseModel =
+        await NetworkUtils.getModelOfResponseMainAPI<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
+    );
+
+    return responseModel;
   }
 }

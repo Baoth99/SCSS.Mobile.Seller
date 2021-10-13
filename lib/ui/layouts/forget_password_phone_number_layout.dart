@@ -1,7 +1,9 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/forget_password_phonenumber_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/ui/layouts/forget_password_otp_layout.dart';
 import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
@@ -30,20 +32,42 @@ class ForgetPasswordPhoneNumberLayout extends StatelessWidget {
               ForgetPasswordPhoneNumberState>(
             listener: (context, state) {
               if (state.status.isSubmissionSuccess) {
-                Navigator.of(context).popUntil(
-                  (route) => route.settings.name == Routes.signupPhoneNumber,
-                );
+                if (state.isExist) {
+                  // navigate to otp code
+                  Navigator.of(context).popAndPushNamed(
+                    Routes.signupOTP,
+                    arguments: SignupOTPArgument(
+                      Symbols.vietnamCallingCode,
+                      state.phoneNumber.value,
+                    ),
+                  );
+                } else {
+                  FunctionalWidgets.showCoolAlert(
+                    context: context,
+                    type: CoolAlertType.info,
+                    title: 'Thông Báo',
+                    text: 'Số điện thoại không có trong hệ thống',
+                    confirmBtnColor: AppColors.greenFF61C53D,
+                    confirmBtnText:
+                        SignupInformationLayoutConstants.btnDialogName,
+                    confirmBtnTapRoute: Routes.forgetPasswordPhoneNumber,
+                  );
+                }
+              }
 
-                // navigate to otp code
-                Navigator.pushNamed(
-                  context,
-                  Routes.signupOTP,
-                  arguments: SignupOTPArgument(
-                    Symbols.vietnamCallingCode,
-                    state.phoneNumber.value,
-                  ),
+              if (state.status.isSubmissionFailure) {
+                FunctionalWidgets.showCoolAlert(
+                  context: context,
+                  type: CoolAlertType.error,
+                  title: 'Thông Báo',
+                  text: InvalidRequestCode.errorSystem,
+                  confirmBtnColor: AppColors.greenFF61C53D,
+                  confirmBtnText:
+                      SignupInformationLayoutConstants.btnDialogName,
+                  confirmBtnTapRoute: Routes.forgetPasswordPhoneNumber,
                 );
               }
+
               if (state.status.isSubmissionInProgress) {
                 FunctionalWidgets.showCustomDialog(
                   context,
@@ -160,15 +184,16 @@ class ForgetPasswordPhoneNumberLayout extends StatelessWidget {
   }
 
   void _onSubmit(BuildContext context) {
-    Navigator.of(context).pushNamed(Routes.forgetPasswordOTP,
-        arguments: ForgetPasswordOTPArgument('', ''));
+    context.read<ForgetPasswordPhoneNumberBloc>().add(
+          ForgetPasswordPhoneNumberSubmmited(),
+        );
   }
 }
 
 class NextButton extends StatelessWidget {
-  const NextButton({Key? key, this.onSubmit}) : super(key: key);
+  const NextButton({Key? key, required this.onSubmit}) : super(key: key);
 
-  final void Function(BuildContext context)? onSubmit;
+  final void Function(BuildContext context) onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +205,7 @@ class NextButton extends StatelessWidget {
           text: PhoneNumberSignupLayoutConstants.next,
           onPressed: state.status.isValid
               ? () {
-                  onSubmit?.call(context);
+                  onSubmit.call(context);
                 }
               : null,
           fontSize: 55.sp,
