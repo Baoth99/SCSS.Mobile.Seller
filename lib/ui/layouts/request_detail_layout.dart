@@ -9,6 +9,7 @@ import 'package:seller_app/blocs/feedback_transaction_bloc.dart';
 import 'package:seller_app/blocs/request_detail_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -20,6 +21,7 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/ui/widgets/view_image_layout.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/extension_methods.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RequestDetailArguments {
   final String requestId;
@@ -961,8 +963,18 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                           ),
                         ],
                       ),
-                      _getLineInfo(
-                          Icons.phone_outlined, state.collectorPhoneNumber),
+                      GestureDetector(
+                        onTap: () async {
+                          var url = "tel:${state.collectorPhoneNumber}";
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            AppLog.error('Could not launch $url');
+                          }
+                        },
+                        child: _getLineInfo(
+                            Icons.phone_outlined, state.collectorPhoneNumber),
+                      ),
                     ],
                   ),
                 ),
