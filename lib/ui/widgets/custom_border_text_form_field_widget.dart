@@ -90,7 +90,7 @@ class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
           labelStyle: widget.labelStyle,
           hintText: widget.hintText,
           hintStyle: widget.hintStyle,
-          enabledBorder: OutlineInputBorder(
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(
               widget.cirularBorderRadius ?? 0.r,
             ),
