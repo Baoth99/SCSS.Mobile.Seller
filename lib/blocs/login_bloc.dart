@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/models.dart';
+import 'package:seller_app/blocs/models/password_login_model.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
@@ -41,7 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         ),
       );
     } else if (event is LoginPasswordChanged) {
-      var password = Password.dirty(
+      var password = PasswordLogin.dirty(
         password: state.password.value.copyWith(
           value: event.password,
         ),
@@ -58,7 +59,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
     } else if (event is LoginButtonSubmmited) {
       var phoneNumber = LoginPhoneNumber.dirty(state.phoneNumber.value);
-      var password = Password.dirty(
+      var password = PasswordLogin.dirty(
         password: state.password.value.copyWith(
           value: state.password.value.value,
         ),
@@ -110,7 +111,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                 response.refreshToken!.isEmpty) {
               yield state.copyWith(
                 phoneNumber: const LoginPhoneNumber.pure(),
-                password: const Password.pure(),
+                password: const PasswordLogin.pure(),
                 status: FormzStatus.invalid,
               );
             } else {

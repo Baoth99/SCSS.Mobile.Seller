@@ -12,7 +12,7 @@ class PhoneNumber extends FormzInput<String, PhoneNumberError> {
   }
 
   @override
-  PhoneNumberError? validator(String? value) {
-    return _validate(value ?? '') ? null : PhoneNumberError.invalid;
+  PhoneNumberError? validator(String value) {
+    return _validate(value) ? null : PhoneNumberError.invalid;
   }
 }

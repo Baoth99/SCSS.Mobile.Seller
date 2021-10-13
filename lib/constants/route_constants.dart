@@ -28,7 +28,8 @@ class Routes {
   static const profileEdit = 'profileEdit';
   static const profilePasswordEdit = 'profilePasswordEdit';
 
-  // static const routeNotiMap = {
-  //   1: requestDetail,
-  // };
+  //edit password
+  static const forgetPasswordPhoneNumber = 'editPasswordPhoneNumber';
+  static const forgetPasswordOTP = 'forgetPasswordOTP';
+  static const forgetPasswordNewPassword = 'forgetPasswordNewPassword';
 }
