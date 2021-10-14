@@ -102,20 +102,26 @@ class _AccountBodyState extends State<AccountBody> {
           tileMode: TileMode.repeated, // repeats the gradient over the canvas
         ),
       ),
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          return Row(
-            children: [
-              Container(
-                child: AvatarWidget(
+      child: Row(
+        children: [
+          Container(
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              buildWhen: (p, c) =>
+                  (p.imageProfile != c.imageProfile) || p.gender != c.gender,
+              builder: (context, state) {
+                return AvatarWidget(
                   image: state.imageProfile,
                   isMale: state.gender == Gender.male,
                   width: 250,
-                ),
-                margin: EdgeInsets.only(
-                    left: 70.w, top: 170.h, right: 40.w, bottom: 40.h),
-              ),
-              Column(
+                );
+              },
+            ),
+            margin: EdgeInsets.only(
+                left: 70.w, top: 170.h, right: 40.w, bottom: 40.h),
+          ),
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -149,10 +155,10 @@ class _AccountBodyState extends State<AccountBody> {
                     ],
                   )
                 ],
-              ),
-            ],
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
     );
   }

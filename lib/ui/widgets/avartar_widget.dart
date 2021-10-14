@@ -22,9 +22,7 @@ class AvatarWidget extends StatelessWidget {
       width: width.w,
       child: CircleAvatar(
         radius: (width / 2.2).r,
-        onForegroundImageError: (exception, stackTrace) =>
-            AppLog.error(exception),
-        foregroundImage: (image != null) ? image : getFalloutImage(),
+        foregroundImage: image,
         backgroundImage: getFalloutImage(),
       ),
       decoration: BoxDecoration(

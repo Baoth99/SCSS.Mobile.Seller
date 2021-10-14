@@ -9,3 +9,5 @@ class ProfileInitial extends ProfileEvent {}
 class ProfileInitialAll extends ProfileEvent {}
 
 class ProfileImageUpdated extends ProfileEvent {}
+
+class ProfileClear extends ProfileEvent {}

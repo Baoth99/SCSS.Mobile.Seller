@@ -36,7 +36,8 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     context.read<NotificationBloc>().add(NotificationUncountGet());
 
     //profile
-    context.read<ProfileBloc>().add(ProfileInitialAll());
+    context.read<ProfileBloc>().add(ProfileClear());
+    context.read<ProfileBloc>().add(ProfileInitial());
   }
 
   @override
@@ -153,18 +154,19 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                                     top: -15.0.h,
                                     right: -15.0.w,
                                     child: Container(
-                                      padding: EdgeInsets.all(
-                                        5.r,
-                                      ),
+                                      width: 50.w,
+                                      height: 50.h,
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.red,
                                       ),
-                                      child: CustomText(
-                                        color: Colors.white,
-                                        text: '${sno.unreadCount}',
-                                        fontSize: 30.sp,
-                                        fontWeight: FontWeight.w600,
+                                      child: Center(
+                                        child: CustomText(
+                                          color: Colors.white,
+                                          text: '${sno.unreadCount}',
+                                          fontSize: 30.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                   )

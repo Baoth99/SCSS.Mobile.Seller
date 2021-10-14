@@ -12,16 +12,8 @@ class ProfileState extends Equatable {
     this.image,
     this.totalPoint = 0,
     this.status = FormzStatus.pure,
-    ImageProvider<Object>? imageProfile,
-  }) {
-    this.imageProfile = imageProfile ??
-        AssetImage(
-          gender == Gender.male
-              ? ImagesPaths.maleProfile
-              : ImagesPaths.femaleProfile,
-        );
-  }
-
+    this.imageProfile,
+  });
   final String id;
   final String name;
   final String phone;
@@ -32,7 +24,7 @@ class ProfileState extends Equatable {
   final String? image;
   final int totalPoint;
   final FormzStatus status;
-  late ImageProvider<Object> imageProfile;
+  final ImageProvider<Object>? imageProfile;
 
   ProfileState copyWith({
     String? id,

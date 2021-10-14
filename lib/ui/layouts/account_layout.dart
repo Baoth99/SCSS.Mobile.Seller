@@ -168,7 +168,7 @@ class AccountBody extends StatelessWidget {
     );
   }
 
-  Widget _getAvatarFutureBuilder(Gender gender, ImageProvider<Object> image) {
+  Widget _getAvatarFutureBuilder(Gender gender, ImageProvider<Object>? image) {
     return AvatarWidget(
       image: image,
       isMale: gender == Gender.male,
@@ -199,7 +199,7 @@ class AccountBody extends StatelessWidget {
                     ),
                   )
                       .then((value) {
-                    context.read<ProfileBloc>().add(ProfileInitialAll());
+                    context.read<ProfileBloc>().add(ProfileInitial());
                   });
                 },
                 Colors.black,
