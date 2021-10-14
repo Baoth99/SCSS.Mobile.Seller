@@ -8,8 +8,11 @@ import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/identity_server_network.dart';
+import 'package:seller_app/providers/networks/models/request/confirm_restore_password_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/restore_pass_otp_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/restore_password_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/update_info_request_model.dart';
 import 'package:seller_app/providers/networks/models/response/connect_token_response_model.dart';
 import 'package:seller_app/providers/services/models/get_token_service_model.dart';
@@ -39,6 +42,12 @@ abstract class IdentityServerService {
     String? address,
     String? imageUrl,
   );
+
+  Future<bool> restorePassSendingOTP(String phoneNumber);
+
+  Future<String> confirmOTPRestorePass(String phoneNumber, String otp);
+  Future<int> restorePassword(
+      String phoneNumber, String token, String newPassword);
 }
 
 class IdentityServerServiceImpl implements IdentityServerService {
@@ -293,5 +302,61 @@ class IdentityServerServiceImpl implements IdentityServerService {
         );
 
     return result;
+  }
+
+  @override
+  Future<bool> restorePassSendingOTP(String phoneNumber) async {
+    phoneNumber = CommonUtils.addZeroBeforePhoneNumber(phoneNumber);
+
+    Client client = Client();
+    var result = await _identityServerNetwork
+        .restorePassOTP(
+          RestorePassOtpRequestModel(phone: phoneNumber),
+          client,
+        )
+        .whenComplete(() => client.close());
+
+    return result.isSuccess! && result.statusCode == NetworkConstants.ok200;
+  }
+
+  @override
+  Future<String> confirmOTPRestorePass(String phoneNumber, String otp) async {
+    Client client = Client();
+    var result = await _identityServerNetwork
+        .confirmRestorePassword(
+          ConfirmRestorePasswordRequestModel(phone: phoneNumber, otp: otp),
+          client,
+        )
+        .whenComplete(() => client.close());
+    if (result.isSuccess != null &&
+        result.isSuccess! &&
+        result.statusCode == NetworkConstants.ok200 &&
+        result.resData != null &&
+        result.resData!.isNotEmpty) {
+      return result.resData!;
+    }
+    return Symbols.empty;
+  }
+
+  @override
+  Future<int> restorePassword(
+      String phoneNumber, String token, String newPassword) async {
+    Client client = Client();
+    var result = await _identityServerNetwork
+        .restorePassword(
+          RestorePasswordRequestModel(
+            phone: phoneNumber,
+            newPassword: newPassword,
+            token: token,
+          ),
+          client,
+        )
+        .whenComplete(() => client.close());
+
+    if (result.isSuccess! && result.statusCode == NetworkConstants.ok200) {
+      return NetworkConstants.ok200;
+    } else {
+      return NetworkConstants.badRequest400;
+    }
   }
 }

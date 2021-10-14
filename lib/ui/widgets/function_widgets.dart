@@ -126,6 +126,7 @@ class FunctionalWidgets {
     required String confirmBtnTapRoute,
   }) {
     return CoolAlert.show(
+      barrierDismissible: false,
       context: context,
       type: type,
       title: title,

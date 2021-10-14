@@ -86,6 +86,12 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}feedback/trans-feedback/create';
   static final nearestApprovedRequest =
       '${EnvBaseAppSettingValue.baseApiUrl}dashboard/nearest-approved-request';
+  static final restorePassOTP =
+      '${EnvBaseAppSettingValue.baseApiUrl}seller/account/restore-pass-otp';
+  static final confirmRestorePassOTP =
+      '${EnvID4AppSettingValue.apiUrl}api/identity/account/confirm-otp';
+  static final restorePassword =
+      '${EnvID4AppSettingValue.apiUrl}api/identity/account/restore-password';
 }
 
 class InvalidRequestCode {

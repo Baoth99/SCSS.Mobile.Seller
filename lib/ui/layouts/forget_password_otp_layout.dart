@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seller_app/blocs/signup_otp_bloc.dart';
+import 'package:seller_app/blocs/forget_pass_otp_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/layouts/forget_password_new_password_layout.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,19 +39,19 @@ class ForgetPasswordOTPLayout extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
       ),
-      body: BlocProvider<SignupOTPBloc>(
-        create: (_) => SignupOTPBloc()
+      body: BlocProvider<ForgetPassOTPBloc>(
+        create: (_) => ForgetPassOTPBloc()
           ..add(
-            OTPSignupInitital(
+            ForgetPassOTPInitital(
               dialingCode: args.dialingCode,
               phoneNumber: args.phoneNumber,
             ),
           ),
-        child: BlocListener<SignupOTPBloc, OTPSignupState>(
+        child: BlocListener<ForgetPassOTPBloc, ForgetPassOTPState>(
           listener: (context, state) {
             if (state.status.isValid) {
-              context.read<SignupOTPBloc>().add(
-                    OTPCodeSubmitted(),
+              context.read<ForgetPassOTPBloc>().add(
+                    ForgetPassOTPSubmitted(),
                   );
             }
 
@@ -63,13 +64,27 @@ class ForgetPasswordOTPLayout extends StatelessWidget {
             }
 
             if (state.status.isSubmissionSuccess) {
-              // Navigator.of(context).popUntil(
-              //   (route) => route.settings.name == Routes.forgetPasswordOTP,
-              // );
-              Navigator.of(context).pushNamed(
-                Routes.forgetPasswordNewPassword,
-                arguments: ForgetPasswordNewPasswordArgs('43423'),
-              );
+              if (state.token.isNotEmpty) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  Routes.forgetPasswordNewPassword,
+                  ModalRoute.withName(Routes.forgetPasswordPhoneNumber),
+                  arguments: ForgetPasswordNewPasswordArgs(
+                    state.phoneNumber.value,
+                    state.token,
+                  ),
+                );
+              } else {
+                FunctionalWidgets.showCoolAlert(
+                  context: context,
+                  type: CoolAlertType.error,
+                  title: 'Thông Báo',
+                  text: 'Mã OTP không đúng',
+                  confirmBtnColor: AppColors.greenFF61C53D,
+                  confirmBtnText:
+                      SignupInformationLayoutConstants.btnDialogName,
+                  confirmBtnTapRoute: Routes.forgetPasswordOTP,
+                );
+              }
             }
 
             if (state.timerStatus == TimerStatus.resent) {
@@ -83,6 +98,19 @@ class ForgetPasswordOTPLayout extends StatelessWidget {
                 context,
                 OTPFillPhoneNumberLayoutConstants.resendOTP,
                 OTPFillPhoneNumberLayoutConstants.resendOTPProgressIndicator,
+              );
+            }
+
+            if (state.timerStatus == TimerStatus.error ||
+                state.status.isSubmissionFailure) {
+              FunctionalWidgets.showCoolAlert(
+                context: context,
+                type: CoolAlertType.error,
+                title: 'Thông Báo',
+                text: InvalidRequestCode.errorSystem,
+                confirmBtnColor: AppColors.greenFF61C53D,
+                confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
+                confirmBtnTapRoute: Routes.forgetPasswordOTP,
               );
             }
           },
@@ -130,7 +158,7 @@ class OTPPhoneNumberWidget extends StatelessWidget {
           fontSize: 44.sp,
           fontWeight: FontWeight.w400,
         ),
-        BlocBuilder<SignupOTPBloc, OTPSignupState>(
+        BlocBuilder<ForgetPassOTPBloc, ForgetPassOTPState>(
           builder: (context, state) => CustomText(
             text: state.phoneNumber.value,
             fontSize: 53.sp,
@@ -173,8 +201,8 @@ class OTPInput extends StatelessWidget {
   void Function(String value)? _onChanged(BuildContext context) {
     return (value) {
       if (value.length <= Others.otpLength) {
-        context.read<SignupOTPBloc>().add(
-              OTPCodeChanged(otpCode: value),
+        context.read<ForgetPassOTPBloc>().add(
+              ForgetPassOTPCodeChanged(otpCode: value),
             );
       }
     };
@@ -275,7 +303,9 @@ class _RequestCodeButtonState extends State<RequestCodeButton> {
                 _timer?.cancel();
                 _timer = null;
 
-                context.read<SignupOTPBloc>().add(OTPResendPressed());
+                context
+                    .read<ForgetPassOTPBloc>()
+                    .add(ForgetPassOTPResendPressed());
 
                 _start = OTPFillPhoneNumberLayoutConstants.countdown;
 

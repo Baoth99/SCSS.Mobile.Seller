@@ -3,17 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/models.dart';
+import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
+import 'package:seller_app/utils/common_function.dart';
 
 part 'states/forget_password_new_password_state.dart';
 part 'events/forget_password_new_password_event.dart';
 
 class ForgetPasswordNewPasswordBloc
     extends Bloc<ForgetPasswordEvent, ForgetPasswordNewPasswordState> {
-  ForgetPasswordNewPasswordBloc(
-      {IdentityServerService? identityServerService, required String id})
-      : super(ForgetPasswordNewPasswordState(id: id)) {
+  ForgetPasswordNewPasswordBloc({
+    IdentityServerService? identityServerService,
+    required String phone,
+    required String token,
+  }) : super(ForgetPasswordNewPasswordState(
+          phone: phone,
+          token: token,
+        )) {
     _identityServerService =
         identityServerService ?? getIt.get<IdentityServerService>();
   }
@@ -145,33 +153,34 @@ class ForgetPasswordNewPasswordBloc
           status: FormzStatus.submissionInProgress,
         );
 
-        // try {
-        //   var result = await futureAppDuration(
-        //     _identityServerService.updatePassword(
-        //       state.id,
-        //       state.oldPassword.value.value,
-        //       state.password.value.value,
-        //     ),
-        //   );
+        try {
+          var result = await futureAppDuration(
+            _identityServerService.restorePassword(
+              state.phone,
+              state.token,
+              state.password.value.value,
+            ),
+          );
 
-        //   if (result == NetworkConstants.ok200) {
-        //     yield state.copyWith(
-        //       status: FormzStatus.submissionSuccess,
-        //       statusSubmmited: NetworkConstants.ok200,
-        //     );
-        //   } else if (result == 400) {
-        //     yield state.copyWith(
-        //       status: FormzStatus.submissionFailure,
-        //       statusSubmmited: NetworkConstants.badRequest400,
-        //     );
-        //   } else {
-        //     throw Exception();
-        //   }
-        // } catch (e) {
-        //   yield state.copyWith(
-        //     status: FormzStatus.submissionFailure,
-        //   );
-        // }
+          if (result == NetworkConstants.ok200) {
+            yield state.copyWith(
+              status: FormzStatus.submissionSuccess,
+              statusSubmmited: NetworkConstants.ok200,
+            );
+          } else if (result == 400) {
+            yield state.copyWith(
+              status: FormzStatus.submissionFailure,
+              statusSubmmited: NetworkConstants.badRequest400,
+            );
+          } else {
+            throw Exception('Result is not 400');
+          }
+        } catch (e) {
+          AppLog.error(e);
+          yield state.copyWith(
+            status: FormzStatus.submissionFailure,
+          );
+        }
       }
     }
   }

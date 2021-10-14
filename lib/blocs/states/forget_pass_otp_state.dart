@@ -1,9 +1,9 @@
-part of '../signup_otp_bloc.dart';
+part of '../forget_pass_otp_bloc.dart';
 
 enum TimerStatus { processed, resent, nothing, error }
 
-class OTPSignupState extends Equatable {
-  const OTPSignupState({
+class ForgetPassOTPState extends Equatable {
+  const ForgetPassOTPState({
     this.phoneNumber = const PhoneNumber.pure(),
     this.otpCode = const OTPCode.pure(),
     this.status = FormzStatus.pure,
@@ -17,14 +17,14 @@ class OTPSignupState extends Equatable {
   final TimerStatus timerStatus;
   final String token;
 
-  OTPSignupState copyWith({
+  ForgetPassOTPState copyWith({
     PhoneNumber? phoneNumber,
     OTPCode? otpCode,
     FormzStatus? status,
     TimerStatus? timerStatus,
     String? token,
   }) {
-    return OTPSignupState(
+    return ForgetPassOTPState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
       otpCode: otpCode ?? this.otpCode,
       status: status ?? this.status,
