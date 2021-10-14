@@ -1,7 +1,7 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seller_app/blocs/edit_password_bloc.dart';
+import 'package:seller_app/blocs/forget_password_new_password_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
@@ -11,9 +11,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
 
 class ForgetPasswordNewPasswordArgs {
-  ForgetPasswordNewPasswordArgs(this.id);
+  ForgetPasswordNewPasswordArgs(
+    this.phone,
+    this.token,
+  );
 
-  String id;
+  String phone;
+  String token;
 }
 
 class ForgetPasswordNewPasswordLayout extends StatelessWidget {
@@ -36,38 +40,30 @@ class ForgetPasswordNewPasswordLayout extends StatelessWidget {
       body: CommonMarginContainer(
         child: SingleChildScrollView(
           child: BlocProvider(
-            create: (context) => EditPasswordBloc(
-              id: args.id,
+            create: (context) => ForgetPasswordNewPasswordBloc(
+              phone: args.phone,
+              token: args.token,
             ),
-            child: BlocListener<EditPasswordBloc, EditPasswordState>(
+            child: BlocListener<ForgetPasswordNewPasswordBloc,
+                ForgetPasswordNewPasswordState>(
               listener: (context, state) {
                 if (state.status.isSubmissionSuccess &&
                     state.statusSubmmited == NetworkConstants.ok200) {
                   FunctionalWidgets.showCoolAlert(
                     context: context,
-                    confirmBtnTapRoute: Routes.main,
+                    confirmBtnTapRoute: Routes.login,
                     title: 'Đổi mật khẩu thành công',
                     confirmBtnText: 'Đóng',
                     type: CoolAlertType.success,
                   );
                 } else if (state.status.isSubmissionFailure) {
-                  if (state.statusSubmmited == NetworkConstants.badRequest400) {
-                    FunctionalWidgets.showCoolAlert(
-                      context: context,
-                      confirmBtnTapRoute: Routes.profilePasswordEdit,
-                      type: CoolAlertType.error,
-                      confirmBtnText: 'Đóng',
-                      title: 'Mật khẩu cũ không đúng',
-                    );
-                  } else if (state.statusSubmmited == null) {
-                    FunctionalWidgets.showCoolAlert(
-                      context: context,
-                      confirmBtnTapRoute: Routes.profilePasswordEdit,
-                      type: CoolAlertType.error,
-                      confirmBtnText: 'Đóng',
-                      title: 'Có lỗi đến từ hệ thống',
-                    );
-                  }
+                  FunctionalWidgets.showCoolAlert(
+                    context: context,
+                    confirmBtnTapRoute: Routes.forgetPasswordNewPassword,
+                    type: CoolAlertType.error,
+                    confirmBtnText: 'Đóng',
+                    title: 'Có lỗi đến từ hệ thống',
+                  );
                 } else if (state.status.isSubmissionInProgress) {
                   showDialog(
                     context: context,
@@ -89,7 +85,8 @@ class ProfilePasswordEditBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EditPasswordBloc, EditPasswordState>(
+    return BlocBuilder<ForgetPasswordNewPasswordBloc,
+        ForgetPasswordNewPasswordState>(
       builder: (context, state) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -100,8 +97,8 @@ class ProfilePasswordEditBody extends StatelessWidget {
                   state.password.invalid ? 'Hãy nhập tối thiểu 6 ký tự' : null,
               onChanged: (value) {
                 context
-                    .read<EditPasswordBloc>()
-                    .add(EditPassPasswordChange(password: value));
+                    .read<ForgetPasswordNewPasswordBloc>()
+                    .add(ForgetPasswordPasswordChange(password: value));
               },
               hintText: 'Mật khẩu mới',
               obscureText: state.password.value.isHide,
@@ -109,8 +106,8 @@ class ProfilePasswordEditBody extends StatelessWidget {
               suffixIcon: IconButton(
                 onPressed: () {
                   context
-                      .read<EditPasswordBloc>()
-                      .add(EditPassPasswordShowOrHide());
+                      .read<ForgetPasswordNewPasswordBloc>()
+                      .add(ForgetPasswordPasswordShowOrHide());
                 },
                 icon: Icon(
                   state.password.value.isHide
@@ -123,9 +120,8 @@ class ProfilePasswordEditBody extends StatelessWidget {
             getSizedbox(),
             input(
               onChanged: (value) {
-                context
-                    .read<EditPasswordBloc>()
-                    .add(EditPassRepeatPasswordChanged(repeatPassword: value));
+                context.read<ForgetPasswordNewPasswordBloc>().add(
+                    ForgetPasswordRepeatPasswordChanged(repeatPassword: value));
               },
               errorText: state.repeatPassword.invalid
                   ? 'Không khớp với mật khẩu mới'
@@ -136,8 +132,8 @@ class ProfilePasswordEditBody extends StatelessWidget {
               suffixIcon: IconButton(
                 onPressed: () {
                   context
-                      .read<EditPasswordBloc>()
-                      .add(EditPassRepeatPasswordShowOrHide());
+                      .read<ForgetPasswordNewPasswordBloc>()
+                      .add(ForgetPasswordRepeatPasswordShowOrHide());
                 },
                 icon: Icon(
                   state.repeatPassword.value.isHide
@@ -153,7 +149,9 @@ class ProfilePasswordEditBody extends StatelessWidget {
               AppColors.greenFF61C53D,
               state.status.isValid
                   ? () {
-                      context.read<EditPasswordBloc>().add(EditPassSubmmited());
+                      context
+                          .read<ForgetPasswordNewPasswordBloc>()
+                          .add(ForgetPasswordSubmmited());
                     }
                   : null,
             ),

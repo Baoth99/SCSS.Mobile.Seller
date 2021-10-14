@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/forget_password_phonenumber_bloc.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/ui/layouts/forget_password_otp_layout.dart';
-import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/constants/constants.dart';
@@ -35,8 +34,8 @@ class ForgetPasswordPhoneNumberLayout extends StatelessWidget {
                 if (state.isExist) {
                   // navigate to otp code
                   Navigator.of(context).popAndPushNamed(
-                    Routes.signupOTP,
-                    arguments: SignupOTPArgument(
+                    Routes.forgetPasswordOTP,
+                    arguments: ForgetPasswordOTPArgument(
                       Symbols.vietnamCallingCode,
                       state.phoneNumber.value,
                     ),
@@ -203,7 +202,7 @@ class NextButton extends StatelessWidget {
       builder: (context, state) {
         return CustomButton(
           text: PhoneNumberSignupLayoutConstants.next,
-          onPressed: state.status.isValid
+          onPressed: state.status.isValidated
               ? () {
                   onSubmit.call(context);
                 }

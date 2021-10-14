@@ -9,19 +9,19 @@ import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
 import 'package:seller_app/utils/common_function.dart';
 
-part 'events/signup_otp_event.dart';
-part 'states/signup_otp_state.dart';
+part 'events/forget_pass_otp_event.dart';
+part 'states/forget_pass_otp_state.dart';
 
-class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
-  SignupOTPBloc({IdentityServerService? identityServerService})
-      : super(const OTPSignupState()) {
+class ForgetPassOTPBloc extends Bloc<ForgetPassOTPEvent, ForgetPassOTPState> {
+  ForgetPassOTPBloc({IdentityServerService? identityServerService})
+      : super(const ForgetPassOTPState()) {
     _identityServerService =
         identityServerService ?? getIt.get<IdentityServerService>();
   }
   late IdentityServerService _identityServerService;
   @override
-  Stream<OTPSignupState> mapEventToState(OTPSignupEvent event) async* {
-    if (event is OTPSignupInitital) {
+  Stream<ForgetPassOTPState> mapEventToState(ForgetPassOTPEvent event) async* {
+    if (event is ForgetPassOTPInitital) {
       var newState = state.copyWith(
         phoneNumber: PhoneNumber.pure(
           event.phoneNumber,
@@ -29,29 +29,18 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
       );
 
       yield newState;
-    } else if (event is OTPCodeChanged) {
-      if (!(state.status.isSubmissionInProgress ||
-          state.status.isSubmissionSuccess)) {
-        OTPCode otpCode = event.otpCode.isEmpty
-            ? const OTPCode.pure()
-            : OTPCode.dirty(event.otpCode);
-        var newState = state.copyWith(
-          otpCode: otpCode,
-          status: Formz.validate([otpCode]),
-        );
+    } else if (event is ForgetPassOTPCodeChanged) {
+      OTPCode otpCode = event.otpCode.isEmpty
+          ? const OTPCode.pure()
+          : OTPCode.dirty(event.otpCode);
+      var newState = state.copyWith(
+        otpCode: otpCode,
+        status: Formz.validate([otpCode]),
+      );
 
-        yield newState;
-      }
-    } else if (event is OTPCodeSubmitted) {
+      yield newState;
+    } else if (event is ForgetPassOTPSubmitted) {
       try {
-        OTPCode otpCode = OTPCode.dirty(state.otpCode.value);
-
-        // yield for changing status of state
-        yield state.copyWith(
-          otpCode: otpCode,
-          status: Formz.validate([otpCode]),
-        );
-
         // yield for listener
         if (state.status.isValidated) {
           yield state.copyWith(
@@ -65,13 +54,10 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
             ),
           );
 
-          if (token.isNotEmpty) {
-            yield state.copyWith(
-              status: FormzStatus.submissionSuccess,
-            );
-          } else {
-            throw Exception('token register is emtpy');
-          }
+          yield state.copyWith(
+            status: FormzStatus.submissionSuccess,
+            token: token,
+          );
         }
       } catch (e) {
         AppLog.error(e);
@@ -79,7 +65,7 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
           status: FormzStatus.submissionFailure,
         );
       }
-    } else if (event is OTPResendPressed) {
+    } else if (event is ForgetPassOTPResendPressed) {
       try {
         if (state.status.isInvalid ||
             state.status.isPure ||
