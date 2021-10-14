@@ -30,48 +30,33 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
 
       yield newState;
     } else if (event is OTPCodeChanged) {
-      if (!(state.status.isSubmissionInProgress ||
-          state.status.isSubmissionSuccess)) {
-        OTPCode otpCode = event.otpCode.isEmpty
-            ? const OTPCode.pure()
-            : OTPCode.dirty(event.otpCode);
-        var newState = state.copyWith(
-          otpCode: otpCode,
-          status: Formz.validate([otpCode]),
-        );
+      OTPCode otpCode = event.otpCode.isEmpty
+          ? const OTPCode.pure()
+          : OTPCode.dirty(event.otpCode);
+      var newState = state.copyWith(
+        otpCode: otpCode,
+        status: Formz.validate([otpCode]),
+      );
 
-        yield newState;
-      }
+      yield newState;
     } else if (event is OTPCodeSubmitted) {
       try {
-        OTPCode otpCode = OTPCode.dirty(state.otpCode.value);
-
-        // yield for changing status of state
-        yield state.copyWith(
-          otpCode: otpCode,
-          status: Formz.validate([otpCode]),
-        );
-
-        // yield for listener
         if (state.status.isValidated) {
           yield state.copyWith(
             status: FormzStatus.submissionInProgress,
           );
 
           var token = await futureAppDuration(
-            _identityServerService.confirmOTPRestorePass(
+            _identityServerService.confirmOTPRegister(
               state.phoneNumber.value,
               state.otpCode.value,
             ),
           );
 
-          if (token.isNotEmpty) {
-            yield state.copyWith(
-              status: FormzStatus.submissionSuccess,
-            );
-          } else {
-            throw Exception('token register is emtpy');
-          }
+          yield state.copyWith(
+            status: FormzStatus.submissionSuccess,
+            token: token,
+          );
         }
       } catch (e) {
         AppLog.error(e);
@@ -89,8 +74,7 @@ class SignupOTPBloc extends Bloc<OTPSignupEvent, OTPSignupState> {
           );
 
           var result = await futureAppDuration(
-            _identityServerService
-                .restorePassSendingOTP(state.phoneNumber.value),
+            _identityServerService.sendingOTPRegister(state.phoneNumber.value),
           );
           //
 

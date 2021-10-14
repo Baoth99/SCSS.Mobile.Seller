@@ -92,6 +92,12 @@ class APIServiceURI {
       '${EnvID4AppSettingValue.apiUrl}api/identity/account/confirm-otp';
   static final restorePassword =
       '${EnvID4AppSettingValue.apiUrl}api/identity/account/restore-password';
+  static final registerOTP =
+      '${EnvBaseAppSettingValue.baseApiUrl}seller/account/register-otp';
+  static final confirmOTPRegister =
+      '${EnvID4AppSettingValue.apiUrl}api/identity/account/confirm-otp-register';
+  static final register =
+      '${EnvBaseAppSettingValue.baseApiUrl}seller/account/register';
 }
 
 class InvalidRequestCode {

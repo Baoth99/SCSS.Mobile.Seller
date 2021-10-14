@@ -69,8 +69,8 @@ class SignupInformationLayoutConstants {
   static const String female = 'Nữ';
 
   static const String labelPassword = 'Mật khẩu';
-  static const String hintPassword = 'Nhập tối thiểu 1 ký tự';
-  static const String errorPassword = 'Xin hãy nhập tối thiểu 1 ký tự!';
+  static const String hintPassword = 'Nhập tối thiểu 6 ký tự';
+  static const String errorPassword = 'Xin hãy nhập tối thiểu 6 ký tự!';
 
   static const String labelRepeatPassword = 'Nhập lại mật khẩu';
   static const String hintRepeatPassword = 'Nhập giống với mật khẩu';

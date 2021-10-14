@@ -1,7 +1,9 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/signup_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -28,20 +30,42 @@ class SignupPhoneNumberLayout extends StatelessWidget {
           child: BlocListener<SignupBloc, SignupState>(
             listener: (context, state) {
               if (state.status.isSubmissionSuccess) {
-                Navigator.of(context).popUntil(
-                  (route) => route.settings.name == Routes.signupPhoneNumber,
-                );
+                if (state.isSuccessful) {
+                  // navigate to otp code
+                  Navigator.of(context).popAndPushNamed(
+                    Routes.signupOTP,
+                    arguments: SignupOTPArgument(
+                      Symbols.vietnamCallingCode,
+                      state.phoneNumber.value,
+                    ),
+                  );
+                } else {
+                  FunctionalWidgets.showCoolAlert(
+                    context: context,
+                    type: CoolAlertType.info,
+                    title: 'Thông Báo',
+                    text: 'Số điện thoại không hợp lệ',
+                    confirmBtnColor: AppColors.greenFF61C53D,
+                    confirmBtnText:
+                        SignupInformationLayoutConstants.btnDialogName,
+                    confirmBtnTapRoute: Routes.signupPhoneNumber,
+                  );
+                }
+              }
 
-                // navigate to otp code
-                Navigator.pushNamed(
-                  context,
-                  Routes.signupOTP,
-                  arguments: SignupOTPArgument(
-                    Symbols.vietnamCallingCode,
-                    state.phoneNumber.value,
-                  ),
+              if (state.status.isSubmissionFailure) {
+                FunctionalWidgets.showCoolAlert(
+                  context: context,
+                  type: CoolAlertType.error,
+                  title: 'Thông Báo',
+                  text: InvalidRequestCode.errorSystem,
+                  confirmBtnColor: AppColors.greenFF61C53D,
+                  confirmBtnText:
+                      SignupInformationLayoutConstants.btnDialogName,
+                  confirmBtnTapRoute: Routes.signupPhoneNumber,
                 );
               }
+
               if (state.status.isSubmissionInProgress) {
                 FunctionalWidgets.showCustomDialog(
                   context,

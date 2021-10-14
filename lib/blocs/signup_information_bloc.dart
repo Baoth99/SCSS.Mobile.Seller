@@ -4,14 +4,34 @@ import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/models/models.dart';
+import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
+import 'package:seller_app/providers/configs/injection_config.dart';
+import 'package:seller_app/providers/services/firebase_service.dart';
+import 'package:seller_app/providers/services/identity_server_service.dart';
+import 'package:seller_app/utils/common_function.dart';
 import 'package:seller_app/utils/common_utils.dart';
 part 'states/signup_information_state.dart';
 part 'events/signup_information_event.dart';
 
 class SignupInformationBloc
     extends Bloc<SignupInformationEvent, SignupInformationState> {
-  SignupInformationBloc() : super(const SignupInformationState());
-
+  SignupInformationBloc({
+    IdentityServerService? identityServerService,
+    FirebaseNotification? firebaseNotification,
+    required String phone,
+    required String token,
+  }) : super(SignupInformationState(
+          phone: phone,
+          token: token,
+        )) {
+    _identityServerService =
+        identityServerService ?? getIt.get<IdentityServerService>();
+    _firebaseNotification =
+        firebaseNotification ?? getIt.get<FirebaseNotification>();
+  }
+  late IdentityServerService _identityServerService;
+  late FirebaseNotification _firebaseNotification;
   @override
   Stream<SignupInformationState> mapEventToState(
       SignupInformationEvent event) async* {
@@ -140,22 +160,42 @@ class SignupInformationBloc
         repeatPassword: repeatPassword,
       );
 
-      //TODO: may be have failue
       if (state.status.isValid) {
         yield state.copyWith(
           status: FormzStatus.submissionInProgress,
         );
 
-        //TODO: API
-        await CommonTest.delay();
-        //TODO: delete print
-        print(
-            'Name: ${state.name.value} , Gender: ${state.gender}, Password: ${state.password.value.value}, RepeatPassword: ${state.repeatPassword.value.value}');
-        //
+        try {
+          var result = await futureAppDuration(
+            _identityServerService.register(
+              state.token,
+              state.phone,
+              state.password.value.value,
+              state.name.value,
+              state.gender,
+              await _firebaseNotification.getToken() ?? Symbols.empty,
+            ),
+          );
 
-        yield state.copyWith(
-          status: FormzStatus.submissionSuccess,
-        );
+          if (result == NetworkConstants.ok200) {
+            yield state.copyWith(
+              status: FormzStatus.submissionSuccess,
+              statusSubmmited: NetworkConstants.ok200,
+            );
+          } else if (result == 400) {
+            yield state.copyWith(
+              status: FormzStatus.submissionFailure,
+              statusSubmmited: NetworkConstants.badRequest400,
+            );
+          } else {
+            throw Exception('Result is not 400');
+          }
+        } catch (e) {
+          AppLog.error(e);
+          yield state.copyWith(
+            status: FormzStatus.submissionFailure,
+          );
+        }
       }
     }
   }
