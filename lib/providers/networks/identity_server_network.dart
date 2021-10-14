@@ -4,8 +4,12 @@ import 'package:http/http.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/account_device_id_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/confirm_otp_register_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/confirm_restore_password_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/register_otp_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/register_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/restore_password_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/confirm_otp_register_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/confirm_restore_password_response_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_revocation_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/connect_token_request_model.dart';
@@ -69,6 +73,20 @@ abstract class IdentityServerNetwork {
 
   Future<BaseResponseModel> restorePassword(
     RestorePasswordRequestModel requestModel,
+    Client client,
+  );
+
+  Future<BaseResponseModel> registerOTP(
+    RegisterOTPRequestModel requestModel,
+    Client client,
+  );
+  Future<ConfirmOTPRegisterResponseModel> confirmOTPRegister(
+    ConfirmOTPRegisterRequestModel requestModel,
+    Client client,
+  );
+
+  Future<BaseResponseModel> register(
+    RegisterRequestModel requestModel,
     Client client,
   );
 }
@@ -369,6 +387,71 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
         IdentityAPIConstants.clientIdParamName: EnvID4AppSettingValue.clientId,
       },
       body: requestModel.toJson(),
+      client: client,
+    );
+
+    var responseModel =
+        await NetworkUtils.getModelOfResponseMainAPI<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<BaseResponseModel> registerOTP(
+      RegisterOTPRequestModel requestModel, Client client) async {
+    var response = await NetworkUtils.postBody(
+      uri: APIServiceURI.registerOTP,
+      headers: {
+        HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
+      },
+      body: registerOTPRequestModelToJson(
+        requestModel,
+      ),
+      client: client,
+    );
+
+    var responseModel =
+        await NetworkUtils.getModelOfResponseMainAPI<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<ConfirmOTPRegisterResponseModel> confirmOTPRegister(
+      ConfirmOTPRegisterRequestModel requestModel, Client client) async {
+    var response = await NetworkUtils.postBody(
+      uri: APIServiceURI.confirmOTPRegister,
+      headers: {
+        IdentityAPIConstants.clientIdParamName: EnvID4AppSettingValue.clientId,
+      },
+      body: requestModel.toJson(),
+      client: client,
+    );
+
+    var responseModel = await NetworkUtils.getModelOfResponseMainAPI<
+        ConfirmOTPRegisterResponseModel>(
+      response,
+      confirmOTPRegisterResponseModelFromJson,
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<BaseResponseModel> register(
+      RegisterRequestModel requestModel, Client client) async {
+    var response = await NetworkUtils.postBody(
+      uri: APIServiceURI.register,
+      headers: {
+        HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
+      },
+      body: registerRequestModelToJson(requestModel),
       client: client,
     );
 

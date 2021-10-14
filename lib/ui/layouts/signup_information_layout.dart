@@ -12,11 +12,20 @@ import 'package:formz/formz.dart';
 //TODO: COOL_ALERT don't have null safety because map box
 import 'package:cool_alert/cool_alert.dart';
 
+class SignupInformationArgs {
+  String token;
+  String phoneNumber;
+
+  SignupInformationArgs(this.phoneNumber, this.token);
+}
+
 class SignupInformationLayout extends StatelessWidget {
   const SignupInformationLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as SignupInformationArgs;
     return Scaffold(
       appBar: FunctionalWidgets.buildAppBar(
         context: context,
@@ -25,35 +34,52 @@ class SignupInformationLayout extends StatelessWidget {
         color: AppColors.black,
       ),
       body: BlocProvider<SignupInformationBloc>(
-          create: (_) => SignupInformationBloc(),
-          child: BlocListener<SignupInformationBloc, SignupInformationState>(
-            listener: (context, state) {
-              if (state.status.isSubmissionInProgress) {
-                FunctionalWidgets.showCustomDialog(
-                  context,
-                  SignupInformationLayoutConstants.waiting,
-                );
-              }
+        create: (_) => SignupInformationBloc(
+          phone: args.phoneNumber,
+          token: args.token,
+        ),
+        child: BlocListener<SignupInformationBloc, SignupInformationState>(
+          listener: (context, state) {
+            if (state.status.isSubmissionInProgress) {
+              FunctionalWidgets.showCustomDialog(
+                context,
+                SignupInformationLayoutConstants.waiting,
+              );
+            }
 
-              if (state.status.isSubmissionSuccess) {
-                Navigator.of(context).popUntil(
-                  (route) => route.settings.name == Routes.signupInformation,
-                );
-
+            if (state.status.isSubmissionSuccess) {
+              if (state.status.isSubmissionSuccess &&
+                  state.statusSubmmited == NetworkConstants.ok200) {
                 FunctionalWidgets.showCoolAlert(
                   context: context,
-                  type: CoolAlertType.success,
-                  title: SignupInformationLayoutConstants.titleDialog,
-                  text: SignupInformationLayoutConstants.success,
-                  confirmBtnColor: AppColors.greenFF61C53D,
-                  confirmBtnText:
-                      SignupInformationLayoutConstants.btnDialogName,
                   confirmBtnTapRoute: Routes.login,
+                  title: 'Đăng ký thành công',
+                  confirmBtnText: 'Đóng',
+                  type: CoolAlertType.success,
+                );
+              } else {
+                FunctionalWidgets.showCoolAlert(
+                  context: context,
+                  confirmBtnTapRoute: Routes.signupInformation,
+                  title: 'Thông tin đăng ký không đúng',
+                  confirmBtnText: 'Đóng',
+                  type: CoolAlertType.error,
                 );
               }
-            },
-            child: const _Body(),
-          )),
+            }
+            if (state.status.isSubmissionFailure) {
+              FunctionalWidgets.showCoolAlert(
+                context: context,
+                confirmBtnTapRoute: Routes.signupInformation,
+                type: CoolAlertType.error,
+                confirmBtnText: 'Đóng',
+                title: 'Có lỗi đến từ hệ thống',
+              );
+            }
+          },
+          child: const _Body(),
+        ),
+      ),
     );
   }
 }

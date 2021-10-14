@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/signup_otp_bloc.dart';
+import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/ui/layouts/signup_information_layout.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
@@ -27,7 +30,7 @@ class SignupOTPLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as SignupOTPArgument?;
+        ModalRoute.of(context)!.settings.arguments as SignupOTPArgument;
 
     return Scaffold(
       appBar: FunctionalWidgets.buildAppBar(
@@ -40,8 +43,8 @@ class SignupOTPLayout extends StatelessWidget {
         create: (_) => SignupOTPBloc()
           ..add(
             OTPSignupInitital(
-              dialingCode: args?.dialingCode ?? Symbols.empty,
-              phoneNumber: args?.phoneNumber ?? Symbols.empty,
+              dialingCode: args.dialingCode,
+              phoneNumber: args.phoneNumber,
             ),
           ),
         child: BlocListener<SignupOTPBloc, OTPSignupState>(
@@ -61,13 +64,27 @@ class SignupOTPLayout extends StatelessWidget {
             }
 
             if (state.status.isSubmissionSuccess) {
-              Navigator.of(context).popUntil(
-                (route) => route.settings.name == Routes.signupOTP,
-              );
-              Navigator.popAndPushNamed(
-                context,
-                Routes.signupInformation,
-              );
+              if (state.token.isNotEmpty) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  Routes.signupInformation,
+                  ModalRoute.withName(Routes.signupPhoneNumber),
+                  arguments: SignupInformationArgs(
+                    state.phoneNumber.value,
+                    state.token,
+                  ),
+                );
+              } else {
+                FunctionalWidgets.showCoolAlert(
+                  context: context,
+                  type: CoolAlertType.error,
+                  title: 'Thông Báo',
+                  text: 'Mã OTP không đúng',
+                  confirmBtnColor: AppColors.greenFF61C53D,
+                  confirmBtnText:
+                      SignupInformationLayoutConstants.btnDialogName,
+                  confirmBtnTapRoute: Routes.signupOTP,
+                );
+              }
             }
 
             if (state.timerStatus == TimerStatus.resent) {
@@ -81,6 +98,19 @@ class SignupOTPLayout extends StatelessWidget {
                 context,
                 OTPFillPhoneNumberLayoutConstants.resendOTP,
                 OTPFillPhoneNumberLayoutConstants.resendOTPProgressIndicator,
+              );
+            }
+
+            if (state.timerStatus == TimerStatus.error ||
+                state.status.isSubmissionFailure) {
+              FunctionalWidgets.showCoolAlert(
+                context: context,
+                type: CoolAlertType.error,
+                title: 'Thông Báo',
+                text: InvalidRequestCode.errorSystem,
+                confirmBtnColor: AppColors.greenFF61C53D,
+                confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
+                confirmBtnTapRoute: Routes.signupOTP,
               );
             }
           },
