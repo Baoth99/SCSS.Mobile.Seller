@@ -19,6 +19,7 @@ class LoginLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       resizeToAvoidBottomInset: false,
       body: BlocProvider<LoginBloc>(
         create: (context) => LoginBloc(),
@@ -81,72 +82,46 @@ class _Body extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
-              bottom: 100.h,
+              top: 50.h,
+              bottom: 150.h,
             ),
             child: Image.asset(
               LoginLayoutConstants.loginLogoImagePath,
               fit: BoxFit.contain,
-              height: 270.h,
+              height: 320.h,
             ),
           ),
           CustomText(
             text: LoginLayoutConstants.loginToContinue,
-            color: AppColors.greyFF9098B1,
-            fontSize: 35.sp,
+            color: AppColors.black,
+            fontSize: 50.sp,
           ),
           const _Form(),
-          CustomTextButton(
-            text: LoginLayoutConstants.forgetPassword,
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                Routes.forgetPasswordPhoneNumber,
-              );
-            },
-          ),
           Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 35.w,
-              vertical: 100.h,
+            padding: EdgeInsets.symmetric(
+              horizontal: 60.w
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Divider(
-                    thickness: 3.h,
-                  ),
+              children: [
+                CustomTextButton(
+                  text: LoginLayoutConstants.forgetPassword,
+                  onPressed: () {},
+                  color: AppColors.black,
+                  fontSize: 45.sp,
+                  fontWeight: FontWeight.w500,
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                  ),
-                  child: CustomText(
-                    text: LoginLayoutConstants.or,
-                    color: AppColors.greyFF9098B1,
-                    fontSize: 33.sp,
-                  ),
-                ),
-                Expanded(
-                  child: Divider(
-                    thickness: 3.h,
-                  ),
+                Spacer(),
+                CustomTextButton(
+                  text: LoginLayoutConstants.signup,
+                  onPressed: () {
+                    _navigateToSignup(context);
+                  },
+                  color: AppColors.orangeFFF5670A,
+                  fontSize: 45.sp,
+                  fontWeight: FontWeight.w500,
                 ),
               ],
             ),
-          ),
-          CustomButton(
-            text: LoginLayoutConstants.signup,
-            onPressed: () {
-              _navigateToSignup(context);
-            },
-            fontSize: 44.sp,
-            color: AppColors.orangeFFF5670A,
-            width: double.infinity,
-            height: 100.h,
-            padding: EdgeInsets.symmetric(
-              horizontal: 180.w,
-            ),
-            circularBorderRadius: 15.0.r,
           ),
         ],
       ),
@@ -169,7 +144,7 @@ class _Form extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
-              top: 55.h,
+              top: 65.h,
             ),
             child: BlocBuilder<LoginBloc, LoginState>(
               buildWhen: (p, c) => p.phoneNumber.status != c.phoneNumber.status,
@@ -183,6 +158,7 @@ class _Form extends StatelessWidget {
                   style: _getInputFieldTextStyle(),
                   labelText: LoginLayoutConstants.phoneNumber,
                   commonColor: AppColors.greenFF61C53D,
+                  defaultColor: AppColors.greyFF969090,
                   keyboardType: TextInputType.phone,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
@@ -192,19 +168,23 @@ class _Form extends StatelessWidget {
                   ),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 45.0.w,
-                    vertical: 42.0.h,
+                    vertical: 50.0.h,
                   ),
-                  cirularBorderRadius: 15.0.r,
+                  cirularBorderRadius: 25.0.r,
                   errorText: state.phoneNumber.invalid
                       ? LoginLayoutConstants.errorPhoneNumber
                       : null,
+                  labelStyle: TextStyle(
+                    fontSize: 45.sp,
+                    color: AppColors.greyFF969090
+                  ),
                 );
               },
             ),
           ),
           Container(
             padding: EdgeInsets.only(
-              top: 30.h,
+              top: 60.h,
             ),
             child: BlocBuilder<LoginBloc, LoginState>(
               buildWhen: (p, c) => p.password.status != c.password.status,
@@ -217,6 +197,7 @@ class _Form extends StatelessWidget {
                   style: _getInputFieldTextStyle(),
                   labelText: LoginLayoutConstants.password,
                   commonColor: AppColors.greenFF61C53D,
+                  defaultColor: AppColors.greyFF969090,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                   padding: EdgeInsets.symmetric(
@@ -224,12 +205,16 @@ class _Form extends StatelessWidget {
                   ),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 45.0.w,
-                    vertical: 42.0.h,
+                    vertical: 50.0.h,
                   ),
-                  cirularBorderRadius: 15.0.r,
+                  cirularBorderRadius: 25.0.r,
                   errorText: state.password.invalid
                       ? LoginLayoutConstants.errorPassword
                       : null,
+                  labelStyle: TextStyle(
+                      fontSize: 45.sp,
+                      color: AppColors.greyFF969090
+                  ),
                 );
               },
             ),
@@ -268,16 +253,17 @@ class _Form extends StatelessWidget {
           ),
           CustomButton(
             text: LoginLayoutConstants.login,
-            fontSize: 45.sp,
+            fontSize: 60.sp,
             onPressed: _onPressed(context),
-            color: AppColors.greenFF61C53D,
-            height: 130.h,
+            color: AppColors.greenFF66D095,
+            textColor: AppColors.white,
+            height: 150.h,
             width: double.infinity,
             padding: EdgeInsets.symmetric(
               horizontal: 60.w,
-              vertical: 50.0.h,
+              vertical: 75.0.h,
             ),
-            circularBorderRadius: 15.0.r,
+            circularBorderRadius: 25.0.r,
           ),
         ],
       ),
@@ -314,7 +300,7 @@ class _Form extends StatelessWidget {
 
   TextStyle _getInputFieldTextStyle() {
     return TextStyle(
-      fontSize: 52.sp,
+      fontSize: 45.sp,
       fontWeight: FontWeight.w400,
     );
   }

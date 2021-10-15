@@ -19,9 +19,9 @@ class LoginLayoutConstants {
   static const String errorPassword = 'Hãy nhập mật khẩu';
 
   static const String login = 'Đăng nhập';
-  static const String forgetPassword = 'Quên mật khẩu?';
+  static const String forgetPassword = 'Quên mật khẩu';
   static const String or = 'HOẶC';
-  static const String signup = 'Tạo tài khoản mới';
+  static const String signup = 'Tạo tài khoản';
 
   static const String waiting = 'Vui lòng đợi...';
 }

@@ -8,6 +8,7 @@ class CustomBorderTextFormField extends StatefulWidget {
     Key? key,
     this.labelText,
     this.commonColor = AppColors.greenFF61C53D,
+    this.defaultColor = AppColors.greyFFB5B5B5,
     this.keyboardType = TextInputType.multiline,
     this.obscureText = false,
     this.inputFormatters = const [],
@@ -25,6 +26,7 @@ class CustomBorderTextFormField extends StatefulWidget {
   }) : super(key: key);
   final String? labelText;
   final Color commonColor;
+  final Color defaultColor;
   final TextInputType keyboardType;
   final bool obscureText;
   final List<TextInputFormatter> inputFormatters;
@@ -91,6 +93,10 @@ class _CustomBorderTextFormFieldState extends State<CustomBorderTextFormField> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(
               widget.cirularBorderRadius ?? 0.r,
+            ),
+            borderSide: BorderSide(
+              color: widget.defaultColor,
+              width: 4.sp
             ),
           ),
           focusedBorder: OutlineInputBorder(
