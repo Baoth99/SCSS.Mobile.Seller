@@ -114,11 +114,11 @@ class RequestDetailLayout extends StatelessWidget {
           const RequestDetailDivider(),
           const RequestDetailTime(),
           s.isCancelable ? _getCancelButton(context) : const SizedBox.shrink(),
-          s.feedbackToSystemInfo.feedbackStatus ==
+          s.complaint.complaintStatus ==
                       FeedbackToSystemStatus.canGiveFeedback ||
-                  s.feedbackToSystemInfo.feedbackStatus ==
+                  s.complaint.complaintStatus ==
                       FeedbackToSystemStatus.haveGivenFeedback ||
-                  s.feedbackToSystemInfo.feedbackStatus ==
+                  s.complaint.complaintStatus ==
                       FeedbackToSystemStatus.adminReplied
               ? _getFeedbackToAdmin(context)
               : const SizedBox.shrink(),
@@ -140,9 +140,9 @@ class RequestDetailLayout extends StatelessWidget {
             return TextButton(
               onPressed: _feedbackAdminPressed(
                 context,
-                state.feedbackToSystemInfo.feedbackStatus,
-                state.feedbackToSystemInfo.sellingFeedback,
-                state.feedbackToSystemInfo.adminReply,
+                state.complaint.complaintStatus,
+                state.complaint.complaintContent,
+                state.complaint.adminReply,
                 state.id,
               ),
               child: const CustomText(

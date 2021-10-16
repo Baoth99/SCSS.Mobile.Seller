@@ -34,7 +34,7 @@ class RequestDetailState extends Equatable {
     this.stateStatus = FormzStatus.pure,
     this.feedbackStatus = 0,
     this.ratingFeedback = 0,
-    this.feedbackToSystemInfo = const FeedbackToSystemInfo(),
+    this.complaint = const Complaint(),
   }) {
     this.transaction = transaction ?? [];
   }
@@ -71,7 +71,7 @@ class RequestDetailState extends Equatable {
   String cancelReason;
   int feedbackStatus;
   double ratingFeedback;
-  FeedbackToSystemInfo feedbackToSystemInfo;
+  Complaint complaint;
   FormzStatus stateStatus;
 
   RequestDetailState copyWith({
@@ -107,7 +107,7 @@ class RequestDetailState extends Equatable {
     int? feedbackStatus,
     int? feedbackType,
     double? ratingFeedback,
-    FeedbackToSystemInfo? feedbackToSystemInfo,
+    Complaint? complaint,
     FormzStatus? stateStatus,
   }) {
     var state = RequestDetailState(
@@ -145,7 +145,7 @@ class RequestDetailState extends Equatable {
       cancelReason: cancelReason ?? this.cancelReason,
       feedbackStatus: feedbackStatus ?? this.feedbackStatus,
       ratingFeedback: ratingFeedback ?? this.ratingFeedback,
-      feedbackToSystemInfo: feedbackToSystemInfo ?? this.feedbackToSystemInfo,
+      complaint: complaint ?? this.complaint,
       stateStatus: stateStatus ?? this.stateStatus,
     );
     return state;
@@ -184,7 +184,7 @@ class RequestDetailState extends Equatable {
         cancelReason,
         feedbackStatus,
         ratingFeedback,
-        feedbackToSystemInfo,
+        complaint,
         stateStatus,
       ];
 }
@@ -210,33 +210,33 @@ class TransactionItem extends Equatable {
       ];
 }
 
-class FeedbackToSystemInfo extends Equatable {
-  final int feedbackStatus;
-  final String sellingFeedback;
+class Complaint extends Equatable {
+  final int complaintStatus;
+  final String complaintContent;
   final String adminReply;
 
-  const FeedbackToSystemInfo({
-    this.feedbackStatus = 0,
-    this.sellingFeedback = Symbols.empty,
+  const Complaint({
+    this.complaintStatus = 0,
+    this.complaintContent = Symbols.empty,
     this.adminReply = Symbols.empty,
   });
 
-  FeedbackToSystemInfo copyWith({
-    int? feedbackStatus,
-    String? sellingFeedback,
+  Complaint copyWith({
+    int? complaintStatus,
+    String? complaintContent,
     String? adminReply,
   }) {
-    return FeedbackToSystemInfo(
-      feedbackStatus: feedbackStatus ?? this.feedbackStatus,
-      sellingFeedback: sellingFeedback ?? this.sellingFeedback,
+    return Complaint(
+      complaintStatus: complaintStatus ?? this.complaintStatus,
+      complaintContent: complaintContent ?? this.complaintContent,
       adminReply: adminReply ?? this.adminReply,
     );
   }
 
   @override
   List<Object> get props => [
-        feedbackStatus,
-        sellingFeedback,
+        complaintStatus,
+        complaintContent,
         adminReply,
       ];
 }

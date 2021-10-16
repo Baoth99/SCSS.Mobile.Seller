@@ -4,7 +4,7 @@ import 'package:seller_app/blocs/request_detail_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/activity_network.dart';
-import 'package:seller_app/providers/networks/models/request/feedback_admin_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/create_comlaint_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_transaction_requets_model.dart';
 
 abstract class ActivityService {
@@ -126,11 +126,10 @@ class ActivityServiceImpl implements ActivityService {
         feedbackStatus: d.transaction?.feedbackInfo.feedbackStatus ?? 0,
         ratingFeedback: d.transaction?.feedbackInfo.ratingFeedback ?? 0,
         cancelReason: d.cancelReasoin ?? Symbols.empty,
-        feedbackToSystemInfo: FeedbackToSystemInfo(
-          feedbackStatus: d.feedbackToSystemInfo.feedbackStatus,
-          sellingFeedback:
-              d.feedbackToSystemInfo.sellingFeedback ?? Symbols.empty,
-          adminReply: d.feedbackToSystemInfo.adminReply ?? Symbols.empty,
+        complaint: Complaint(
+          complaintStatus: d.complaint.complaintStatus,
+          complaintContent: d.complaint.complaintContent ?? Symbols.empty,
+          adminReply: d.complaint.adminReply ?? Symbols.empty,
         ),
         transactionId: d.transaction?.transactionId ?? Symbols.empty,
       );
@@ -140,13 +139,12 @@ class ActivityServiceImpl implements ActivityService {
   }
 
   @override
-  Future<bool> feedbackAdmin(String requetsId, String sellingFeedback) async {
+  Future<bool> feedbackAdmin(String requetsId, String complaint) async {
     Client client = Client();
     var result = await _activityNetwork
-        .feedbackAdmin(
-            FeedbackAdminRequestModel(
-                collectingRequestId: requetsId,
-                sellingFeedback: sellingFeedback),
+        .createComplaint(
+            CreateComplaintequestModel(
+                collectingRequestId: requetsId, complaintContent: complaint),
             client)
         .whenComplete(() => client.close());
 
