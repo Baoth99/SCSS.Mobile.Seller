@@ -7,6 +7,7 @@ import 'package:seller_app/blocs/models/gender_model.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
+import 'package:seller_app/ui/layouts/request_detail_layout.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -320,7 +321,12 @@ class CollectingRequest extends StatelessWidget {
             )
           ]),
       child: InkWell(
-        onTap: _onTapRequestWaitToCollect(context),
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            Routes.requestDetail,
+            arguments: RequestDetailArguments(requestId: bookingId),
+          );
+        },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30.0.r),
           child: IntrinsicHeight(
@@ -408,10 +414,6 @@ class CollectingRequest extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void Function() _onTapRequestWaitToCollect(BuildContext context) {
-    return () {};
   }
 
   Widget _getContainerColumn(Widget child) {
