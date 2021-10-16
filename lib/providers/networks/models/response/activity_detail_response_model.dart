@@ -55,7 +55,7 @@ class ResData {
     this.note,
     this.cancelReasoin,
     this.transaction,
-    required this.feedbackToSystemInfo,
+    required this.complaint,
     this.doneActivityDate,
     this.doneActivityTime,
     required this.isCancelable,
@@ -79,7 +79,7 @@ class ResData {
   String? note;
   String? cancelReasoin;
   Transaction? transaction;
-  FeedbackToSystemInfo feedbackToSystemInfo;
+  Complaint complaint;
   String? doneActivityDate;
   String? doneActivityTime;
   bool isCancelable;
@@ -107,8 +107,7 @@ class ResData {
         transaction: json["transaction"] == null
             ? null
             : Transaction.fromJson(json["transaction"]),
-        feedbackToSystemInfo:
-            FeedbackToSystemInfo.fromJson(json["feedbackToSystemInfo"]),
+        complaint: Complaint.fromJson(json["complaint"]),
         doneActivityDate: json["doneActivityDate"],
         doneActivityTime: json["doneActivityTime"],
         isCancelable: json["isCancelable"],
@@ -211,21 +210,23 @@ class FeedbackInfo {
       );
 }
 
-class FeedbackToSystemInfo {
-  FeedbackToSystemInfo({
-    required this.feedbackStatus,
-    this.sellingFeedback,
+class Complaint {
+  Complaint({
+    this.complaintId,
+    required this.complaintStatus,
+    this.complaintContent,
     this.adminReply,
   });
 
-  int feedbackStatus;
-  String? sellingFeedback;
+  String? complaintId;
+  int complaintStatus;
+  String? complaintContent;
   String? adminReply;
 
-  factory FeedbackToSystemInfo.fromJson(Map<String, dynamic> json) =>
-      FeedbackToSystemInfo(
-        feedbackStatus: json["feedbackStatus"],
-        sellingFeedback: json["sellingFeedback"],
+  factory Complaint.fromJson(Map<String, dynamic> json) => Complaint(
+        complaintId: json["complaintId"],
+        complaintStatus: json["complaintStatus"],
+        complaintContent: json["complaintContent"],
         adminReply: json["adminReply"],
       );
 }

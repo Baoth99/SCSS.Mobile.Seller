@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/providers/networks/models/request/feedback_admin_request_model.dart';
+import 'package:seller_app/providers/networks/models/request/create_comlaint_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_transaction_requets_model.dart';
 import 'package:seller_app/providers/networks/models/request/nearest_approved_requets_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/activity_detail_response_model.dart';
@@ -24,8 +24,8 @@ abstract class ActivityNetwork {
     Client client,
   );
 
-  Future<BaseResponseModel> feedbackAdmin(
-      FeedbackAdminRequestModel requestModel, Client client);
+  Future<BaseResponseModel> createComplaint(
+      CreateComplaintequestModel requestModel, Client client);
 
   Future<BaseResponseModel> feedbackTransaction(
       FeedbackTransactionRequestModel requestModel, Client client);
@@ -83,14 +83,14 @@ class ActivityNetworkImpl implements ActivityNetwork {
   }
 
   @override
-  Future<BaseResponseModel> feedbackAdmin(
-      FeedbackAdminRequestModel requestModel, Client client) async {
+  Future<BaseResponseModel> createComplaint(
+      CreateComplaintequestModel requestModel, Client client) async {
     var response = await NetworkUtils.postBodyWithBearerAuth(
-      uri: APIServiceURI.feedbackAdmin,
+      uri: APIServiceURI.createComplaint,
       headers: {
         HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
       },
-      body: feedbackAdminRequestModelToJson(requestModel),
+      body: createComplaintRequestModelToJson(requestModel),
       client: client,
     );
 
