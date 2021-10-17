@@ -17,6 +17,8 @@ abstract class CollectingRequestService {
   Future<String> sendRequest(
     String addressName,
     String address,
+    String district,
+    String city,
     double latitude,
     double longitude,
     DateTime collectingRequestDate,
@@ -64,6 +66,8 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
   Future<String> sendRequest(
     String addressName,
     String address,
+    String district,
+    String city,
     double latitude,
     double longitude,
     DateTime collectingRequestDate,
@@ -96,6 +100,8 @@ class CollectingRequestServiceImpl implements CollectingRequestService {
     var requestModel = SendRequestRequestModel(
       addressName: addressName,
       address: address,
+      district: district,
+      city: city,
       latitude: latitude,
       longtitude: longitude,
       collectingRequestDate: collectingRequestDate,

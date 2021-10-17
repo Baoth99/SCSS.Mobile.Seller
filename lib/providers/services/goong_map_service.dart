@@ -78,10 +78,13 @@ class GoongMapServiceImpl implements GoongMapService {
       for (var i = 1; i < addressComponents.length; i++) {
         addressList.add(addressComponents[i].longName);
       }
-      var address = addressList.join(Symbols.comma);
+      var address = addressList.join('${Symbols.comma} ');
+
       return PlaceNameByLatlngServiceModel(
         name: name,
         address: address,
+        district: addressComponents[addressComponents.length - 2].longName,
+        city: addressComponents.last.longName,
       );
     }
 

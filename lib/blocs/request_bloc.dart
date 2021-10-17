@@ -42,6 +42,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           longitude: event.longitude,
           name: event.name,
           address: event.address,
+          district: event.district,
+          city: event.city,
         ),
       );
 
@@ -58,6 +60,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           longitude: response.longitude,
           name: response.name,
           address: response.address,
+          district: event.district,
+          city: event.city,
         ),
       );
       yield state.copyWith(
@@ -103,6 +107,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
               name: model.name,
               latitude: currentLatLng.latitude,
               longitude: currentLatLng.longitude,
+              district: model.district,
+              city: model.city,
             ),
           );
 
@@ -169,6 +175,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     return _collectingRequestService.sendRequest(
       state.address.value.name!,
       state.address.value.address!,
+      state.address.value.district!,
+      state.address.value.city!,
       state.address.value.latitude!,
       state.address.value.longitude!,
       state.date!,

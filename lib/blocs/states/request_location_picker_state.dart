@@ -2,20 +2,26 @@ part of '../request_location_picker_bloc.dart';
 
 class AddressPrediction extends Equatable {
   const AddressPrediction({
-    this.placeId = '',
-    this.mainText = '',
-    this.secondaryText = '',
+    this.placeId = Symbols.empty,
+    this.mainText = Symbols.empty,
+    this.secondaryText = Symbols.empty,
+    this.district = Symbols.empty,
+    this.city = Symbols.empty,
   });
 
   final String placeId;
   final String mainText;
   final String secondaryText;
+  final String district;
+  final String city;
 
   @override
   List<String> get props => [
         placeId,
         mainText,
         secondaryText,
+        district,
+        city,
       ];
 }
 
