@@ -227,6 +227,8 @@ class _SubmittedButton extends StatelessWidget {
                   state.longitude,
                   state.placeName,
                   state.address,
+                  state.district,
+                  state.city,
                 )
               : null,
           child: CustomText(
@@ -244,6 +246,8 @@ class _SubmittedButton extends StatelessWidget {
     double longitude,
     String name,
     String address,
+    String district,
+    String city,
   ) {
     return () {
       context.read<RequestBloc>().add(
@@ -252,6 +256,8 @@ class _SubmittedButton extends StatelessWidget {
               longitude: longitude,
               name: name,
               address: address,
+              district: district,
+              city: city,
             ),
           );
       Navigator.popUntil(

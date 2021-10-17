@@ -156,6 +156,8 @@ class _MapResult extends StatelessWidget {
                   placeId: predictions[index].placeId,
                   main: predictions[index].mainText,
                   sub: predictions[index].secondaryText,
+                  district: predictions[index].district,
+                  city: predictions[index].city,
                 ),
                 separatorBuilder: (context, index) => Divider(
                   color: AppColors.greyFFEEEEEE,
@@ -182,12 +184,19 @@ class _MapResult extends StatelessWidget {
 }
 
 class _MapResultTile extends StatelessWidget {
-  const _MapResultTile(
-      {Key? key, required this.main, required this.sub, required this.placeId})
-      : super(key: key);
+  const _MapResultTile({
+    Key? key,
+    required this.main,
+    required this.sub,
+    required this.placeId,
+    required this.district,
+    required this.city,
+  }) : super(key: key);
   final String main;
   final String sub;
   final String placeId;
+  final String district;
+  final String city;
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +229,11 @@ class _MapResultTile extends StatelessWidget {
     return () {
       // add to bloc request
       context.read<RequestBloc>().add(
-            RequestAddressTapped(placeId),
+            RequestAddressTapped(
+              placeId,
+              district,
+              city,
+            ),
           );
       //pop
       Navigator.popUntil(

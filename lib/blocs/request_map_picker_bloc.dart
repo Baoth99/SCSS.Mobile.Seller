@@ -41,6 +41,8 @@ class RequestMapPickerBloc
             longitude: event.longitude,
             placeName: result.name,
             address: result.address,
+            district: result.district,
+            city: result.city,
             status: FormzStatus.submissionSuccess,
           );
         } catch (e) {

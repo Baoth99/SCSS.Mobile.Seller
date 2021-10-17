@@ -12,9 +12,12 @@ void configureMappers() async {
         var result = s.predictions
             .map(
               (e) => AddressPrediction(
-                  placeId: e.placeId,
-                  mainText: e.structuredFormatting.mainText,
-                  secondaryText: e.structuredFormatting.secondaryText),
+                placeId: e.placeId,
+                mainText: e.structuredFormatting.mainText,
+                secondaryText: e.structuredFormatting.secondaryText,
+                district: e.compound.district,
+                city: e.compound.province,
+              ),
             )
             .toList();
         return result;

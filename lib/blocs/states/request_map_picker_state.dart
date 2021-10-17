@@ -6,6 +6,8 @@ class RequestMapPickerState extends Equatable {
     this.longitude = 0,
     this.placeName = Symbols.empty,
     this.address = Symbols.empty,
+    this.district = Symbols.empty,
+    this.city = Symbols.empty,
     this.status = FormzStatus.pure,
   });
 
@@ -13,6 +15,8 @@ class RequestMapPickerState extends Equatable {
   final double longitude;
   final String placeName;
   final String address;
+  final String district;
+  final String city;
   final FormzStatus status;
 
   RequestMapPickerState copyWith({
@@ -20,6 +24,8 @@ class RequestMapPickerState extends Equatable {
     double? longitude,
     String? placeName,
     String? address,
+    String? district,
+    String? city,
     FormzStatus? status,
   }) {
     return RequestMapPickerState(
@@ -27,6 +33,8 @@ class RequestMapPickerState extends Equatable {
       longitude: longitude ?? this.longitude,
       placeName: placeName ?? this.placeName,
       address: address ?? this.address,
+      district: district ?? this.district,
+      city: city ?? this.city,
       status: status ?? this.status,
     );
   }
@@ -37,6 +45,8 @@ class RequestMapPickerState extends Equatable {
         longitude,
         placeName,
         address,
+        district,
+        city,
         status,
       ];
 }

@@ -26,13 +26,37 @@ class _Prediction {
   final String placeId;
   final String reference;
   final _StructuredFormatting structuredFormatting;
+  final Compound compound;
 
-  _Prediction(this.description, this.placeId, this.reference,
-      this.structuredFormatting);
+  _Prediction(
+    this.description,
+    this.placeId,
+    this.reference,
+    this.structuredFormatting,
+    this.compound,
+  );
 
   factory _Prediction.fromJson(Map<String, dynamic> json) =>
       _$_PredictionFromJson(json);
   Map<String, dynamic> toJson() => _$_PredictionToJson(this);
+}
+
+class Compound {
+  Compound({
+    required this.district,
+    required this.commune,
+    required this.province,
+  });
+
+  String district;
+  String commune;
+  String province;
+
+  factory Compound.fromJson(Map<String, dynamic> json) => Compound(
+        district: json["district"],
+        commune: json["commune"],
+        province: json["province"],
+      );
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

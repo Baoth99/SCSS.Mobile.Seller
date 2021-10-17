@@ -11,12 +11,16 @@ class RequestAddressPicked extends RequestEvent {
   final double longitude;
   final String name;
   final String address;
+  final String district;
+  final String city;
 
   const RequestAddressPicked({
     required this.latitude,
     required this.longitude,
     required this.name,
     required this.address,
+    required this.district,
+    required this.city,
   });
 
   @override
@@ -25,15 +29,27 @@ class RequestAddressPicked extends RequestEvent {
         longitude,
         name,
         address,
+        district,
+        city,
       ];
 }
 
 class RequestAddressTapped extends RequestEvent {
   final String placeId;
-  const RequestAddressTapped(this.placeId);
+  final String district;
+  final String city;
+  const RequestAddressTapped(
+    this.placeId,
+    this.district,
+    this.city,
+  );
 
   @override
-  List<String> get props => [placeId];
+  List<String> get props => [
+        placeId,
+        district,
+        city,
+      ];
 }
 
 class RequestTimePicked extends RequestEvent {

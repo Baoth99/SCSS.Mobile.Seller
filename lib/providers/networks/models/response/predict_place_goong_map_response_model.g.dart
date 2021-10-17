@@ -34,6 +34,7 @@ _Prediction _$_PredictionFromJson(Map<String, dynamic> json) {
     json['reference'] as String,
     _StructuredFormatting.fromJson(
         json['structured_formatting'] as Map<String, dynamic>),
+    Compound.fromJson(json["compound"] as Map<String, dynamic>),
   );
 }
 

@@ -1,5 +1,4 @@
 import 'package:seller_app/constants/api_constants.dart';
-import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/networks/models/request/place_detail_by_place_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/predict_place_goong_map_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/reverse_geocoding_request_model.dart';
@@ -7,7 +6,6 @@ import 'package:seller_app/providers/networks/models/response/place_detail_by_pl
 import 'package:seller_app/providers/networks/models/response/predict_place_goong_map_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/reverse_geocoding_response_model.dart';
 import 'package:seller_app/utils/common_utils.dart';
-import 'package:seller_app/utils/env_util.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 

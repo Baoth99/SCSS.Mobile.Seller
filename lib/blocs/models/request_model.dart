@@ -9,12 +9,16 @@ class RequestAddressInfo extends Equatable {
     this.longitude,
     this.name,
     this.address,
+    this.district,
+    this.city,
   });
 
   final double? latitude;
   final double? longitude;
   final String? name;
   final String? address;
+  final String? district;
+  final String? city;
 
   @override
   List<Object?> get props => [
@@ -22,6 +26,8 @@ class RequestAddressInfo extends Equatable {
         longitude,
         name,
         address,
+        district,
+        city,
       ];
 }
 
@@ -40,7 +46,9 @@ class RequestAddress
     return (value.latitude != null &&
         value.longitude != null &&
         (value.name?.isNotEmpty ?? false) &&
-        (value.address?.isNotEmpty ?? false));
+        (value.address?.isNotEmpty ?? false) &&
+        (value.district?.isNotEmpty ?? false) &&
+        (value.city?.isNotEmpty ?? false));
   }
 
   @override
