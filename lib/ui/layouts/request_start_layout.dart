@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/layouts/request_location_picker_layout.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -144,10 +145,13 @@ class _Form extends StatelessWidget {
                             state.fromTime != null &&
                             state.toTime != null
                         ? CustomText(
-                            text: CommonUtils.combineDateToTime(
-                                state.date!,
-                                state.fromTime!.format(context),
-                                state.toTime!.format(context)),
+                            text: CommonUtils.isOnlyNow(
+                                    state.date!, state.fromTime!, state.toTime!)
+                                ? 'Đến ngay'
+                                : CommonUtils.combineDateToTime(
+                                    state.date!,
+                                    state.fromTime!.format(context),
+                                    state.toTime!.format(context)),
                             color: AppColors.black,
                             fontWeight: FontWeight.w500,
                             fontSize:
@@ -221,14 +225,27 @@ class _Form extends StatelessWidget {
       },
     ).then((value) {
       if (value == null) return;
-      if (value) {
-        context.read<RequestBloc>().add(
-              RequestTimePicked(
-                date: date ?? DateTime.now(),
-                toTime: toTime ?? TimeOfDay.now(),
-                fromTime: fromTime ?? TimeOfDay.now(),
-              ),
-            );
+      try {
+        if (value == RequestStartLayoutConstants.requestBook) {
+          context.read<RequestBloc>().add(
+                RequestTimePicked(
+                  date: date ?? DateTime.now(),
+                  toTime: toTime ?? TimeOfDay.now(),
+                  fromTime: fromTime ?? TimeOfDay.now(),
+                ),
+              );
+        } else if (value == RequestStartLayoutConstants.requestNow) {
+          var time = const TimeOfDay(hour: 00, minute: 00);
+          context.read<RequestBloc>().add(
+                RequestTimePicked(
+                  date: DateTime.now().onlyDate(),
+                  toTime: time,
+                  fromTime: time,
+                ),
+              );
+        }
+      } catch (_) {
+        AppLog.error('Value is not number');
       }
     });
   }
@@ -291,8 +308,7 @@ class _TimeInputDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _AlertDialog(
-      onPressedActived: onPressedActivated,
+    return AlertDialog(
       content: Container(
         width: 800.w,
         child: Column(
@@ -334,8 +350,12 @@ class _TimeInputDialog extends StatelessWidget {
             _getDivider(),
             BlocBuilder<RequestTimeBloc, RequestTimeState>(
               builder: (context, state) {
+                var isOnlyNow = CommonUtils.isOnlyNow(
+                    state.date, state.fromTime, state.toTime);
                 return InkWell(
-                  onTap: _onDateTap(context, state.date, state.chosableDates),
+                  onTap: isOnlyNow
+                      ? null
+                      : _onDateTap(context, state.date, state.chosableDates),
                   child: _container(
                     Row(
                       children: <Widget>[
@@ -346,9 +366,11 @@ class _TimeInputDialog extends StatelessWidget {
                           child: BlocBuilder<RequestTimeBloc, RequestTimeState>(
                             builder: (context, state) {
                               return _getText(
-                                CommonUtils.convertDateTimeToVietnamese(
-                                  state.date,
-                                ),
+                                isOnlyNow
+                                    ? Symbols.empty
+                                    : CommonUtils.convertDateTimeToVietnamese(
+                                        state.date,
+                                      ),
                               );
                             },
                           ),
@@ -407,10 +429,66 @@ class _TimeInputDialog extends StatelessWidget {
               builder: (context, state) {
                 return _getErrorTimeInput(context, state.status, state);
               },
-            )
+            ),
+            _getDivider(),
+            getActions(context),
           ],
         ),
       ),
+    );
+  }
+
+  bool isNowAvailable(List<DateTime> listDAte) {
+    if (listDAte.isNotEmpty && listDAte[0].isSameDate(DateTime.now())) {
+      return true;
+    }
+    return false;
+  }
+
+  Widget getActions(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        BlocBuilder<RequestTimeBloc, RequestTimeState>(
+          builder: (context, state) {
+            return OutlinedButton(
+              onPressed: isNowAvailable(state.chosableDates)
+                  ? () {
+                      Navigator.of(context)
+                          .pop(RequestStartLayoutConstants.requestNow);
+                    }
+                  : null,
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 60.w,
+                  vertical: 30.h,
+                ),
+              ),
+              child: CustomText(
+                text: "Đến ngay",
+                fontSize: 50.sp,
+              ),
+            );
+          },
+        ),
+        ElevatedButton(
+          onPressed: onPressedActivated
+              ? () => Navigator.of(context)
+                  .pop(RequestStartLayoutConstants.requestBook)
+              : null,
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(
+              horizontal: 60.w,
+              vertical: 30.h,
+            ),
+          ),
+          child: CustomText(
+            text: "Xác nhận",
+            fontSize: 50.sp,
+          ),
+        )
+      ],
     );
   }
 
@@ -476,7 +554,14 @@ class _TimeInputDialog extends StatelessWidget {
 
   bool Function(DateTime) _validateDate(List<DateTime> chosenDates) {
     return (date) {
+      if (date.isSameDate(DateTime.now())) {
+        return false;
+      }
       for (var eachdate in chosenDates) {
+        if (date.isSameDate(DateTime.now()) &&
+            eachdate.isSameDate(DateTime.now())) {
+          return false;
+        }
         if (eachdate.isSameDate(date)) {
           return true;
         }

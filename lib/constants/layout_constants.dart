@@ -102,6 +102,9 @@ class RequestStartLayoutConstants {
 
   static const String noteHintText = 'Ghi chú cho người thu gom';
   static const String firstButtonTitle = 'Tiếp';
+
+  static const int requestNow = 1;
+  static const int requestBook = 2;
 }
 
 class RequestMapPickerLayoutConstants {
