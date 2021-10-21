@@ -178,13 +178,13 @@ class Detail {
   });
 
   String? scrapCategoryName;
-  int? quantity;
+  double? quantity;
   String? unit;
   int total;
 
   factory Detail.fromJson(Map<String, dynamic> json) => Detail(
         scrapCategoryName: json["scrapCategoryName"],
-        quantity: json["quantity"],
+        quantity: json["quantity"]?.toDouble(),
         unit: json["unit"],
         total: json["total"],
       );
