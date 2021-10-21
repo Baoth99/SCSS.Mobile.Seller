@@ -88,79 +88,107 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
 
         var chosableDates = await fchosableDates;
         var operatingtime = await foperatingtime;
-        // check currentTime
-        var nearestTime = CommonUtils.getNearDateTime(
-            RequestMapPickerLayoutConstants.minuteInterval);
-        if (CommonUtils.compareTwoTimeOfDays(
-                TimeOfDay.fromDateTime(nearestTime),
-                const TimeOfDay(hour: 23, minute: 45)) ==
-            CompareConstants.equal) {
-          nearestTime = nearestTime.add(
-            const Duration(
-                minutes: RequestMapPickerLayoutConstants.minuteInterval),
-          );
-        }
-        var currentTimeOfday = TimeOfDay.fromDateTime(DateTime.now());
-        if (chosableDates.isNotEmpty) {
-          TimeOfDay fromTime;
-          TimeOfDay toTime;
-          if (chosableDates[0].isSameDate(nearestTime)) {
-            if (currentTimeOfday.isLessThan(operatingtime[0])) {
-              fromTime = operatingtime[0];
-              toTime = CommonUtils.addTimeOfDay(operatingtime[0],
-                  RequestMapPickerLayoutConstants.minuteInterval);
-            } else {
-              fromTime = TimeOfDay.fromDateTime(nearestTime);
-              toTime = TimeOfDay.fromDateTime(
-                nearestTime.add(
-                  const Duration(
-                    minutes: RequestMapPickerLayoutConstants.minuteInterval,
-                  ),
-                ),
-              );
-            }
-            var collectingDateTime = nearestTime.onlyDate();
-            yield state.copyWith(
-              date: collectingDateTime,
-              fromTime: fromTime,
-              toTime: toTime,
-              chosableDates: chosableDates,
-              status: validate(
-                collectingDateTime,
-                fromTime,
-                toTime,
-                operatingFromTime: operatingtime[0],
-                operatingToTime: operatingtime[1],
-              ),
-              operatingFromTime: operatingtime[0],
-              operatingTotime: operatingtime[1],
-            );
+        // // check currentTime
+        // var nearestTime = CommonUtils.getNearDateTime(
+        //     RequestMapPickerLayoutConstants.minuteInterval);
+        // if (CommonUtils.compareTwoTimeOfDays(
+        //         TimeOfDay.fromDateTime(nearestTime),
+        //         const TimeOfDay(hour: 23, minute: 45)) ==
+        //     CompareConstants.equal) {
+        //   nearestTime = nearestTime.add(
+        //     const Duration(
+        //         minutes: RequestMapPickerLayoutConstants.minuteInterval),
+        //   );
+        // }
+        // var currentTimeOfday = TimeOfDay.fromDateTime(DateTime.now());
+        // if (chosableDates.isNotEmpty) {
+        //   TimeOfDay fromTime;
+        //   TimeOfDay toTime;
+        //   if (chosableDates[0].isSameDate(nearestTime)) {
+        //     if (currentTimeOfday.isLessThan(operatingtime[0])) {
+        //       fromTime = operatingtime[0];
+        //       toTime = CommonUtils.addTimeOfDay(operatingtime[0],
+        //           RequestMapPickerLayoutConstants.minuteInterval);
+        //     } else {
+        //       fromTime = TimeOfDay.fromDateTime(nearestTime);
+        //       toTime = TimeOfDay.fromDateTime(
+        //         nearestTime.add(
+        //           const Duration(
+        //             minutes: RequestMapPickerLayoutConstants.minuteInterval,
+        //           ),
+        //         ),
+        //       );
+        //     }
+        //     var collectingDateTime = nearestTime.onlyDate();
+        //     yield state.copyWith(
+        //       date: collectingDateTime,
+        //       fromTime: fromTime,
+        //       toTime: toTime,
+        //       chosableDates: chosableDates,
+        //       status: validate(
+        //         collectingDateTime,
+        //         fromTime,
+        //         toTime,
+        //         operatingFromTime: operatingtime[0],
+        //         operatingToTime: operatingtime[1],
+        //       ),
+        //       operatingFromTime: operatingtime[0],
+        //       operatingTotime: operatingtime[1],
+        //     );
+        //   } else {
+        //     fromTime = operatingtime[0];
+        //     toTime = CommonUtils.addTimeOfDay(operatingtime[0],
+        //         RequestMapPickerLayoutConstants.minuteInterval);
+        //     yield state.copyWith(
+        //       date: chosableDates[0],
+        //       fromTime: fromTime,
+        //       toTime: toTime,
+        //       chosableDates: chosableDates,
+        //       status: validate(
+        //         chosableDates[0],
+        //         fromTime,
+        //         toTime,
+        //         operatingFromTime: operatingtime[0],
+        //         operatingToTime: operatingtime[1],
+        //       ),
+        //       operatingFromTime: operatingtime[0],
+        //       operatingTotime: operatingtime[1],
+        //     );
+        //   }
+        // }
+        var fromTime = operatingtime[0];
+        var toTime = CommonUtils.addTimeOfDay(
+            operatingtime[0], RequestMapPickerLayoutConstants.minuteInterval);
+        var date = chosableDates[0];
+        if (chosableDates[0].isSameDate(DateTime.now())) {
+          if (chosableDates.length >= 2) {
+            date = chosableDates[1];
           } else {
-            fromTime = operatingtime[0];
-            toTime = CommonUtils.addTimeOfDay(operatingtime[0],
-                RequestMapPickerLayoutConstants.minuteInterval);
-            yield state.copyWith(
-              date: chosableDates[0],
-              fromTime: fromTime,
-              toTime: toTime,
-              chosableDates: chosableDates,
-              status: validate(
-                chosableDates[0],
-                fromTime,
-                toTime,
-                operatingFromTime: operatingtime[0],
-                operatingToTime: operatingtime[1],
-              ),
-              operatingFromTime: operatingtime[0],
-              operatingTotime: operatingtime[1],
-            );
+            fromTime = const TimeOfDay(hour: 0, minute: 0);
+            toTime = const TimeOfDay(hour: 0, minute: 0);
           }
         }
 
-        //turn off progress bar
         yield state.copyWith(
+          date: date,
+          fromTime: fromTime,
+          toTime: toTime,
+          chosableDates: chosableDates,
+          status: validate(
+            date,
+            fromTime,
+            toTime,
+            operatingFromTime: operatingtime[0],
+            operatingToTime: operatingtime[1],
+          ),
+          operatingFromTime: operatingtime[0],
+          operatingTotime: operatingtime[1],
           blocStatus: FormzStatus.submissionSuccess,
         );
+        // //turn off progress bar
+        // yield state.copyWith(
+        //   blocStatus: FormzStatus.submissionSuccess,
+        // );
       } catch (e) {
         //turn off progress bar
         AppLog.error(e);
@@ -208,7 +236,9 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
   }) {
     nowtime ??= TimeOfDay.now();
     now ??= DateTime.now();
-
+    if (CommonUtils.isOnlyNow(date, fromTime, toTime)) {
+      RequestTimeStatus.valid;
+    }
     if (date.isSameDate(now)) {
       if (CommonUtils.compareTwoTimeOfDays(fromTime, nowtime) <= 0) {
         return RequestTimeStatus.lessThanNow;

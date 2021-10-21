@@ -10,8 +10,18 @@ import 'package:seller_app/providers/networks/models/response/base_response_mode
 import 'package:seller_app/utils/env_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 class CommonUtils {
+  static bool isOnlyNow(DateTime date, TimeOfDay from, TimeOfDay to) {
+    const zeroTime = TimeOfDay(hour: 0, minute: 0);
+    var isOnlyNow = date.isSameDate(DateTime.now()) &&
+        CommonUtils.compareTwoTimeOfDays(from, zeroTime) == 0 &&
+        CommonUtils.compareTwoTimeOfDays(to, zeroTime) == 0;
+
+    return isOnlyNow;
+  }
+
   static String addZeroBeforePhoneNumber(String phoneNumber) {
     if (phoneNumber.length == 9) {
       phoneNumber = '0$phoneNumber';
