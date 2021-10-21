@@ -159,52 +159,55 @@ class IdentityServerServiceImpl implements IdentityServerService {
   @override
   Future<bool> refreshToken() async {
     Client client = Client();
+    try {
+      // revoke access Token
+      var fGetStringAccessToken =
+          SharedPreferenceUtils.getString(APIKeyConstants.accessToken)
+              .then((value) async {
+        if (value != null && value.isNotEmpty) {
+          return await _identityServerNetwork.connectRevocation(
+            ConnectRevocationRequestModel(
+              token: value,
+              tokenTypeHint: IdentityAPIConstants.accessToken,
+            ),
+            client,
+          );
+        }
+      }).catchError((error, stackTrace) {
+        AppLog.error(error);
+      });
 
-    // revoke access Token
-    var fGetStringAccessToken =
-        SharedPreferenceUtils.getString(APIKeyConstants.accessToken)
-            .then((value) async {
-      if (value != null && value.isNotEmpty) {
-        return await _identityServerNetwork.connectRevocation(
-          ConnectRevocationRequestModel(
-            token: value,
-            tokenTypeHint: IdentityAPIConstants.accessToken,
-          ),
-          client,
-        );
+      //get refresh Token
+      var fGetStringRefreshToken =
+          SharedPreferenceUtils.getString(APIKeyConstants.refreshToken)
+              .then((value) async {
+        if (value != null && value.isNotEmpty) {
+          return await _identityServerNetwork.refreshToken(value, client);
+        }
+      });
+
+      //wait till two of this success
+      var getStringAccessToken = await fGetStringAccessToken;
+
+      var responseModle = await fGetStringRefreshToken;
+
+      // should delete in shared Disk
+
+      if (responseModle != null &&
+          responseModle.accessToken != null &&
+          responseModle.accessToken!.isNotEmpty &&
+          responseModle.refreshToken != null &&
+          responseModle.refreshToken!.isNotEmpty) {
+        var resultAT = SharedPreferenceUtils.setString(
+            APIKeyConstants.accessToken, responseModle.accessToken!);
+
+        var resultRT = SharedPreferenceUtils.setString(
+            APIKeyConstants.refreshToken, responseModle.refreshToken!);
+
+        return await resultAT && await resultRT;
       }
-    }).catchError((error, stackTrace) {
-      AppLog.error(error);
-    });
-
-    //get refresh Token
-    var fGetStringRefreshToken =
-        SharedPreferenceUtils.getString(APIKeyConstants.refreshToken)
-            .then((value) async {
-      if (value != null && value.isNotEmpty) {
-        return await _identityServerNetwork.refreshToken(value, client);
-      }
-    });
-
-    //wait till two of this success
-    var getStringAccessToken = await fGetStringAccessToken;
-
-    var responseModle = await fGetStringRefreshToken;
-
-    // should delete in shared Disk
-
-    if (responseModle != null &&
-        responseModle.accessToken != null &&
-        responseModle.accessToken!.isNotEmpty &&
-        responseModle.refreshToken != null &&
-        responseModle.refreshToken!.isNotEmpty) {
-      var resultAT = SharedPreferenceUtils.setString(
-          APIKeyConstants.accessToken, responseModle.accessToken!);
-
-      var resultRT = SharedPreferenceUtils.setString(
-          APIKeyConstants.refreshToken, responseModle.refreshToken!);
-
-      return await resultAT && await resultRT;
+    } finally {
+      client.close();
     }
     return false;
   }

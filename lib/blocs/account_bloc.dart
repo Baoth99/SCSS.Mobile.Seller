@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
 import 'package:seller_app/constants/api_constants.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/firebase_service.dart';
 import 'package:seller_app/providers/services/identity_server_service.dart';
@@ -43,6 +44,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           throw Exception();
         }
       } catch (e) {
+        AppLog.error(e);
         yield state.copyWith(
           status: FormzStatus.submissionFailure,
         );

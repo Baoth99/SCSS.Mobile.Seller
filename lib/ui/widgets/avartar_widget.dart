@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/constants/constants.dart';
-import 'package:seller_app/log/logger.dart';
 
 class AvatarWidget extends StatelessWidget {
   const AvatarWidget({
