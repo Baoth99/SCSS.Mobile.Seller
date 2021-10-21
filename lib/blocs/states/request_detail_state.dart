@@ -198,7 +198,7 @@ class TransactionItem extends Equatable {
   });
   String name;
   String unitInfo;
-  int quantity;
+  double quantity;
   int total;
 
   @override

@@ -35,6 +35,14 @@ extension DoubleExtension on double {
   String toStringOneFixed() {
     return toStringAsFixed(1);
   }
+
+  String toStringAndRemoveFractionalIfCan() {
+    var value = toInt();
+    if (value == this) {
+      return value.toString();
+    }
+    return toString();
+  }
 }
 
 extension DynamicExtension on dynamic {

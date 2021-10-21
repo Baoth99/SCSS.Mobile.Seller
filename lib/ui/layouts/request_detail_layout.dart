@@ -809,7 +809,7 @@ class RequestDetailBill extends StatelessWidget {
     );
   }
 
-  Widget _getItem(String name, int quantity, String unit, String price) {
+  Widget _getItem(String name, double quantity, String unit, String price) {
     return Container(
       height: 130.h,
       decoration: BoxDecoration(
@@ -833,7 +833,7 @@ class RequestDetailBill extends StatelessWidget {
           ),
           _getItemText(quantity == 0 && unit.isEmpty
               ? Symbols.minus
-              : '$quantity $unit'),
+              : '${quantity.toStringAndRemoveFractionalIfCan()} $unit'),
           _getItemText(price),
         ],
       ),
