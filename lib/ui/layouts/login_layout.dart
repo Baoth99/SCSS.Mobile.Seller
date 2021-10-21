@@ -99,18 +99,21 @@ class _Body extends StatelessWidget {
           const _Form(),
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 60.w
+              horizontal: 60.w,
             ),
             child: Row(
               children: [
                 CustomTextButton(
                   text: LoginLayoutConstants.forgetPassword,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(Routes.forgetPasswordPhoneNumber);
+                  },
                   color: AppColors.black,
                   fontSize: 45.sp,
                   fontWeight: FontWeight.w500,
                 ),
-                Spacer(),
+                const Spacer(),
                 CustomTextButton(
                   text: LoginLayoutConstants.signup,
                   onPressed: () {
@@ -174,10 +177,8 @@ class _Form extends StatelessWidget {
                   errorText: state.phoneNumber.invalid
                       ? LoginLayoutConstants.errorPhoneNumber
                       : null,
-                  labelStyle: TextStyle(
-                    fontSize: 45.sp,
-                    color: AppColors.greyFF969090
-                  ),
+                  labelStyle:
+                      TextStyle(fontSize: 45.sp, color: AppColors.greyFF969090),
                 );
               },
             ),
@@ -211,10 +212,8 @@ class _Form extends StatelessWidget {
                   errorText: state.password.invalid
                       ? LoginLayoutConstants.errorPassword
                       : null,
-                  labelStyle: TextStyle(
-                      fontSize: 45.sp,
-                      color: AppColors.greyFF969090
-                  ),
+                  labelStyle:
+                      TextStyle(fontSize: 45.sp, color: AppColors.greyFF969090),
                 );
               },
             ),
