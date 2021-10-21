@@ -1381,19 +1381,19 @@ class RequestDetailHeader extends StatelessWidget {
             ),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            FunctionalWidgets.showCustomModalBottomSheet<String>(
-              context: context,
-              child: _getQrCode(id, code),
-              routeClosed: Routes.requestDetail,
-            );
-          },
-          icon: Icon(
-            Icons.qr_code_2_outlined,
-            size: 80.sp,
-          ),
-        ),
+        // IconButton(
+        //   onPressed: () {
+        //     FunctionalWidgets.showCustomModalBottomSheet<String>(
+        //       context: context,
+        //       child: _getQrCode(id, code),
+        //       routeClosed: Routes.requestDetail,
+        //     );
+        //   },
+        //   icon: Icon(
+        //     Icons.qr_code_2_outlined,
+        //     size: 80.sp,
+        //   ),
+        // ),
       ],
     );
   }
