@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cool_alert/cool_alert.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,7 +10,6 @@ import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/avartar_widget.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
-import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,28 +73,26 @@ class ProfileEditLayout extends StatelessWidget {
         child: BlocListener<ProfileEditBloc, ProfileEditState>(
           listener: (context, state) {
             if (state.status.isSubmissionSuccess) {
-              FunctionalWidgets.showCoolAlert(
-                context: context,
-                confirmBtnTapRoute: Routes.profileEdit,
-                type: CoolAlertType.success,
-                confirmBtnText: 'Đóng',
+              FunctionalWidgets.showAwesomeDialog(
+                context,
+                dialogType: DialogType.SUCCES,
                 title: 'Cập nhật thành công',
+                desc: 'Bạn đã cập nhật thông tin cá nhân thành công',
+                btnOkText: 'Đóng',
+                okRoutePress: Routes.profileEdit,
               );
             }
             if (state.status.isSubmissionFailure) {
-              FunctionalWidgets.showCoolAlert(
-                context: context,
-                confirmBtnTapRoute: Routes.profileEdit,
-                type: CoolAlertType.success,
-                confirmBtnText: 'Đóng',
-                title: 'Có lỗi từ hệ thống',
+              FunctionalWidgets.showErrorSystemRouteButton(
+                context,
+                title: 'Cập nhật thất bại',
+                route: Routes.profileEdit,
               );
             }
             if (state.status.isSubmissionInProgress) {
               CommonUtils.unfocus(context);
-              showDialog(
-                context: context,
-                builder: (context) => const CustomProgressIndicatorDialog(),
+              FunctionalWidgets.showCustomDialog(
+                context,
               );
             }
           },

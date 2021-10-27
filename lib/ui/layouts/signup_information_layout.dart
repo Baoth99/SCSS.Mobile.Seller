@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,9 +9,6 @@ import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
-
-//TODO: COOL_ALERT don't have null safety because map box
-import 'package:cool_alert/cool_alert.dart';
 
 class SignupInformationArgs {
   String token;
@@ -50,30 +48,32 @@ class SignupInformationLayout extends StatelessWidget {
             if (state.status.isSubmissionSuccess) {
               if (state.status.isSubmissionSuccess &&
                   state.statusSubmmited == NetworkConstants.ok200) {
-                FunctionalWidgets.showCoolAlert(
-                  context: context,
-                  confirmBtnTapRoute: Routes.login,
+                FunctionalWidgets.showAwesomeDialog(
+                  context,
+                  dialogType: DialogType.SUCCES,
                   title: 'Đăng ký thành công',
-                  confirmBtnText: 'Đóng',
-                  type: CoolAlertType.success,
+                  desc: 'Bạn đã đăng ký thành công',
+                  btnOkText: 'Đóng',
+                  okRoutePress: Routes.login,
                 );
               } else {
-                FunctionalWidgets.showCoolAlert(
-                  context: context,
-                  confirmBtnTapRoute: Routes.signupInformation,
-                  title: 'Thông tin đăng ký không đúng',
-                  confirmBtnText: 'Đóng',
-                  type: CoolAlertType.error,
+                FunctionalWidgets.showAwesomeDialog(
+                  context,
+                  dialogType: DialogType.WARNING,
+                  title: 'Đăng ký không thành công',
+                  desc: 'Thông tin đăng ký không đúng',
+                  btnOkText: 'Đóng',
+                  isOkBorder: true,
+                  btnOkColor: AppColors.errorButtonBorder,
+                  textOkColor: AppColors.errorButtonText,
+                  okRoutePress: Routes.signupInformation,
                 );
               }
             }
             if (state.status.isSubmissionFailure) {
-              FunctionalWidgets.showCoolAlert(
-                context: context,
-                confirmBtnTapRoute: Routes.signupInformation,
-                type: CoolAlertType.error,
-                confirmBtnText: 'Đóng',
-                title: 'Có lỗi đến từ hệ thống',
+              FunctionalWidgets.showErrorSystemRouteButton(
+                context,
+                route: Routes.signupInformation,
               );
             }
           },

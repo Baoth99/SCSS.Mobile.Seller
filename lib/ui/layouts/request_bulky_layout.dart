@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:cool_alert/cool_alert.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/models/yes_no_model.dart';
 import 'package:seller_app/constants/api_constants.dart';
@@ -34,14 +33,13 @@ class RequestBulkyLayout extends StatelessWidget {
         }
 
         if (state.status.isSubmissionSuccess) {
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.success,
-            title: 'Thông Báo',
-            text: 'Tạo yêu cầu thành công!',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.SUCCES,
+            title: 'Tạo yêu cầu thành công',
+            desc: 'Bạn đã tạo yêu cầu thành công',
+            btnOkText: 'Đóng',
+            btnOkOnpress: () {
               context.read<RequestBloc>().add(RequestStateInitial());
               Navigator.of(context).pushNamedAndRemoveUntil(
                 Routes.requestDetail,
@@ -69,14 +67,16 @@ class RequestBulkyLayout extends StatelessWidget {
                 (InvalidRequestCode.invalidRequestCodeMap[state.errorCode])!;
           }
 
-          FunctionalWidgets.showCoolAlert(
-            context: context,
-            type: CoolAlertType.error,
-            title: 'Thông Báo',
-            text: errorText,
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
-            confirmBtnTapRoute: Routes.main,
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.WARNING,
+            title: 'Đặt yêu cầu thất bại',
+            desc: errorText,
+            btnOkText: 'Đóng',
+            isOkBorder: true,
+            btnOkColor: AppColors.errorButtonBorder,
+            textOkColor: AppColors.errorButtonText,
+            okRoutePress: Routes.main,
           );
         }
       },

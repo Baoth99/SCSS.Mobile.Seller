@@ -1,9 +1,8 @@
-import 'package:cool_alert/cool_alert.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/signup_bloc.dart';
-import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/ui/layouts/signup_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -40,29 +39,23 @@ class SignupPhoneNumberLayout extends StatelessWidget {
                     ),
                   );
                 } else {
-                  FunctionalWidgets.showCoolAlert(
-                    context: context,
-                    type: CoolAlertType.info,
-                    title: 'Thông Báo',
-                    text: 'Số điện thoại không hợp lệ',
-                    confirmBtnColor: AppColors.greenFF61C53D,
-                    confirmBtnText:
-                        SignupInformationLayoutConstants.btnDialogName,
-                    confirmBtnTapRoute: Routes.signupPhoneNumber,
+                  FunctionalWidgets.showAwesomeDialog(
+                    context,
+                    dialogType: DialogType.WARNING,
+                    desc: 'Số điện thoại không hợp lệ',
+                    btnOkText: 'Đóng',
+                    isOkBorder: true,
+                    btnOkColor: AppColors.errorButtonBorder,
+                    textOkColor: AppColors.errorButtonText,
+                    okRoutePress: Routes.signupPhoneNumber,
                   );
                 }
               }
 
               if (state.status.isSubmissionFailure) {
-                FunctionalWidgets.showCoolAlert(
-                  context: context,
-                  type: CoolAlertType.error,
-                  title: 'Thông Báo',
-                  text: InvalidRequestCode.errorSystem,
-                  confirmBtnColor: AppColors.greenFF61C53D,
-                  confirmBtnText:
-                      SignupInformationLayoutConstants.btnDialogName,
-                  confirmBtnTapRoute: Routes.signupPhoneNumber,
+                FunctionalWidgets.showErrorSystemRouteButton(
+                  context,
+                  route: Routes.signupPhoneNumber,
                 );
               }
 

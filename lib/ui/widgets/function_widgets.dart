@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -8,7 +9,6 @@ import 'package:seller_app/ui/widgets/arrow_back_button.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cool_alert/cool_alert.dart';
 
 class FunctionalWidgets {
   static AppBar buildAppBar({
@@ -34,7 +34,7 @@ class FunctionalWidgets {
 
   static Future<dynamic> showAwesomeDialog(
     BuildContext context, {
-    required String title,
+    String title = 'Thông báo',
     required String desc,
     String btnOkText = 'OK',
     void Function()? btnOkOnpress,
@@ -47,11 +47,21 @@ class FunctionalWidgets {
     Color textCancelColor = AppColors.red,
     bool isCancelBorder = true,
     DialogType? dialogType,
-    bool dismissBack = false,
+    bool dismissBack = true,
+    String? okRoutePress,
   }) {
-    btnOkOnpress ??= () {
-      Navigator.of(context).pop();
-    };
+    if (okRoutePress != null && btnOkOnpress != null) {
+      throw Exception('showAwesomeDialog: either okRoutePress or btnOkOnpress');
+    } else if (okRoutePress != null && btnOkOnpress == null) {
+      btnOkOnpress ??= () {
+        Navigator.of(context).popUntil(ModalRoute.withName(okRoutePress));
+      };
+    } else {
+      btnOkOnpress ??= () {
+        Navigator.of(context).pop();
+      };
+    }
+
     btnCancelOnpress ??= () {
       Navigator.of(context).pop();
     };
@@ -171,32 +181,6 @@ class FunctionalWidgets {
     );
   }
 
-  static Future<dynamic> showCoolAlert({
-    required BuildContext context,
-    CoolAlertType type = CoolAlertType.info,
-    String? title = Symbols.empty,
-    String? text = Symbols.empty,
-    Color? confirmBtnColor,
-    String? confirmBtnText,
-    required String confirmBtnTapRoute,
-  }) {
-    return CoolAlert.show(
-      barrierDismissible: false,
-      context: context,
-      type: type,
-      title: title,
-      text: text,
-      confirmBtnColor: confirmBtnColor,
-      confirmBtnText: confirmBtnText,
-      onConfirmBtnTap: () => Navigator.popUntil(
-        context,
-        ModalRoute.withName(
-          confirmBtnTapRoute,
-        ),
-      ),
-    );
-  }
-
   static Widget getLoadingAnimation() {
     return const SpinKitRing(
       color: AppColors.greenFF61C53D,
@@ -212,14 +196,16 @@ class FunctionalWidgets {
   }
 
   static Future<dynamic> showErrorSystemRouteButton(
-    BuildContext context, [
+    BuildContext context, {
     String title = 'Thông báo',
-  ]) {
+    String? route,
+  }) {
     return showAwesomeDialog(
       context,
       title: title,
       desc: InvalidRequestCode.errorSystem,
       dialogType: DialogType.ERROR,
+      okRoutePress: route,
     );
   }
 

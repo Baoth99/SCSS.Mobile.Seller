@@ -1,4 +1,5 @@
-import 'package:cool_alert/cool_alert.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/forget_password_new_password_bloc.dart';
@@ -49,20 +50,19 @@ class ForgetPasswordNewPasswordLayout extends StatelessWidget {
               listener: (context, state) {
                 if (state.status.isSubmissionSuccess &&
                     state.statusSubmmited == NetworkConstants.ok200) {
-                  FunctionalWidgets.showCoolAlert(
-                    context: context,
-                    confirmBtnTapRoute: Routes.login,
+                  FunctionalWidgets.showAwesomeDialog(
+                    context,
+                    dialogType: DialogType.SUCCES,
                     title: 'Đổi mật khẩu thành công',
-                    confirmBtnText: 'Đóng',
-                    type: CoolAlertType.success,
+                    desc: 'Bạn đã đổi mật khẩu thành công',
+                    btnOkText: 'Đóng',
+                    okRoutePress: Routes.login,
                   );
                 } else if (state.status.isSubmissionFailure) {
-                  FunctionalWidgets.showCoolAlert(
-                    context: context,
-                    confirmBtnTapRoute: Routes.forgetPasswordNewPassword,
-                    type: CoolAlertType.error,
-                    confirmBtnText: 'Đóng',
-                    title: 'Có lỗi đến từ hệ thống',
+                  FunctionalWidgets.showErrorSystemRouteButton(
+                    context,
+                    title: 'Đổi mật khẩu thất bại',
+                    route: Routes.forgetPasswordNewPassword,
                   );
                 } else if (state.status.isSubmissionInProgress) {
                   showDialog(

@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:cool_alert/cool_alert.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/forget_pass_otp_bloc.dart';
-import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/forget_password_new_password_layout.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -74,15 +74,15 @@ class ForgetPasswordOTPLayout extends StatelessWidget {
                   ),
                 );
               } else {
-                FunctionalWidgets.showCoolAlert(
-                  context: context,
-                  type: CoolAlertType.error,
-                  title: 'Thông Báo',
-                  text: 'Mã OTP không đúng',
-                  confirmBtnColor: AppColors.greenFF61C53D,
-                  confirmBtnText:
-                      SignupInformationLayoutConstants.btnDialogName,
-                  confirmBtnTapRoute: Routes.forgetPasswordOTP,
+                FunctionalWidgets.showAwesomeDialog(
+                  context,
+                  dialogType: DialogType.WARNING,
+                  desc: 'Mã OTP không đúng',
+                  btnOkText: 'Đóng',
+                  isOkBorder: true,
+                  btnOkColor: AppColors.errorButtonBorder,
+                  textOkColor: AppColors.errorButtonText,
+                  okRoutePress: Routes.forgetPasswordOTP,
                 );
               }
             }
@@ -103,14 +103,9 @@ class ForgetPasswordOTPLayout extends StatelessWidget {
 
             if (state.timerStatus == TimerStatus.error ||
                 state.status.isSubmissionFailure) {
-              FunctionalWidgets.showCoolAlert(
-                context: context,
-                type: CoolAlertType.error,
-                title: 'Thông Báo',
-                text: InvalidRequestCode.errorSystem,
-                confirmBtnColor: AppColors.greenFF61C53D,
-                confirmBtnText: SignupInformationLayoutConstants.btnDialogName,
-                confirmBtnTapRoute: Routes.forgetPasswordOTP,
+              FunctionalWidgets.showErrorSystemRouteButton(
+                context,
+                route: Routes.forgetPasswordOTP,
               );
             }
           },

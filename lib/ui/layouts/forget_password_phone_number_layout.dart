@@ -1,9 +1,9 @@
-import 'package:cool_alert/cool_alert.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:seller_app/blocs/forget_password_phonenumber_bloc.dart';
-import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/ui/layouts/forget_password_otp_layout.dart';
 import 'package:seller_app/ui/widgets/custom_button_widgets.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
@@ -41,29 +41,23 @@ class ForgetPasswordPhoneNumberLayout extends StatelessWidget {
                     ),
                   );
                 } else {
-                  FunctionalWidgets.showCoolAlert(
-                    context: context,
-                    type: CoolAlertType.info,
-                    title: 'Thông Báo',
-                    text: 'Số điện thoại không có trong hệ thống',
-                    confirmBtnColor: AppColors.greenFF61C53D,
-                    confirmBtnText:
-                        SignupInformationLayoutConstants.btnDialogName,
-                    confirmBtnTapRoute: Routes.forgetPasswordPhoneNumber,
+                  FunctionalWidgets.showAwesomeDialog(
+                    context,
+                    dialogType: DialogType.INFO,
+                    desc: 'Số điện thoại không có trong hệ thống',
+                    btnOkText: 'Đóng',
+                    isOkBorder: true,
+                    btnOkColor: AppColors.errorButtonBorder,
+                    textOkColor: AppColors.errorButtonText,
+                    okRoutePress: Routes.forgetPasswordPhoneNumber,
                   );
                 }
               }
 
               if (state.status.isSubmissionFailure) {
-                FunctionalWidgets.showCoolAlert(
-                  context: context,
-                  type: CoolAlertType.error,
-                  title: 'Thông Báo',
-                  text: InvalidRequestCode.errorSystem,
-                  confirmBtnColor: AppColors.greenFF61C53D,
-                  confirmBtnText:
-                      SignupInformationLayoutConstants.btnDialogName,
-                  confirmBtnTapRoute: Routes.forgetPasswordPhoneNumber,
+                FunctionalWidgets.showErrorSystemRouteButton(
+                  context,
+                  route: Routes.forgetPasswordPhoneNumber,
                 );
               }
 

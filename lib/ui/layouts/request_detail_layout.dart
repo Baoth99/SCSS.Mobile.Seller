@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cool_alert/cool_alert.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/cancel_request_bloc.dart';
@@ -272,15 +272,14 @@ class CancelRequestWidget extends StatelessWidget {
         }
 
         if (state.status.isSubmissionSuccess) {
-          Navigator.pop(context);
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.success,
-            title: 'Thông Báo',
-            text: 'Hủy yêu cầu thu gom thành công',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: 'Đóng',
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.SUCCES,
+            title: 'Hủy yêu cầu thu gom thành công',
+            desc: 'Bạn đã hủy yêu cầu thu gom thành công',
+            btnOkText: 'Đóng',
+            btnOkOnpress: () {
+              Navigator.pop(context);
               Navigator.of(context).pop();
               Navigator.of(context).pop(true);
             },
@@ -289,14 +288,14 @@ class CancelRequestWidget extends StatelessWidget {
         if (state.status.isSubmissionFailure) {
           Navigator.pop(context);
 
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: 'Thông Báo',
-            text: 'Có lỗi đến từ hệ thống',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: 'Đóng',
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.WARNING,
+            title: 'Hủy yêu cầu thu gom thất bại',
+            desc: 'Bạn không thể hủy yêu cầu thu gom',
+            btnOkText: 'Đóng',
+            btnOkOnpress: () {
+              Navigator.pop(context);
               Navigator.of(context).pop();
               Navigator.of(context).pop(false);
             },
@@ -539,35 +538,33 @@ class Feedback extends StatelessWidget {
     return BlocListener<FeedbackTransactionBloc, FeedbackTransactionState>(
       listener: (context, state) {
         if (state.status.isSubmissionInProgress) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomProgressIndicatorDialog(),
+          FunctionalWidgets.showCustomDialog(
+            context,
           );
         }
 
         if (state.status.isSubmissionSuccess) {
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.success,
-            title: 'Thông Báo',
-            text: 'Cảm ơn bạn đã đánh giá',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: 'Đóng',
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.SUCCES,
+            desc: 'Cảm ơn bạn đã đánh giá',
+            btnOkText: 'Đóng',
+            btnOkOnpress: () {
               Navigator.of(context).pop();
               Navigator.of(context).pop(true);
             },
           );
         }
         if (state.status.isSubmissionFailure) {
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: 'Thông Báo',
-            text: 'Có lỗi đến từ hệ thống',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: 'Đóng',
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.WARNING,
+            desc: 'Có lỗi đến từ hệ thống',
+            btnOkText: 'Đóng',
+            isOkBorder: true,
+            btnOkColor: AppColors.errorButtonBorder,
+            textOkColor: AppColors.errorButtonText,
+            btnOkOnpress: () {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
@@ -1515,31 +1512,29 @@ class FeedbackAdminWidget extends StatelessWidget {
         }
 
         if (state.status.isSubmissionSuccess) {
-          Navigator.pop(context);
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.success,
-            title: 'Thông Báo',
-            text: 'Bạn đã gửi phản hồi đến hệ thống',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: 'Đóng',
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.SUCCES,
+            desc: 'Bạn đã gửi phản hồi đến hệ thống',
+            btnOkText: 'Đóng',
+            btnOkOnpress: () {
+              Navigator.pop(context);
               Navigator.of(context).pop();
               Navigator.of(context).pop(true);
             },
           );
         }
         if (state.status.isSubmissionFailure) {
-          Navigator.pop(context);
-
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: 'Thông Báo',
-            text: 'Có lỗi đến từ hệ thống',
-            confirmBtnColor: AppColors.greenFF61C53D,
-            confirmBtnText: 'Đóng',
-            onConfirmBtnTap: () {
+          FunctionalWidgets.showAwesomeDialog(
+            context,
+            dialogType: DialogType.WARNING,
+            desc: 'Có lỗi đến từ hệ thống',
+            btnOkText: 'Đóng',
+            isOkBorder: true,
+            btnOkColor: AppColors.errorButtonBorder,
+            textOkColor: AppColors.errorButtonText,
+            btnOkOnpress: () {
+              Navigator.pop(context);
               Navigator.of(context).pop();
               Navigator.of(context).pop(false);
             },
