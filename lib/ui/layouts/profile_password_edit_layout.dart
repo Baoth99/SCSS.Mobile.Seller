@@ -1,6 +1,7 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:seller_app/blocs/edit_password_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/common_margin_container.dart';
@@ -32,6 +33,7 @@ class ProfilePasswordEditLayout extends StatelessWidget {
         title: CustomText(
           text: 'Đổi mật khẩu',
         ),
+        elevation: 1,
       ),
       body: CommonMarginContainer(
         child: SingleChildScrollView(
@@ -43,35 +45,32 @@ class ProfilePasswordEditLayout extends StatelessWidget {
               listener: (context, state) {
                 if (state.status.isSubmissionSuccess &&
                     state.statusSubmmited == NetworkConstants.ok200) {
-                  FunctionalWidgets.showCoolAlert(
-                    context: context,
-                    confirmBtnTapRoute: Routes.main,
-                    title: 'Đổi mật khẩu thành công',
-                    confirmBtnText: 'Đóng',
-                    type: CoolAlertType.success,
+                  FunctionalWidgets.showDialogCloseRouteButton(
+                    context,
+                    'Đổi mật khẩu thành công',
+                    alertType: AlertType.success,
+                    route: Routes.main,
+                    onWillPopActive: true,
                   );
                 } else if (state.status.isSubmissionFailure) {
                   if (state.statusSubmmited == NetworkConstants.badRequest400) {
-                    FunctionalWidgets.showCoolAlert(
-                      context: context,
-                      confirmBtnTapRoute: Routes.profilePasswordEdit,
-                      type: CoolAlertType.error,
-                      confirmBtnText: 'Đóng',
-                      title: 'Mật khẩu cũ không đúng',
+                    Navigator.popUntil(context,
+                        ModalRoute.withName(Routes.profilePasswordEdit));
+                    FunctionalWidgets.showDialogCloseRouteButton(
+                      context,
+                      'Mật khẩu cũ không đúng',
+                      alertType: AlertType.error,
                     );
                   } else if (state.statusSubmmited == null) {
-                    FunctionalWidgets.showCoolAlert(
-                      context: context,
-                      confirmBtnTapRoute: Routes.profilePasswordEdit,
-                      type: CoolAlertType.error,
-                      confirmBtnText: 'Đóng',
-                      title: 'Có lỗi đến từ hệ thống',
+                    Navigator.popUntil(context,
+                        ModalRoute.withName(Routes.profilePasswordEdit));
+                    FunctionalWidgets.showErrorSystemRouteButton(
+                      context,
                     );
                   }
                 } else if (state.status.isSubmissionInProgress) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const CustomProgressIndicatorDialog(),
+                  FunctionalWidgets.showCustomDialog(
+                    context,
                   );
                 }
               },
@@ -177,21 +176,13 @@ class ProfilePasswordEditBody extends StatelessWidget {
             ),
             getSizedbox(),
             submmitedButton(
-              'Đổi mật khẩu',
+              'Lưu',
               AppColors.greenFF61C53D,
               state.status.isValid
                   ? () {
                       context.read<EditPasswordBloc>().add(EditPassSubmmited());
                     }
                   : null,
-            ),
-            getSizedbox(),
-            submmitedButton(
-              'Hủy',
-              AppColors.orangeFFF5670A,
-              () {
-                Navigator.pop(context);
-              },
             ),
           ],
         );
@@ -201,7 +192,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
 
   Widget getSizedbox() {
     return SizedBox(
-      height: 32.h,
+      height: 65.h,
     );
   }
 

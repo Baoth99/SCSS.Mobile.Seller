@@ -270,10 +270,13 @@ class IdentityServerNetworkImpl implements IdentityServerNetwork {
       responseModel = BaseResponseModel.fromJson(
         await NetworkUtils.getMapFromResponse(response),
       );
-      return NetworkConstants.ok200;
-    } else if (response.statusCode == NetworkConstants.badRequest400) {
-      return NetworkConstants.badRequest400;
+      if (responseModel.isSuccess != null && responseModel.isSuccess!) {
+        return NetworkConstants.ok200;
+      } else {
+        return NetworkConstants.badRequest400;
+      }
     }
+
     return null;
   }
 
