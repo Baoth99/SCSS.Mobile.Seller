@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,7 @@ class ProfilePasswordEditLayout extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  static const String failEditPassword = 'Đổi mật khẩu thất bại';
   @override
   Widget build(BuildContext context) {
     final args =
@@ -30,7 +32,7 @@ class ProfilePasswordEditLayout extends StatelessWidget {
       appBar: FunctionalWidgets.buildAppBar(
         context: context,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: CustomText(
+        title: const CustomText(
           text: 'Đổi mật khẩu',
         ),
         elevation: 1,
@@ -45,27 +47,39 @@ class ProfilePasswordEditLayout extends StatelessWidget {
               listener: (context, state) {
                 if (state.status.isSubmissionSuccess &&
                     state.statusSubmmited == NetworkConstants.ok200) {
-                  FunctionalWidgets.showDialogCloseRouteButton(
+                  FunctionalWidgets.showAwesomeDialog(
                     context,
-                    'Đổi mật khẩu thành công',
-                    alertType: AlertType.success,
-                    route: Routes.main,
-                    onWillPopActive: true,
+                    dialogType: DialogType.SUCCES,
+                    title: 'Đổi mật khẩu thành công',
+                    desc: 'Bạn đã đổi mật khẩu thành công',
+                    btnOkText: 'Đóng',
+                    btnOkOnpress: () {
+                      Navigator.of(context)
+                          .popUntil(ModalRoute.withName(Routes.main));
+                    },
+                    dismissBack: true,
                   );
                 } else if (state.status.isSubmissionFailure) {
                   if (state.statusSubmmited == NetworkConstants.badRequest400) {
                     Navigator.popUntil(context,
                         ModalRoute.withName(Routes.profilePasswordEdit));
-                    FunctionalWidgets.showDialogCloseRouteButton(
+
+                    FunctionalWidgets.showAwesomeDialog(
                       context,
-                      'Mật khẩu cũ không đúng',
-                      alertType: AlertType.error,
+                      dialogType: DialogType.WARNING,
+                      title: failEditPassword,
+                      desc: 'Bạn đã nhập sai mật khẩu hiện tại',
+                      btnOkText: 'Đóng',
+                      isOkBorder: true,
+                      btnOkColor: AppColors.errorButtonBorder,
+                      textOkColor: AppColors.errorButtonText,
                     );
                   } else if (state.statusSubmmited == null) {
                     Navigator.popUntil(context,
                         ModalRoute.withName(Routes.profilePasswordEdit));
                     FunctionalWidgets.showErrorSystemRouteButton(
                       context,
+                      failEditPassword,
                     );
                   }
                 } else if (state.status.isSubmissionInProgress) {

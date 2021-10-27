@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -29,6 +30,55 @@ class FunctionalWidgets {
       title: title,
       centerTitle: centerTitle,
     );
+  }
+
+  static Future<dynamic> showAwesomeDialog(
+    BuildContext context, {
+    required String title,
+    required String desc,
+    String btnOkText = 'OK',
+    void Function()? btnOkOnpress,
+    Color btnOkColor = const Color(0xFF00CA71),
+    Color textOkColor = AppColors.white,
+    bool isOkBorder = false,
+    String? btnCancelText,
+    void Function()? btnCancelOnpress,
+    Color btnCancelColor = Colors.transparent,
+    Color textCancelColor = AppColors.red,
+    bool isCancelBorder = true,
+    DialogType? dialogType,
+    bool dismissBack = false,
+  }) {
+    btnOkOnpress ??= () {
+      Navigator.of(context).pop();
+    };
+    btnCancelOnpress ??= () {
+      Navigator.of(context).pop();
+    };
+    return AwesomeDialog(
+      context: context,
+      title: title,
+      desc: desc,
+      dialogType: dialogType,
+      btnOk: getDialogButton(
+        title: btnOkText,
+        onPressed: btnOkOnpress,
+        buttonColor: btnOkColor,
+        textColor: textOkColor,
+        isBorder: isOkBorder,
+      ),
+      btnCancel: btnCancelText != null && btnCancelText.isNotEmpty
+          ? getDialogButton(
+              title: btnCancelText,
+              onPressed: btnCancelOnpress,
+              buttonColor: btnCancelColor,
+              textColor: textCancelColor,
+              isBorder: isCancelBorder,
+            )
+          : null,
+      dismissOnTouchOutside: !dismissBack,
+      dismissOnBackKeyPress: !dismissBack,
+    ).show();
   }
 
   static Future<T?> showCustomDialog<T>(BuildContext context,
@@ -161,116 +211,114 @@ class FunctionalWidgets {
     );
   }
 
-  static Future<bool?> showErrorSystemRouteButton(
-    BuildContext context, {
-    String? route,
-    bool onWillPopActive = false,
-  }) {
-    return showDialogCloseRouteButton(
+  static Future<dynamic> showErrorSystemRouteButton(
+    BuildContext context, [
+    String title = 'Thông báo',
+  ]) {
+    return showAwesomeDialog(
       context,
-      InvalidRequestCode.errorSystem,
-      alertType: AlertType.error,
-      route: route,
-      onWillPopActive: onWillPopActive,
+      title: title,
+      desc: InvalidRequestCode.errorSystem,
+      dialogType: DialogType.ERROR,
     );
   }
 
-  static Future<bool?> showDialogCloseRouteButton(
-    BuildContext context,
-    String title, {
-    String? desc,
-    AlertType alertType = AlertType.none,
-    String buttonTitle = 'Đóng',
-    Color? colorButton,
-    bool onWillPopActive = false,
-    String? route,
-  }) {
-    return showDialogCloseButton(
-      context,
-      title,
-      desc: desc,
-      alertType: alertType,
-      buttonTitle: buttonTitle,
-      colorButton: colorButton,
-      onWillPopActive: onWillPopActive,
-      onPressed: () {
-        if (route == null) {
-          Navigator.of(context).pop();
-        } else {
-          Navigator.of(context).popUntil(ModalRoute.withName(route));
-        }
-      },
-    );
-  }
+  // static Future<bool?> showDialogCloseRouteButton(
+  //   BuildContext context,
+  //   String title, {
+  //   String? desc,
+  //   AlertType alertType = AlertType.error,
+  //   String buttonTitle = 'Đóng',
+  //   Color? colorButton,
+  //   bool onWillPopActive = false,
+  //   String? route,
+  // }) {
+  //   return showDialogCloseButton(
+  //     context,
+  //     title,
+  //     desc: desc,
+  //     alertType: alertType,
+  //     buttonTitle: buttonTitle,
+  //     colorButton: colorButton,
+  //     onWillPopActive: onWillPopActive,
+  //     onPressed: () {
+  //       if (route == null) {
+  //         Navigator.of(context).pop();
+  //       } else {
+  //         Navigator.of(context).popUntil(ModalRoute.withName(route));
+  //       }
+  //     },
+  //   );
+  // }
 
-  static Future<bool?> showDialogCloseButton(
-    BuildContext context,
-    String title, {
-    String? desc,
-    AlertType alertType = AlertType.none,
-    String buttonTitle = 'Đóng',
-    Color? colorButton,
-    bool onWillPopActive = false,
-    required void Function() onPressed,
-  }) {
-    return Alert(
-      closeIcon: Container(),
-      context: context,
-      type: alertType,
-      title: title,
-      onWillPopActive: onWillPopActive,
-      desc: desc,
-      buttons: [
-        getDialogButton(
-          title: buttonTitle,
-          onPressed: onPressed,
-          buttonColor: colorButton,
-        )
-      ],
-    ).show();
-  }
+  // static Future<bool?> showDialogCloseButton(
+  //   BuildContext context,
+  //   String title, {
+  //   String? desc,
+  //   AlertType alertType = AlertType.none,
+  //   String buttonTitle = 'Đóng',
+  //   Color? colorButton,
+  //   bool onWillPopActive = false,
+  //   required void Function() onPressed,
+  // }) {
+  //   return Alert(
+  //     closeIcon: Container(),
+  //     context: context,
+  //     type: alertType,
+  //     title: title,
+  //     onWillPopActive: onWillPopActive,
+  //     desc: desc,
+  //     buttons: [
+  //       getDialogButton(
+  //         title: buttonTitle,
+  //         onPressed: onPressed,
+  //         buttonColor: colorButton,
+  //       )
+  //     ],
+  //   ).show();
+  // }
 
-  static Future<bool?> showDialogTwoButton(
-    BuildContext context,
-    String desc,
-    String yesTitle,
-    String noTitle, {
-    String title = Symbols.empty,
-    AlertType alertType = AlertType.none,
-    Color? yesButtonColor,
-    Color noButtonColor = Colors.transparent,
-    bool isNoButtonBorder = true,
-  }) {
-    return Alert(
-      context: context,
-      type: alertType,
-      title: title,
-      desc: desc,
-      buttons: [
-        getDialogButton(
-          title: noTitle,
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
-          buttonColor: noButtonColor,
-          textColor: Colors.grey[700]!,
-          isBorder: isNoButtonBorder,
-        ),
-        getDialogButton(
-          title: yesTitle,
-          onPressed: () {
-            Navigator.of(context).pop(true);
-          },
-          buttonColor: yesButtonColor,
-        ),
-      ],
-    ).show();
-  }
+  // static Future<bool?> showDialogTwoButton(
+  //   BuildContext context,
+  //   String desc,
+  //   String yesTitle,
+  //   String noTitle, {
+  //   String title = Symbols.empty,
+  //   AlertType alertType = AlertType.none,
+  //   Color? yesButtonColor,
+  //   Color noButtonColor = Colors.transparent,
+  //   bool isNoButtonBorder = true,
+  // }) {
+  //   return Alert(
+  //     context: context,
+  //     type: alertType,
+  //     title: title,
+  //     desc: desc,
+  //     buttons: [
+  //       getDialogButton(
+  //         title: noTitle,
+  //         onPressed: () {
+  //           Navigator.of(context).pop(false);
+  //         },
+  //         buttonColor: noButtonColor,
+  //         textColor: Colors.grey[700]!,
+  //         isBorder: isNoButtonBorder,
+  //       ),
+  //       getDialogButton(
+  //         title: yesTitle,
+  //         onPressed: () {
+  //           Navigator.of(context).pop(true);
+  //         },
+  //         buttonColor: yesButtonColor,
+  //       ),
+  //     ],
+  //   ).show();
+  // }
 
   static getDialogButton({
     required String title,
     required void Function() onPressed,
-    Color? buttonColor,
+    required Color buttonColor,
     Color textColor = Colors.white,
     double? width,
     bool isBorder = false,
@@ -278,7 +326,7 @@ class FunctionalWidgets {
     return DialogButton(
       border: isBorder
           ? Border.all(
-              color: textColor,
+              color: buttonColor,
             )
           : Border.all(
               style: BorderStyle.none,
@@ -289,7 +337,7 @@ class FunctionalWidgets {
         fontSize: 50.sp,
         fontWeight: FontWeight.w500,
       ),
-      color: buttonColor,
+      color: isBorder ? Colors.transparent : buttonColor,
       onPressed: onPressed,
       width: width,
     );
