@@ -151,11 +151,11 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                             sno.unreadCount > 0
                                 ? Positioned(
                                     // draw a red marble
-                                    top: -15.0.h,
-                                    right: -15.0.w,
+                                    top: -25.0.h,
+                                    right: -20.0.w,
                                     child: Container(
-                                      width: 50.w,
-                                      height: 50.h,
+                                      width: 60.w,
+                                      height: 60.h,
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.red,
@@ -163,7 +163,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                                       child: Center(
                                         child: CustomText(
                                           color: Colors.white,
-                                          text: '${sno.unreadCount}',
+                                          text: sno.unreadCount <= 99
+                                              ? '${sno.unreadCount}'
+                                              : '99+',
                                           fontSize: 30.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
