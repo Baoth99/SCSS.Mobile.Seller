@@ -294,6 +294,9 @@ class CancelRequestWidget extends StatelessWidget {
             title: 'Hủy yêu cầu thu gom thất bại',
             desc: 'Bạn không thể hủy yêu cầu thu gom',
             btnOkText: 'Đóng',
+            isOkBorder: true,
+            btnOkColor: AppColors.errorButtonBorder,
+            textOkColor: AppColors.errorButtonText,
             btnOkOnpress: () {
               Navigator.pop(context);
               Navigator.of(context).pop();

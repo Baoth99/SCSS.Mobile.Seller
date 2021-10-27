@@ -205,6 +205,10 @@ class FunctionalWidgets {
       title: title,
       desc: InvalidRequestCode.errorSystem,
       dialogType: DialogType.ERROR,
+      btnOkText: 'Đóng',
+      isOkBorder: true,
+      btnOkColor: AppColors.errorButtonBorder,
+      textOkColor: AppColors.errorButtonText,
       okRoutePress: route,
     );
   }

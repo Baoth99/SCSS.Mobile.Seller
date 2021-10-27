@@ -157,8 +157,9 @@ class RequestTimeBloc extends Bloc<RequestTimeEvent, RequestTimeState> {
         //   }
         // }
         var fromTime = operatingtime[0];
-        var toTime = CommonUtils.addTimeOfDay(
-            operatingtime[0], RequestMapPickerLayoutConstants.minuteInterval);
+        // var toTime = CommonUtils.addTimeOfDay(
+        //     operatingtime[0], RequestMapPickerLayoutConstants.minuteInterval);
+        var toTime = operatingtime[1];
         var date = chosableDates[0];
         if (chosableDates[0].isSameDate(DateTime.now())) {
           if (chosableDates.length >= 2) {
