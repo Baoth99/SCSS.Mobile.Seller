@@ -32,6 +32,7 @@ class ProfilePasswordEditLayout extends StatelessWidget {
         title: CustomText(
           text: 'Đổi mật khẩu',
         ),
+        elevation: 1,
       ),
       body: CommonMarginContainer(
         child: SingleChildScrollView(
@@ -177,21 +178,13 @@ class ProfilePasswordEditBody extends StatelessWidget {
             ),
             getSizedbox(),
             submmitedButton(
-              'Đổi mật khẩu',
+              'Lưu',
               AppColors.greenFF61C53D,
               state.status.isValid
                   ? () {
                       context.read<EditPasswordBloc>().add(EditPassSubmmited());
                     }
                   : null,
-            ),
-            getSizedbox(),
-            submmitedButton(
-              'Hủy',
-              AppColors.orangeFFF5670A,
-              () {
-                Navigator.pop(context);
-              },
             ),
           ],
         );
@@ -201,7 +194,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
 
   Widget getSizedbox() {
     return SizedBox(
-      height: 32.h,
+      height: 65.h,
     );
   }
 
