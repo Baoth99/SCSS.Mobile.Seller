@@ -37,6 +37,7 @@ class ForgetPasswordNewPasswordLayout extends StatelessWidget {
         title: const CustomText(
           text: 'Đặt lại mật khẩu',
         ),
+        elevation: 1,
       ),
       body: CommonMarginContainer(
         child: SingleChildScrollView(
@@ -91,7 +92,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            getSizedbox(),
+            getTopSizedbox(),
             input(
               errorText:
                   state.password.invalid ? 'Hãy nhập tối thiểu 6 ký tự' : null,
@@ -143,25 +144,30 @@ class ProfilePasswordEditBody extends StatelessWidget {
                 ),
               ),
             ),
-            getSizedbox(),
-            submmitedButton(
-              'Đổi mật khẩu',
-              AppColors.greenFF61C53D,
-              state.status.isValid
-                  ? () {
-                      context
-                          .read<ForgetPasswordNewPasswordBloc>()
-                          .add(ForgetPasswordSubmmited());
-                    }
-                  : null,
-            ),
-            getSizedbox(),
-            submmitedButton(
-              'Hủy',
-              AppColors.orangeFFF5670A,
-              () {
-                Navigator.pop(context);
-              },
+            getTopSizedbox(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                submmitedButton(
+                  'Hủy',
+                  AppColors.orangeFFF5670A,
+                      () {
+                    Navigator.pop(context);
+                  },
+                ),
+                getHorizontalSizedbox(),
+                submmitedButton(
+                  'Lưu',
+                  AppColors.greenFF61C53D,
+                  state.status.isValid
+                      ? () {
+                          context
+                              .read<ForgetPasswordNewPasswordBloc>()
+                              .add(ForgetPasswordSubmmited());
+                        }
+                      : null,
+                ),
+              ],
             ),
           ],
         );
@@ -169,9 +175,20 @@ class ProfilePasswordEditBody extends StatelessWidget {
     );
   }
 
+  Widget getTopSizedbox() {
+    return SizedBox(
+      height: 75.h,
+    );
+  }
   Widget getSizedbox() {
     return SizedBox(
-      height: 32.h,
+      height: 45.h,
+    );
+  }
+
+  Widget getHorizontalSizedbox() {
+    return SizedBox(
+      width: 65.w,
     );
   }
 
@@ -221,7 +238,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         primary: color,
         minimumSize: Size(
-          double.infinity,
+          350.w,
           WidgetConstants.buttonCommonHeight.h,
         ),
       ),
