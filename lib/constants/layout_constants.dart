@@ -2,7 +2,7 @@ part of 'constants.dart';
 
 class WidgetConstants {
   static const double buttonCommonFrontSize = 50;
-  static const FontWeight buttonCommonFrontWeight = FontWeight.w500;
+  static const FontWeight buttonCommonFrontWeight = FontWeight.w600;
   static const double buttonCommonHeight = 120;
 }
 
@@ -79,7 +79,7 @@ class SignupInformationLayoutConstants {
   static const String labelSubmmitedButton = 'Xong';
 
   //input constants
-  static const double circularBorderRadius = 15.0;
+  static const double circularBorderRadius = 30.0;
 
   //show dialog
   static const String waiting = 'Vui lòng đợi...';

@@ -195,7 +195,7 @@ class NextButton extends StatelessWidget {
         fontSize: 55.sp,
         width: double.infinity,
         height: 130.0.h,
-        color: AppColors.greenFF61C53D,
+        color: AppColors.greenFF01C971,
         circularBorderRadius: 17.0.r,
       ),
     );

@@ -26,6 +26,7 @@ class ActivityLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const CommonScaffoldTitle('Hoạt động của tôi'),
+        elevation: 1,
         bottom: TabBar(
           controller: controller,
           indicatorColor: Colors.green[600],
@@ -306,9 +307,10 @@ class CurrentActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 35.h),
+      margin: EdgeInsets.symmetric(vertical: 35.h,
+      horizontal: 25.w),
       constraints: BoxConstraints(
-        minHeight: 200.h,
+        minHeight: 300.h,
       ),
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -356,25 +358,50 @@ class CurrentActivity extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _getContainerColumn(
-                          CustomText(
-                            text: '$time, $fromTime-$toTime',
-                            color: Colors.green[600],
-                            fontSize: 42.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: _getContainerColumn(
+                                CustomText(
+                                  text: '$time, $fromTime-$toTime',
+                                  color: Colors.green[600],
+                                  fontSize: 39.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            tabStatus == ActivityLayoutConstants.tabCompleted
+                                ? Container(
+                              // constraints: BoxConstraints(
+                              //   minWidth: 100.w,
+                              // ),
+                              //   padding: EdgeInsets.only(
+                              //     top: 15.h,
+                              //     right: 20.w,
+                              //   ),
+                                width: 210.w,
+                                child: CustomText(
+                                  text: _getCompletedText(privateStatus),
+                                  color: _getCompletedColor(privateStatus),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 39.sp,
+                                ),
+                                alignment: Alignment.topRight)
+                                : const SizedBox.shrink(),
+                          ],
                         ),
                         _getContainerColumn(
                           CustomText(
                             text: placeName,
-                            fontSize: 42.sp,
+                            fontSize: 43.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         _getContainerColumn(
                           CustomText(
                             text: address,
-                            fontSize: 38.sp,
+                            fontSize: 40.sp,
                             fontWeight: FontWeight.w400,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -385,6 +412,8 @@ class CurrentActivity extends StatelessWidget {
                                 CustomText(
                                   text: 'Tổng cộng: $price ₫',
                                   fontSize: 40.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green[600],
                                 ),
                               )
                             : const SizedBox.shrink(),
@@ -392,24 +421,6 @@ class CurrentActivity extends StatelessWidget {
                     ),
                   ),
                 ),
-                tabStatus == ActivityLayoutConstants.tabCompleted
-                    ? Container(
-                        // constraints: BoxConstraints(
-                        //   minWidth: 100.w,
-                        // ),
-                        padding: EdgeInsets.only(
-                          top: 15.h,
-                          right: 20.w,
-                        ),
-                        width: 260.w,
-                        child: CustomText(
-                          text: _getCompletedText(privateStatus),
-                          color: _getCompletedColor(privateStatus),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 35.sp,
-                        ),
-                        alignment: Alignment.topRight)
-                    : const SizedBox.shrink(),
               ],
             ),
           ),
@@ -456,8 +467,10 @@ class CurrentActivity extends StatelessWidget {
 
   Widget _getContainerColumn(Widget child) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: 10.h,
+      margin: EdgeInsets.only(
+        top: 10.h,
+        bottom: 10.h,
+        right: 30.w
       ),
       child: child,
     );

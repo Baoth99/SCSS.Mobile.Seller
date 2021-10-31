@@ -10,6 +10,7 @@ import 'package:seller_app/ui/layouts/request_location_picker_layout.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
+import 'package:seller_app/ui/widgets/radiant_gradient_mask.dart';
 import 'package:seller_app/ui/widgets/sumitted_button.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/extension_methods.dart';
@@ -77,23 +78,32 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        const _Title(),
-        Expanded(
-          child: ListView(
-            children: [
-              const _Form(),
-            ],
+    return Container(
+      color: Color(0XFFF8F8F8),
+      child: Column(
+        children: <Widget>[
+          const _Title(),
+          Expanded(
+            child: ListView(
+              children: [
+                const _Form(),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
 class _Form extends StatelessWidget {
   const _Form({Key? key}) : super(key: key);
+
+  Widget getSizeboxcolumn() {
+    return SizedBox(
+      height: 45.h,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +182,7 @@ class _Form extends StatelessWidget {
               child: _NoteField(),
               iconData: AppIcons.feedOutlined,
             ),
+            getSizeboxcolumn(),
             BlocBuilder<RequestBloc, RequestState>(
               builder: (context, state) {
                 return SubmittedButton(
@@ -783,7 +794,7 @@ class _InputContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 15.sp,
+        vertical: 25.sp,
       ),
       padding: EdgeInsets.symmetric(
         vertical: 30.0.h,
@@ -794,17 +805,21 @@ class _InputContainer extends StatelessWidget {
         boxShadow: <BoxShadow>[
           const BoxShadow(
             color: AppColors.greyFF9098B1,
-            offset: Offset(2.5, 5),
-            blurRadius: 3,
+            offset: Offset(3.5, 3.5),
+            blurRadius: 6,
             spreadRadius: -5.5,
           ),
         ],
         border: Border.all(
-          color: AppColors.greyFF9098B1,
+          color: AppColors.greyFFB5B5B5,
+          width: 1.w
         ),
         borderRadius: BorderRadius.circular(
           15.0.r,
         ),
+      ),
+      constraints: BoxConstraints(
+        minHeight: 180.h
       ),
       child: Row(
         children: <Widget>[
@@ -812,10 +827,12 @@ class _InputContainer extends StatelessWidget {
             margin: EdgeInsets.only(
               right: 30.w,
             ),
-            child: Icon(
-              iconData,
-              color: AppColors.greenFF61C53D,
-              size: 55.sp,
+            child: RadiantGradientMask(
+              child: Icon(
+                iconData,
+                color: AppColors.greenFF61C53D,
+                size: 55.sp,
+              ),
             ),
           ),
           Expanded(
