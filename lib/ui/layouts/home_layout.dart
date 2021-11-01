@@ -307,7 +307,7 @@ class CollectingRequest extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 35.h, horizontal: 100.w),
       constraints: BoxConstraints(
-        minHeight: 130.h,
+        minHeight: 300.h,
       ),
       decoration: BoxDecoration(
           color: AppColors.white,
@@ -369,21 +369,21 @@ class CollectingRequest extends StatelessWidget {
                           CustomText(
                             text: time,
                             color: Colors.green[600],
-                            fontSize: 42.sp,
+                            fontSize: 39.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         _getContainerColumn(
                           CustomText(
                             text: placeTitle,
-                            fontSize: 42.sp,
+                            fontSize: 43.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         _getContainerColumn(
                           CustomText(
                             text: placeName,
-                            fontSize: 38.sp,
+                            fontSize: 40.sp,
                             fontWeight: FontWeight.w400,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -418,8 +418,10 @@ class CollectingRequest extends StatelessWidget {
 
   Widget _getContainerColumn(Widget child) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: 10.h,
+      margin: EdgeInsets.only(
+          top: 10.h,
+          bottom: 10.h,
+          right: 30.w
       ),
       child: child,
     );
