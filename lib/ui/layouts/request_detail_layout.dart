@@ -1717,7 +1717,7 @@ class FeedbackAdminWidget extends StatelessWidget {
                       double.infinity,
                       WidgetConstants.buttonCommonHeight.h,
                     ),
-                    primary: AppColors.greenFF61C53D,
+                    primary: AppColors.greenFF01C971,
                   ),
                 );
               },
