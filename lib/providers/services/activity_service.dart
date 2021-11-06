@@ -6,6 +6,7 @@ import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/activity_network.dart';
 import 'package:seller_app/providers/networks/models/request/create_comlaint_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_transaction_requets_model.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 abstract class ActivityService {
   Future<List<Activity>> getListActivityByStatus(
@@ -56,7 +57,11 @@ class ActivityServiceImpl implements ActivityService {
           Activity(
             collectingRequestId: m.collectingRequestId,
             collectingRequestCode: m.collectingRequestCode,
-            collectingRequestDate: m.collectingRequestDate,
+            collectingRequestDate:
+                m.collectingRequestDate.toVietnameseStringNotYear(),
+            doneActivityTime:
+                m.doneActivityTime?.toVietnameseStringNotYearHaveTime() ??
+                    Symbols.empty,
             fromTime: m.fromTime,
             toTime: m.toTime,
             status: m.status,
@@ -183,6 +188,7 @@ class ActivityServiceImpl implements ActivityService {
         collectingRequestId: data.collectingRequestId,
         collectingRequestCode: data.collectingRequestCode,
         collectingRequestDate: data.collectingRequestDate,
+        doneActivityTime: Symbols.empty,
         fromTime: data.fromTime,
         toTime: data.toTime,
         status: data.status,

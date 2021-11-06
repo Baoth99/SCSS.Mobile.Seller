@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seller_app/blocs/events/abstract_event.dart';
+import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/services/activity_service.dart';
 import 'package:seller_app/utils/common_function.dart';
@@ -38,6 +39,7 @@ class ActivityListBloc extends Bloc<ActivityListEvent, ActivityListState> {
           page: listActivity.isNotEmpty ? initialAbstractPage : 0,
         );
       } catch (e) {
+        AppLog.error(e);
         yield state.copyWith(
           status: ActivityListStatus.error,
         );
@@ -57,6 +59,7 @@ class ActivityListBloc extends Bloc<ActivityListEvent, ActivityListState> {
           page: listActivity.isNotEmpty ? initialAbstractPage : 0,
         );
       } catch (e) {
+        AppLog.error(e);
         yield state.copyWith(
           refreshStatus: RefreshStatus.failed,
         );
@@ -74,6 +77,7 @@ class ActivityListBloc extends Bloc<ActivityListEvent, ActivityListState> {
           page: listActivity.isNotEmpty ? state.page + 1 : state.page,
         );
       } catch (e) {
+        AppLog.error(e);
         yield state.copyWith(
           loadStatus: LoadStatus.idle,
         );

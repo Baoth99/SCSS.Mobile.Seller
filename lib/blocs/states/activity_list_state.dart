@@ -63,6 +63,7 @@ class Activity extends Equatable {
     required this.collectingRequestId,
     required this.collectingRequestCode,
     required this.collectingRequestDate,
+    required this.doneActivityTime,
     required this.fromTime,
     required this.toTime,
     required this.status,
@@ -75,6 +76,7 @@ class Activity extends Equatable {
   String collectingRequestId;
   String collectingRequestCode;
   String collectingRequestDate;
+  String doneActivityTime;
   String fromTime;
   String toTime;
   int status;
@@ -88,6 +90,7 @@ class Activity extends Equatable {
         collectingRequestId,
         collectingRequestCode,
         collectingRequestDate,
+        doneActivityTime,
         fromTime,
         toTime,
         status,
