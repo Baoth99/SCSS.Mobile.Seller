@@ -52,7 +52,7 @@ class ResData {
 
   String collectingRequestId;
   String collectingRequestCode;
-  String collectingRequestDate;
+  DateTime collectingRequestDate;
   String fromTime;
   String toTime;
   String addressName;
@@ -63,7 +63,7 @@ class ResData {
   factory ResData.fromJson(Map<String, dynamic> json) => ResData(
         collectingRequestId: json["collectingRequestId"],
         collectingRequestCode: json["collectingRequestCode"],
-        collectingRequestDate: json["collectingRequestDate"],
+        collectingRequestDate: DateTime.parse(json["collectingRequestDate"]),
         fromTime: json["fromTime"],
         toTime: json["toTime"],
         addressName: json["addressName"],

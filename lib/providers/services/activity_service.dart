@@ -7,6 +7,7 @@ import 'package:seller_app/providers/networks/activity_network.dart';
 import 'package:seller_app/providers/networks/models/request/create_comlaint_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/feedback_transaction_requets_model.dart';
 import 'package:seller_app/utils/extension_methods.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 abstract class ActivityService {
   Future<List<Activity>> getListActivityByStatus(
@@ -180,14 +181,13 @@ class ActivityServiceImpl implements ActivityService {
     var reseponseModel =
         await _activityNetwork.getNearestApprovedRequest(client);
 
-    var activity;
-
     var data = reseponseModel.resData;
     if (data != null) {
-      activity = Activity(
+      return Activity(
         collectingRequestId: data.collectingRequestId,
         collectingRequestCode: data.collectingRequestCode,
-        collectingRequestDate: data.collectingRequestDate,
+        collectingRequestDate:
+            data.collectingRequestDate.toVietnameseStringNotYear(),
         doneActivityTime: Symbols.empty,
         fromTime: data.fromTime,
         toTime: data.toTime,
@@ -197,6 +197,6 @@ class ActivityServiceImpl implements ActivityService {
         address: data.address,
       );
     }
-    return activity;
+    return null;
   }
 }
