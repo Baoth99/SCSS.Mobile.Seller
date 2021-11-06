@@ -6,6 +6,7 @@ class AppColors {
   static const Color greenFF66D095 = Color(0xFF66D095);
   static const Color greenFF39AC8F = Color(0xFF39AC8F);
   static const Color greenFF80D063 = Color(0xFF80D063);
+  static const Color greenFF01C971 = Color(0xFF01C971);
 
   // Grey
   static const Color greyFF9098B1 = Color(0xFF9098B1);
@@ -21,6 +22,7 @@ class AppColors {
   static const Color orangeFFF9CB79 = Color(0xFFF9CB79);
   static const Color orangeFFF67622 = Color(0xFFF67622);
   static const Color orangeFFF7853B = Color(0xFFF7853B);
+  static const Color orangeFFF5A91F = Color(0xFFF5A91F);
 
   //White
   static const Color white = Colors.white;

@@ -132,7 +132,7 @@ class RequestBulkyLayoutBulkyInput extends StatelessWidget {
         CommonMarginContainer(
           child: CustomText(
             text: RequestBulkyLayoutConstants.title,
-            fontSize: 45.sp,
+            fontSize: 55.sp,
             fontWeight: FontWeight.w500,
           ),
         ),

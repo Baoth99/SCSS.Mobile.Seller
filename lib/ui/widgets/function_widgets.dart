@@ -19,6 +19,7 @@ class FunctionalWidgets {
     List<Widget>? action,
     Widget? title,
     bool? centerTitle,
+    Container? flexibleSpace,
   }) {
     return AppBar(
       leading: ArrowBackIconButton(
@@ -29,6 +30,7 @@ class FunctionalWidgets {
       actions: action,
       title: title,
       centerTitle: centerTitle,
+      flexibleSpace: flexibleSpace,
     );
   }
 

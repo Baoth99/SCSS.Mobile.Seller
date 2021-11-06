@@ -50,11 +50,12 @@ class ProfileEditLayout extends StatelessWidget {
       appBar: FunctionalWidgets.buildAppBar(
         context: context,
         title: CustomText(
-          text: 'Chỉnh sửa hồ sơ',
+          text: 'Thông tin tài khoản',
           fontSize: 50.sp,
         ),
         centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
       ),
       body: BlocProvider(
         create: (context) => ProfileEditBloc(
@@ -251,7 +252,7 @@ class ProfileEditBody extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: AppColors.greenFF61C53D,
+            primary: AppColors.greenFF01C971,
             minimumSize: Size(
               double.infinity,
               WidgetConstants.buttonCommonHeight.h,
@@ -337,6 +338,9 @@ class ProfileEditBody extends StatelessWidget {
           ),
         ],
       ),
+      margin: EdgeInsets.symmetric(
+        vertical: 40.h
+      ),
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
@@ -352,21 +356,15 @@ class ProfileEditBody extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 0,
-                  blurRadius: 7,
-                  offset: Offset(1, 2), // changes position of shadow
-                ),
-              ],
             ),
+            height: 100.h,
             child: BlocBuilder<ProfileEditBloc, ProfileEditState>(
               builder: (context, state) {
                 return IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.photo_camera,
                     color: Colors.black,
+                    size: 50.sp,
                   ),
                   onPressed: () async {
                     final XFile? image = await ImagePicker()

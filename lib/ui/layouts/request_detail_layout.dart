@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dotted_line/dotted_line.dart';
+// import 'package:cool_alert/cool_alert.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_app/blocs/cancel_request_bloc.dart';
@@ -18,6 +21,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:formz/formz.dart';
+import 'package:seller_app/ui/widgets/radiant_gradient_mask.dart';
 import 'package:seller_app/ui/widgets/view_image_layout.dart';
 import 'package:seller_app/utils/common_utils.dart';
 import 'package:seller_app/utils/extension_methods.dart';
@@ -43,13 +47,28 @@ class RequestDetailLayout extends StatelessWidget {
       appBar: FunctionalWidgets.buildAppBar(
         context: context,
         title: CustomText(
-          text: 'Chi tiết yêu cầu',
+          text: 'Yêu cầu thu gom',
           color: AppColors.white,
-          fontSize: 43.sp,
+          fontSize: 50.sp,
         ),
         color: AppColors.white,
         centerTitle: true,
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerRight,
+              end: Alignment
+                  .centerLeft, // 10% of the width, so there are ten blinds.
+              colors: <Color>[
+                AppColors.greenFF61C53D.withOpacity(0.5),
+                AppColors.greenFF39AC8F.withOpacity(0.5),
+              ], // red to yellow
+              tileMode:
+              TileMode.repeated, // repeats the gradient over the canvas
+            ),
+          ),
+        ),
       ),
       body: BlocProvider(
         create: (context) => RequestDetailBloc(id: args.requestId)
@@ -391,7 +410,7 @@ class CancelRequestWidget extends StatelessWidget {
                     double.infinity,
                     WidgetConstants.buttonCommonHeight.h,
                   ),
-                  primary: AppColors.greenFF61C53D,
+                  primary: AppColors.greenFF01C971,
                 ),
               );
             },
@@ -470,7 +489,7 @@ class RequestDetailTime extends StatelessWidget {
     return CustomText(
       text: text,
       fontSize: 38.sp,
-      color: Colors.grey[700],
+      color: AppColors.black,
     );
   }
 }
@@ -768,9 +787,15 @@ class RequestDetailBill extends StatelessWidget {
     return Column(
       children: [
         _getItems(),
-        _getDivider(),
-        _getSubInfo(),
-        _getDivider(),
+        // _getDivider(),
+        Container(
+          margin: EdgeInsets.only(
+            top: 25.h,
+            bottom: 15.h
+          ),
+            child: _getSubInfo()
+        ),
+        _getDottedDivider(),
         Row(
           children: [
             Expanded(
@@ -790,7 +815,7 @@ class RequestDetailBill extends StatelessWidget {
   Widget _getFinalText(String text) {
     return CustomText(
       text: text,
-      fontSize: 48.sp,
+      fontSize: 45.sp,
       fontWeight: FontWeight.w500,
     );
   }
@@ -851,6 +876,18 @@ class RequestDetailBill extends StatelessWidget {
   _getDivider() {
     return Divider(
       thickness: 2.5.h,
+
+    );
+  }
+
+  _getDottedDivider(){
+    return Container(
+      padding: EdgeInsets.only(top: 10.h, bottom: 30.h),
+      child: DottedLine(
+        direction: Axis.horizontal,
+        dashGapLength: 3.0,
+        dashColor: AppColors.greyFFB5B5B5,
+      ),
     );
   }
 
@@ -880,7 +917,7 @@ class RequestDetailBill extends StatelessWidget {
   Widget _getSubInfoItem(String name, String value) {
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 8.h,
+        vertical: 12.h,
       ),
       child: Row(
         children: [
@@ -896,7 +933,8 @@ class RequestDetailBill extends StatelessWidget {
   Widget _getSubInfoItemText(String text) {
     return CustomText(
       text: text,
-      color: Colors.grey[600],
+      color: AppColors.black,
+      fontSize: 38.sp,
     );
   }
 }
@@ -923,7 +961,7 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                         snapshot.hasData) {
                       var data = snapshot.data as List;
                       return CircleAvatar(
-                        radius: 110.0.r,
+                        radius: 90.0.r,
                         foregroundImage: NetworkImage(data[0], headers: {
                           HttpHeaders.authorizationHeader: data[1],
                         }),
@@ -933,7 +971,7 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                       );
                     }
                     return CircleAvatar(
-                      radius: 110.0.r,
+                      radius: 90.0.r,
                       foregroundImage: const AssetImage(
                         ImagesPaths.maleProfile,
                       ),
@@ -954,12 +992,12 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                           _getLineInfo(
                               Icons.person_outline, state.collectorName),
                           SizedBox(
-                            width: 100.w,
+                            width: 20.w,
                           ),
-                          _getLineInfo(
+                          _getLineInfoCustom(
                             Icons.star,
                             state.collectorRating.toStringOneFixed(),
-                            Colors.yellow,
+                            AppColors.orangeFFF5A91F,
                           ),
                         ],
                       ),
@@ -972,8 +1010,27 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                             AppLog.error('Could not launch $url');
                           }
                         },
-                        child: _getLineInfo(
-                            Icons.phone_outlined, state.collectorPhoneNumber),
+                        child: Row(
+                          children: [
+                            _getLineInfo(
+                                Icons.phone_outlined, state.collectorPhoneNumber),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: 20.w
+                              ),
+                                child: Text(
+                                  'Gọi',
+                                    style: TextStyle(
+                                      // decoration: TextDecoration.underline,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 40.sp,
+                                    ),
+                                )
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -989,18 +1046,46 @@ class RequestDetailCollectorInfo extends StatelessWidget {
   Widget _getLineInfo(IconData icon, String data,
       [Color? colorIcon = AppColors.greenFF61C53D]) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(
           icon,
           color: colorIcon,
+          size: 55.sp,
         ),
         Container(
           margin: EdgeInsets.only(
-            left: 10.w,
+            left: 15.w,
           ),
           child: CustomText(
             text: data,
             fontSize: 45.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getLineInfoCustom(IconData icon, String data,
+      [Color? colorIcon = AppColors.greenFF61C53D]) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: colorIcon,
+          size: 40.sp,
+        ),
+        Container(
+          margin: EdgeInsets.only(
+            left: 5.w,
+          ),
+          child: CustomText(
+            text: data,
+            fontSize: 35.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -1221,18 +1306,22 @@ class RequestDetailElementPattern extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 25.h,
+        vertical: 30.h,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                color: AppColors.greenFF61C53D,
+              RadiantGradientMask(
+                child: Icon(
+                  icon,
+                  color: AppColors.greenFF61C53D,
+                  size: 60.sp,
+                ),
               ),
               Expanded(
                 child: Container(
@@ -1241,7 +1330,7 @@ class RequestDetailElementPattern extends StatelessWidget {
                   ),
                   child: CustomText(
                     text: title,
-                    fontSize: 36.sp,
+                    fontSize: 40.sp,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -1365,9 +1454,11 @@ class RequestDetailHeader extends StatelessWidget {
   Widget _requestId(BuildContext context, String id, String code) {
     return Row(
       children: <Widget>[
-        const Icon(
-          Icons.description_outlined,
-          color: AppColors.greenFF61C53D,
+        RadiantGradientMask(
+          child: const Icon(
+            Icons.description_outlined,
+            color: AppColors.greenFF61C53D,
+          ),
         ),
         Expanded(
           child: Container(
@@ -1494,8 +1585,9 @@ class RequestDetailDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Divider(
-      thickness: 4.h,
+      thickness: 20.h,
       height: 100.h,
+      color: AppColors.greyFFEEEEEE,
     );
   }
 }
@@ -1625,7 +1717,7 @@ class FeedbackAdminWidget extends StatelessWidget {
                       double.infinity,
                       WidgetConstants.buttonCommonHeight.h,
                     ),
-                    primary: AppColors.greenFF61C53D,
+                    primary: AppColors.greenFF01C971,
                   ),
                 );
               },
@@ -1663,7 +1755,7 @@ class FeedbackAdminDoneWidget extends StatelessWidget {
             ),
             adminReply != null && adminReply!.isNotEmpty
                 ? _content(
-                    'Phản hồi của quản trị viên:',
+                    'Hồi đáp từ quản trị viên:',
                     adminReply!,
                   )
                 : const SizedBox.shrink(),
@@ -1674,22 +1766,28 @@ class FeedbackAdminDoneWidget extends StatelessWidget {
   }
 
   Widget _content(String title, String content) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: title,
-          fontSize: 50.sp,
-          fontWeight: FontWeight.w500,
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 50.w),
-          child: CustomText(
-            text: content,
-            fontSize: 40.sp,
+    return Container(
+      margin: EdgeInsets.only(
+        top: 80.h,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: title,
+            fontSize: 50.sp,
+            fontWeight: FontWeight.w500,
           ),
-        ),
-      ],
+          Container(
+            padding: EdgeInsets.only(left: 50.w,
+            top: 30.h),
+            child: CustomText(
+              text: content,
+              fontSize: 45.sp,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -24,7 +24,7 @@ class SubmittedButton extends StatelessWidget {
           fontSize: WidgetConstants.buttonCommonFrontSize.sp,
           fontWeight: WidgetConstants.buttonCommonFrontWeight,
         ),
-        primary: AppColors.greenFF61C53D,
+        primary: AppColors.greenFF01C971,
         minimumSize: Size(
           double.infinity,
           WidgetConstants.buttonCommonHeight.h,

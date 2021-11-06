@@ -12,6 +12,7 @@ import 'package:seller_app/ui/layouts/notification_layout.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
+import 'package:seller_app/ui/widgets/radiant_gradient_mask.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({Key? key}) : super(key: key);
@@ -122,16 +123,18 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 type: BottomNavigationBarType.fixed,
-                selectedItemColor: AppColors.greenFF61C53D,
+                selectedItemColor: AppColors.greenFF01C971,
                 unselectedFontSize: 23.sp,
                 selectedFontSize: 26.sp,
                 currentIndex: state.screenIndex,
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(
-                      state.screenIndex == MainLayoutConstants.home
-                          ? Icons.home
-                          : Icons.home_outlined,
+                    icon: RadiantGradientMask(
+                      child: Icon(
+                        state.screenIndex == MainLayoutConstants.home
+                            ? Icons.home
+                            : Icons.home_outlined,
+                      ),
                     ),
                     label: 'Trang chủ',
                   ),
@@ -141,11 +144,13 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                         return Stack(
                           clipBehavior: Clip.none,
                           children: [
-                            Icon(
-                              state.screenIndex ==
-                                      MainLayoutConstants.notification
-                                  ? Icons.notifications
-                                  : Icons.notifications_outlined,
+                            RadiantGradientMask(
+                              child: Icon(
+                                state.screenIndex ==
+                                        MainLayoutConstants.notification
+                                    ? Icons.notifications
+                                    : Icons.notifications_outlined,
+                              ),
                             ),
                             sno.unreadCount > 0
                                 ? Positioned(
@@ -183,18 +188,22 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
                     label: Symbols.empty,
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(
-                      state.screenIndex == MainLayoutConstants.activity
-                          ? Icons.history
-                          : Icons.history_outlined,
+                    icon: RadiantGradientMask(
+                      child: Icon(
+                        state.screenIndex == MainLayoutConstants.activity
+                            ? Icons.history
+                            : Icons.history_outlined,
+                      ),
                     ),
                     label: 'Hoạt động',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(
-                      state.screenIndex == MainLayoutConstants.account
-                          ? Icons.person
-                          : Icons.person_outline,
+                    icon: RadiantGradientMask(
+                      child: Icon(
+                        state.screenIndex == MainLayoutConstants.account
+                            ? Icons.person
+                            : Icons.person_outline,
+                      ),
                     ),
                     label: 'Tài khoản',
                   ),
@@ -209,16 +218,35 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Navigator.of(context).pushNamed(Routes.requestStart);
-            context.read<MainBloc>().add(MainCheckFullRequest());
-          },
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            onPressed: () {
+              // Navigator.of(context).pushNamed(Routes.requestStart);
+              context.read<MainBloc>().add(MainCheckFullRequest());
+            },
+            child: Container(
+              width: 180.r,
+              height: 180.r,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment
+                      .bottomRight, // 10% of the width, so there are ten blinds.
+                  colors: <Color>[
+                    AppColors.greenFF61C53D.withOpacity(1),
+                    AppColors.greenFF39AC8F.withOpacity(1),
+                  ], // red to yellow
+                  tileMode:
+                  TileMode.repeated, // repeats the gradient over the canvas
+                ),
+              ),
+            ),
           ),
-        ),
         body: BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {
             int index = state.screenIndex;

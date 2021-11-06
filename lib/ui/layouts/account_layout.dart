@@ -73,98 +73,86 @@ class AccountBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        avatar(),
+        avatar(context),
         options(context),
       ],
     );
   }
 
-  Widget avatar() {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, s) {
-        return Container(
-          width: double.infinity,
-          height: 550.h,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment
-                  .bottomCenter, // 10% of the width, so there are ten blinds.
-              colors: <Color>[
-                AppColors.greenFF61C53D.withOpacity(0.5),
-                AppColors.greenFF39AC8F.withOpacity(0.5),
-              ], // red to yellow
-              tileMode:
-                  TileMode.repeated, // repeats the gradient over the canvas
+  Widget avatar(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 500.h,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment
+              .bottomCenter, // 10% of the width, so there are ten blinds.
+          colors: <Color>[
+            AppColors.greenFF61C53D.withOpacity(0.7),
+            AppColors.greenFF39AC8F.withOpacity(0.7),
+          ], // red to yellow
+          tileMode: TileMode.repeated, // repeats the gradient over the canvas
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              buildWhen: (p, c) =>
+              (p.imageProfile != c.imageProfile) || p.gender != c.gender,
+              builder: (context, state) {
+                return AvatarWidget(
+                  image: state.imageProfile,
+                  isMale: state.gender == Gender.male,
+                  width: 250,
+                );
+              },
             ),
+            margin: EdgeInsets.only(
+                left: 70.w, top: 170.h, right: 40.w, bottom: 40.h),
           ),
-          child: Row(
-            children: [
-              Container(
-                child: _getAvatarFutureBuilder(
-                  s.gender,
-                  s.imageProfile,
-                ),
-                margin: EdgeInsets.symmetric(
-                  horizontal: 50.w,
-                ),
-              ),
-              Column(
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     child: CustomText(
-                      text: s.name,
-                      color: Colors.white70,
-                      fontSize: 55.sp,
+                      text: state.name,
+                      color: AppColors.white,
+                      fontSize: 70.sp,
                       fontWeight: FontWeight.w500,
                     ),
-                    margin: EdgeInsets.symmetric(
-                      vertical: 20.h,
-                    ),
+                    margin:
+                    EdgeInsets.only(top: 170.h, right: 80.w, bottom: 20.h),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.control_point_duplicate_outlined,
-                        color: Colors.yellow,
-                        size: 47.sp,
-                      ),
-                      SizedBox(
-                        width: 15.w,
-                      ),
-                      CustomText(
-                        text: s.totalPoint.toString(),
-                        color: Colors.white70,
-                        fontSize: 50.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
                       Container(
+                        margin: EdgeInsets.only(right: 10.w),
                         child: Icon(
-                          Icons.fiber_manual_record,
-                          color: Colors.white70,
-                          size: 20.sp,
-                        ),
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 25.w,
+                          Icons.control_point_duplicate_outlined,
+                          color: Colors.amber,
+                          size: 50.sp,
                         ),
                       ),
                       CustomText(
-                        text: s.phone,
-                        color: Colors.white70,
+                        text: '${state.totalPoint}',
                         fontSize: 50.sp,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.white,
                       ),
                     ],
                   )
                 ],
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -183,7 +171,7 @@ class AccountBody extends StatelessWidget {
           BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, s) {
               return option(
-                'Chỉnh sửa hồ sơ',
+                'Thông tin tài khoản',
                 () {
                   Navigator.of(context)
                       .pushNamed(
@@ -237,7 +225,7 @@ class AccountBody extends StatelessWidget {
       [IconData? iconData]) {
     return Container(
       color: Colors.white70,
-      height: 140.h,
+      height: 180.h,
       margin: EdgeInsets.symmetric(
         vertical: 3.h,
       ),
@@ -248,7 +236,7 @@ class AccountBody extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(
               right: 40.w,
-              left: 60.w,
+              left: 80.w,
             ),
             child: Row(
               children: [
@@ -256,7 +244,7 @@ class AccountBody extends StatelessWidget {
                   child: CustomText(
                     text: name,
                     color: color,
-                    fontSize: 40.sp,
+                    fontSize: 45.sp,
                   ),
                 ),
                 Icon(

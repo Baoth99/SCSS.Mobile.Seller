@@ -181,7 +181,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
             getSizedbox(),
             submmitedButton(
               'Lưu',
-              AppColors.greenFF61C53D,
+              AppColors.greenFF01C971,
               state.status.isValid
                   ? () {
                       context.read<EditPasswordBloc>().add(EditPassSubmmited());
