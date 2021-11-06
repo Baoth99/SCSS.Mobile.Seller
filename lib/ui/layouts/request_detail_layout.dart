@@ -979,7 +979,7 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -996,34 +996,36 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                           ),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () async {
-                          var url = "tel:${state.collectorPhoneNumber}";
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          } else {
-                            AppLog.error('Could not launch $url');
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            _getLineInfo(Icons.phone_outlined,
-                                state.collectorPhoneNumber),
-                            Container(
-                                margin: EdgeInsets.only(left: 20.w),
-                                child: Text(
-                                  'Gọi',
-                                  style: TextStyle(
-                                    // decoration: TextDecoration.underline,
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 40.sp,
-                                  ),
-                                )),
-                          ],
-                        ),
-                      ),
+                      state.status == ActivityLayoutConstants.approved
+                          ? GestureDetector(
+                              onTap: () async {
+                                var url = "tel:${state.collectorPhoneNumber}";
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  AppLog.error('Could not launch $url');
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  _getLineInfo(Icons.phone_outlined,
+                                      state.collectorPhoneNumber),
+                                  Container(
+                                      margin: EdgeInsets.only(left: 20.w),
+                                      child: Text(
+                                        'Gọi',
+                                        style: TextStyle(
+                                          // decoration: TextDecoration.underline,
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 40.sp,
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                 ),
@@ -1129,26 +1131,34 @@ class RequestDetailBody extends StatelessWidget {
                         ],
                       ),
                     ),
-                    RequestDetailElementPattern(
-                      icon: AppIcons.event,
-                      title: 'Thời gian hẹn thu gom',
-                      child: CustomText(
-                        text:
-                            '${s.collectingRequestDate}, ${s.fromTime} - ${s.toTime}',
-                        fontSize: 47.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    RequestDetailElementPattern(
-                      icon: Icons.kitchen,
-                      title: 'Có đồ cồng kềnh',
-                      child: CustomText(
-                        text: s.isBulky ? 'Có' : 'Không',
-                        fontSize: 47.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    s.scrapCategoryImageUrl != null &&
+                    s.status == ActivityLayoutConstants.pending ||
+                            s.status == ActivityLayoutConstants.approved
+                        ? RequestDetailElementPattern(
+                            icon: AppIcons.event,
+                            title: 'Thời gian hẹn thu gom',
+                            child: CustomText(
+                              text:
+                                  '${s.collectingRequestDate}, ${s.fromTime} - ${s.toTime}',
+                              fontSize: 47.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    s.status == ActivityLayoutConstants.pending ||
+                            s.status == ActivityLayoutConstants.approved
+                        ? RequestDetailElementPattern(
+                            icon: Icons.kitchen,
+                            title: 'Có đồ cồng kềnh',
+                            child: CustomText(
+                              text: s.isBulky ? 'Có' : 'Không',
+                              fontSize: 47.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    (s.status == ActivityLayoutConstants.pending ||
+                                s.status == ActivityLayoutConstants.approved) &&
+                            s.scrapCategoryImageUrl != null &&
                             s.scrapCategoryImageUrl!.isNotEmpty
                         ? RequestDetailElementPattern(
                             icon: Icons.image_outlined,
@@ -1156,14 +1166,17 @@ class RequestDetailBody extends StatelessWidget {
                             child: _image(context, s.scrapCategoryImageUrl!),
                           )
                         : const SizedBox.shrink(),
-                    RequestDetailElementPattern(
-                      icon: Icons.notes,
-                      title: 'Ghi chú',
-                      child: CustomText(
-                        text: s.note,
-                        fontSize: 40.sp,
-                      ),
-                    ),
+                    s.status == ActivityLayoutConstants.pending ||
+                            s.status == ActivityLayoutConstants.approved
+                        ? RequestDetailElementPattern(
+                            icon: Icons.notes,
+                            title: 'Ghi chú',
+                            child: CustomText(
+                              text: s.note,
+                              fontSize: 40.sp,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ],
                 ),
               );
