@@ -187,9 +187,22 @@ class _Form extends StatelessWidget {
               top: 60.h,
             ),
             child: BlocBuilder<LoginBloc, LoginState>(
-              buildWhen: (p, c) => p.password.status != c.password.status,
+              buildWhen: (p, c) =>
+                  p.password.status != c.password.status ||
+                  (p.password.value.isHide) != (c.password.value.isHide),
               builder: (context, state) {
                 return CustomBorderTextFormField(
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      context.read<LoginBloc>().add(LoginPasswordShowOrHide());
+                    },
+                    icon: Icon(
+                      state.password.value.isHide
+                          ? AppIcons.visibilityOff
+                          : AppIcons.visibility,
+                      size: 58.sp,
+                    ),
+                  ),
                   empty: state.status.isInvalid &&
                       state.phoneNumber.pure &&
                       state.password.pure,
@@ -199,7 +212,7 @@ class _Form extends StatelessWidget {
                   commonColor: AppColors.greenFF01C971,
                   defaultColor: AppColors.greyFF969090,
                   keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
+                  obscureText: state.password.value.isHide,
                   padding: EdgeInsets.symmetric(
                     horizontal: 60.0.w,
                   ),
