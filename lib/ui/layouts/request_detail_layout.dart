@@ -799,7 +799,7 @@ class RequestDetailBill extends StatelessWidget {
             ),
             BlocBuilder<RequestDetailBloc, RequestDetailState>(
               builder: (context, state) {
-                return _getFinalText('${state.billTotal} ₫');
+                return _getFinalText(state.billTotal.toAppPrice());
               },
             )
           ],
@@ -822,7 +822,8 @@ class RequestDetailBill extends StatelessWidget {
         return Column(
           children: state.transaction
               .map(
-                (e) => _getItem(e.name, e.quantity, e.unitInfo, '${e.total} ₫'),
+                (e) => _getItem(
+                    e.name, e.quantity, e.unitInfo, e.total.toAppPrice()),
               )
               .toList(),
         );
@@ -893,11 +894,11 @@ class RequestDetailBill extends StatelessWidget {
           children: [
             _getSubInfoItem(
               'Tạm tính',
-              '${state.itemTotal} ₫',
+              state.itemTotal.toAppPrice(),
             ),
             _getSubInfoItem(
               'Phí dịch vụ',
-              '-${state.serviceFee} ₫',
+              '-${state.serviceFee.toAppPrice()}',
             ),
             _getSubInfoItem(
               'Điểm thưởng',

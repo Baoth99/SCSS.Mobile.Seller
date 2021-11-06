@@ -42,6 +42,7 @@ class ResDatum {
     required this.collectingRequestId,
     required this.collectingRequestCode,
     required this.collectingRequestDate,
+    required this.doneActivityTime,
     required this.fromTime,
     required this.toTime,
     required this.status,
@@ -53,7 +54,8 @@ class ResDatum {
 
   String collectingRequestId;
   String collectingRequestCode;
-  String collectingRequestDate;
+  DateTime collectingRequestDate;
+  DateTime? doneActivityTime;
   String fromTime;
   String toTime;
   int status;
@@ -65,7 +67,10 @@ class ResDatum {
   factory ResDatum.fromJson(Map<String, dynamic> json) => ResDatum(
         collectingRequestId: json["collectingRequestId"],
         collectingRequestCode: json["collectingRequestCode"],
-        collectingRequestDate: json["collectingRequestDate"],
+        collectingRequestDate: DateTime.parse(json["collectingRequestDate"]),
+        doneActivityTime: json["doneActivityTime"] == null
+            ? null
+            : DateTime.parse(json["doneActivityTime"]),
         fromTime: json["fromTime"],
         toTime: json["toTime"],
         status: json["status"],

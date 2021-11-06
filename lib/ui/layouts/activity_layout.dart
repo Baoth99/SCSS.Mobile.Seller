@@ -13,6 +13,7 @@ import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'request_detail_layout.dart';
+import 'package:seller_app/utils/extension_methods.dart';
 
 class ActivityLayout extends StatelessWidget {
   const ActivityLayout({
@@ -274,6 +275,7 @@ class _ActivityListDataState extends State<ActivityListData> {
       privateStatus: a.status,
       tabStatus: tabStatus,
       price: a.total,
+      doneTime: a.doneActivityTime,
     );
   }
 }
@@ -291,6 +293,7 @@ class CurrentActivity extends StatelessWidget {
     required this.privateStatus,
     required this.tabStatus,
     this.price,
+    required this.doneTime,
   }) : super(key: key);
 
   final String requestId;
@@ -303,12 +306,12 @@ class CurrentActivity extends StatelessWidget {
   final int privateStatus;
   final int tabStatus;
   final int? price;
+  final String doneTime;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 35.h,
-      horizontal: 25.w),
+      margin: EdgeInsets.symmetric(vertical: 35.h, horizontal: 25.w),
       constraints: BoxConstraints(
         minHeight: 300.h,
       ),
@@ -362,32 +365,25 @@ class CurrentActivity extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: _getContainerColumn(
-                                CustomText(
-                                  text: '$time, $fromTime-$toTime',
-                                  color: Colors.green[600],
-                                  fontSize: 39.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              child: _getContainerColumn(buildTime()),
                             ),
                             tabStatus == ActivityLayoutConstants.tabCompleted
                                 ? Container(
-                              // constraints: BoxConstraints(
-                              //   minWidth: 100.w,
-                              // ),
-                              //   padding: EdgeInsets.only(
-                              //     top: 15.h,
-                              //     right: 20.w,
-                              //   ),
-                                width: 210.w,
-                                child: CustomText(
-                                  text: _getCompletedText(privateStatus),
-                                  color: _getCompletedColor(privateStatus),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 39.sp,
-                                ),
-                                alignment: Alignment.topRight)
+                                    // constraints: BoxConstraints(
+                                    //   minWidth: 100.w,
+                                    // ),
+                                    //   padding: EdgeInsets.only(
+                                    //     top: 15.h,
+                                    //     right: 20.w,
+                                    //   ),
+                                    width: 210.w,
+                                    child: CustomText(
+                                      text: _getCompletedText(privateStatus),
+                                      color: _getCompletedColor(privateStatus),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 39.sp,
+                                    ),
+                                    alignment: Alignment.topRight)
                                 : const SizedBox.shrink(),
                           ],
                         ),
@@ -410,7 +406,7 @@ class CurrentActivity extends StatelessWidget {
                                 price != null
                             ? _getContainerColumn(
                                 CustomText(
-                                  text: 'Tổng cộng: $price ₫',
+                                  text: 'Tổng cộng: ${price?.toAppPrice()}',
                                   fontSize: 40.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.green[600],
@@ -427,6 +423,28 @@ class CurrentActivity extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget buildTime() {
+    switch (tabStatus) {
+      case ActivityLayoutConstants.tabPending:
+      case ActivityLayoutConstants.tabApproved:
+        return CustomText(
+          text: '$time, $fromTime-$toTime',
+          color: Colors.green[600],
+          fontSize: 39.sp,
+          fontWeight: FontWeight.w500,
+        );
+      case ActivityLayoutConstants.tabCompleted:
+        return CustomText(
+          text: doneTime,
+          color: AppColors.greyFF969090,
+          fontSize: 39.sp,
+          fontWeight: FontWeight.w500,
+        );
+      default:
+        return Container();
+    }
   }
 
   String _getCompletedText(int status) {
@@ -467,11 +485,7 @@ class CurrentActivity extends StatelessWidget {
 
   Widget _getContainerColumn(Widget child) {
     return Container(
-      margin: EdgeInsets.only(
-        top: 10.h,
-        bottom: 10.h,
-        right: 30.w
-      ),
+      margin: EdgeInsets.only(top: 10.h, bottom: 10.h, right: 30.w),
       child: child,
     );
   }

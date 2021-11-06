@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/utils/common_utils.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {
@@ -12,6 +14,15 @@ extension DateOnlyCompare on DateTime {
 
   String toDateString() {
     return '$year-${CommonUtils.toStringLeadingZero(month, 2)}-${CommonUtils.toStringLeadingZero(day, 2)}';
+  }
+
+  String toVietnameseStringNotYear() {
+    String dayOfWeek = VietnameseDate.weekdayMap[weekday] ?? Symbols.empty;
+    return '$dayOfWeek, ${day.toStringLeadingTwoZero()} thg $month';
+  }
+
+  String toVietnameseStringNotYearHaveTime() {
+    return '${toVietnameseStringNotYear()}, ${hour.toStringLeadingTwoZero()}:${minute.toStringLeadingTwoZero()}';
   }
 }
 
@@ -56,5 +67,16 @@ extension DynamicExtension on dynamic {
     } catch (e) {
       return null;
     }
+  }
+}
+
+extension IntegerExtension on int {
+  String toStringLeadingTwoZero() {
+    return toString().padLeft(2, '0');
+  }
+
+  String toAppPrice() {
+    var f = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+    return f.format(this);
   }
 }
