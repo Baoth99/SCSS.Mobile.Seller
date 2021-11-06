@@ -65,7 +65,7 @@ class RequestDetailLayout extends StatelessWidget {
                 AppColors.greenFF39AC8F.withOpacity(0.5),
               ], // red to yellow
               tileMode:
-              TileMode.repeated, // repeats the gradient over the canvas
+                  TileMode.repeated, // repeats the gradient over the canvas
             ),
           ),
         ),
@@ -393,7 +393,7 @@ class CancelRequestWidget extends StatelessWidget {
           child: BlocBuilder<CancelRequestBloc, CancelRequestState>(
             builder: (context, state) {
               return ElevatedButton(
-                onPressed: state.status.isValid
+                onPressed: state.cancelReason.valid
                     ? () {
                         context.read<CancelRequestBloc>().add(
                               CancelRequestSubmmited(),
@@ -789,12 +789,8 @@ class RequestDetailBill extends StatelessWidget {
         _getItems(),
         // _getDivider(),
         Container(
-          margin: EdgeInsets.only(
-            top: 25.h,
-            bottom: 15.h
-          ),
-            child: _getSubInfo()
-        ),
+            margin: EdgeInsets.only(top: 25.h, bottom: 15.h),
+            child: _getSubInfo()),
         _getDottedDivider(),
         Row(
           children: [
@@ -876,11 +872,10 @@ class RequestDetailBill extends StatelessWidget {
   _getDivider() {
     return Divider(
       thickness: 2.5.h,
-
     );
   }
 
-  _getDottedDivider(){
+  _getDottedDivider() {
     return Container(
       padding: EdgeInsets.only(top: 10.h, bottom: 30.h),
       child: DottedLine(
@@ -1012,23 +1007,20 @@ class RequestDetailCollectorInfo extends StatelessWidget {
                         },
                         child: Row(
                           children: [
-                            _getLineInfo(
-                                Icons.phone_outlined, state.collectorPhoneNumber),
+                            _getLineInfo(Icons.phone_outlined,
+                                state.collectorPhoneNumber),
                             Container(
-                              margin: EdgeInsets.only(
-                                  left: 20.w
-                              ),
+                                margin: EdgeInsets.only(left: 20.w),
                                 child: Text(
                                   'Gọi',
-                                    style: TextStyle(
-                                      // decoration: TextDecoration.underline,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 40.sp,
-                                    ),
-                                )
-                            ),
+                                  style: TextStyle(
+                                    // decoration: TextDecoration.underline,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 40.sp,
+                                  ),
+                                )),
                           ],
                         ),
                       ),
@@ -1779,8 +1771,7 @@ class FeedbackAdminDoneWidget extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           Container(
-            padding: EdgeInsets.only(left: 50.w,
-            top: 30.h),
+            padding: EdgeInsets.only(left: 50.w, top: 30.h),
             child: CustomText(
               text: content,
               fontSize: 45.sp,

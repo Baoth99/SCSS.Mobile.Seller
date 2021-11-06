@@ -8,7 +8,7 @@ class CancelReason extends FormzInput<String, CancelReasonError> {
   const CancelReason.pure([String value = Symbols.empty]) : super.pure(value);
 
   bool _validate(String value) {
-    return value.trim().isNotEmpty;
+    return true;
   }
 
   @override
