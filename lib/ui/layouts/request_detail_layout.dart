@@ -1524,7 +1524,10 @@ class RequestDetailHeader extends StatelessWidget {
 
   Widget _getStepper(BuildContext context, int status) {
     return Container(
-      height: 220.h,
+      constraints: BoxConstraints(
+        minHeight: 230.h,
+        maxHeight: 250.h,
+      ),
       child: Theme(
         data: Theme.of(context).copyWith(
           shadowColor: Colors.transparent,
