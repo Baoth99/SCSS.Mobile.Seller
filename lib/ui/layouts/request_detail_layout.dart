@@ -853,7 +853,7 @@ class RequestDetailBill extends StatelessWidget {
             ),
             width: 350.w,
           ),
-          _getItemText(quantity == 0 && unit.isEmpty
+          _getItemText(quantity == 0 || unit.isEmpty
               ? Symbols.minus
               : '${quantity.toStringAndRemoveFractionalIfCan()} $unit'),
           _getItemText(price),
