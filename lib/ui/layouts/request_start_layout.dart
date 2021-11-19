@@ -37,10 +37,7 @@ class RequestStartLayout extends StatelessWidget {
         child: BlocListener<RequestTimeBloc, RequestTimeState>(
           listener: (context, state) {
             if (state.blocStatus.isSubmissionInProgress) {
-              showDialog(
-                context: context,
-                builder: (context) => const CustomProgressIndicatorDialog(),
-              );
+              FunctionalWidgets.showCustomDialog(context);
             }
             if (state.blocStatus.isSubmissionSuccess) {
               Navigator.of(context).popUntil(
@@ -810,17 +807,12 @@ class _InputContainer extends StatelessWidget {
             spreadRadius: -5.5,
           ),
         ],
-        border: Border.all(
-          color: AppColors.greyFFB5B5B5,
-          width: 1.w
-        ),
+        border: Border.all(color: AppColors.greyFFB5B5B5, width: 1.w),
         borderRadius: BorderRadius.circular(
           15.0.r,
         ),
       ),
-      constraints: BoxConstraints(
-        minHeight: 180.h
-      ),
+      constraints: BoxConstraints(minHeight: 180.h),
       child: Row(
         children: <Widget>[
           Container(

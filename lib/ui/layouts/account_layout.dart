@@ -27,12 +27,7 @@ class AccountLayout extends StatelessWidget {
       child: BlocListener<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state.status.isSubmissionInProgress) {
-            showDialog(
-              context: context,
-              builder: (context) => const CustomProgressIndicatorDialog(
-                text: 'Xin vui lòng đợi',
-              ),
-            );
+            FunctionalWidgets.showCustomDialog(context);
           }
           if (state.status.isSubmissionFailure) {
             // Navigator.of(context).popUntil(
@@ -100,7 +95,7 @@ class AccountBody extends StatelessWidget {
           Container(
             child: BlocBuilder<ProfileBloc, ProfileState>(
               buildWhen: (p, c) =>
-              (p.imageProfile != c.imageProfile) || p.gender != c.gender,
+                  (p.imageProfile != c.imageProfile) || p.gender != c.gender,
               builder: (context, state) {
                 return AvatarWidget(
                   image: state.imageProfile,
@@ -126,7 +121,7 @@ class AccountBody extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                     margin:
-                    EdgeInsets.only(top: 170.h, right: 80.w, bottom: 20.h),
+                        EdgeInsets.only(top: 170.h, right: 80.w, bottom: 20.h),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

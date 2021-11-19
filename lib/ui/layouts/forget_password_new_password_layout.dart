@@ -66,10 +66,7 @@ class ForgetPasswordNewPasswordLayout extends StatelessWidget {
                     route: Routes.forgetPasswordNewPassword,
                   );
                 } else if (state.status.isSubmissionInProgress) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const CustomProgressIndicatorDialog(),
-                  );
+                  FunctionalWidgets.showCustomDialog(context);
                 }
               },
               child: const ProfilePasswordEditBody(),
@@ -151,7 +148,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
                 submmitedButton(
                   'Hủy',
                   AppColors.orangeFFF5670A,
-                      () {
+                  () {
                     Navigator.pop(context);
                   },
                 ),
@@ -180,6 +177,7 @@ class ProfilePasswordEditBody extends StatelessWidget {
       height: 75.h,
     );
   }
+
   Widget getSizedbox() {
     return SizedBox(
       height: 45.h,

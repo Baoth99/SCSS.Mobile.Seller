@@ -33,6 +33,7 @@ class ImagesPaths {
   static const String emptyActivityList = '$imagePath/empty_activity_list.png';
   static const String placeholderImage = '$imagePath/placeholder_image.jpg';
   static const String splashScreen = '$imagePath/splash_screen.png';
+  static const String sellerLogo = '$imagePath/seller_logo.png';
 }
 
 class Symbols {

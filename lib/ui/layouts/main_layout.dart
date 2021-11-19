@@ -12,6 +12,7 @@ import 'package:seller_app/ui/layouts/notification_layout.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
+import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/ui/widgets/radiant_gradient_mask.dart';
 
 class MainLayout extends StatefulWidget {
@@ -51,10 +52,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     return BlocListener<MainBloc, MainState>(
       listener: (context, state) {
         if (state.statusCreateRequest.isSubmissionInProgress) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomProgressIndicatorDialog(),
-          );
+          FunctionalWidgets.showCustomDialog(context);
         }
         if (state.statusCreateRequest.isSubmissionSuccess) {
           Navigator.popUntil(
@@ -218,35 +216,35 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.transparent,
-            onPressed: () {
-              // Navigator.of(context).pushNamed(Routes.requestStart);
-              context.read<MainBloc>().add(MainCheckFullRequest());
-            },
-            child: Container(
-              width: 180.r,
-              height: 180.r,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment
-                      .bottomRight, // 10% of the width, so there are ten blinds.
-                  colors: <Color>[
-                    AppColors.greenFF61C53D.withOpacity(1),
-                    AppColors.greenFF39AC8F.withOpacity(1),
-                  ], // red to yellow
-                  tileMode:
-                  TileMode.repeated, // repeats the gradient over the canvas
-                ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.transparent,
+          onPressed: () {
+            // Navigator.of(context).pushNamed(Routes.requestStart);
+            context.read<MainBloc>().add(MainCheckFullRequest());
+          },
+          child: Container(
+            width: 180.r,
+            height: 180.r,
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment
+                    .bottomRight, // 10% of the width, so there are ten blinds.
+                colors: <Color>[
+                  AppColors.greenFF61C53D.withOpacity(1),
+                  AppColors.greenFF39AC8F.withOpacity(1),
+                ], // red to yellow
+                tileMode:
+                    TileMode.repeated, // repeats the gradient over the canvas
               ),
             ),
           ),
+        ),
         body: BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {
             int index = state.screenIndex;

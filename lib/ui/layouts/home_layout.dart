@@ -224,29 +224,38 @@ class _AccountBodyState extends State<AccountBody> {
 
                           widget.tabController.animateTo(1);
                         },
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 30.h,
+                            horizontal: 200.w,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 70.w,
+                              ),
+                              Container(
                                 margin: EdgeInsets.only(bottom: 20.h),
                                 child: CustomText(
-                                  text: 'Xem tất cả yêu cầu',
+                                  text: 'Xem tất cả',
                                   fontSize: 45.sp,
                                   fontWeight: FontWeight.w500,
-                                  textAlign: TextAlign.right,
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                            ),
-                            Container(
-                              margin:
-                                  EdgeInsets.only(right: 30.w, bottom: 20.h),
-                              child: Icon(
-                                Icons.chevron_right,
-                                color: AppColors.greyFF9098B1,
-                                size: 80.sp,
-                              ),
-                            )
-                          ],
+                              Container(
+                                margin:
+                                    EdgeInsets.only(right: 30.w, bottom: 20.h),
+                                child: Icon(
+                                  Icons.chevron_right,
+                                  color: AppColors.greyFF9098B1,
+                                  size: 80.sp,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       )
                     : const SizedBox.shrink();
@@ -418,11 +427,7 @@ class CollectingRequest extends StatelessWidget {
 
   Widget _getContainerColumn(Widget child) {
     return Container(
-      margin: EdgeInsets.only(
-          top: 10.h,
-          bottom: 10.h,
-          right: 30.w
-      ),
+      margin: EdgeInsets.only(top: 10.h, bottom: 10.h, right: 30.w),
       child: child,
     );
   }

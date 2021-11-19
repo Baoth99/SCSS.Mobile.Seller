@@ -26,10 +26,7 @@ class RequestBulkyLayout extends StatelessWidget {
     return BlocListener<RequestBloc, RequestState>(
       listener: (context, state) {
         if (state.status.isSubmissionInProgress) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomProgressIndicatorDialog(),
-          );
+          FunctionalWidgets.showCustomDialog(context);
         }
 
         if (state.status.isSubmissionSuccess) {

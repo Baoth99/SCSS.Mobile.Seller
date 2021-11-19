@@ -284,10 +284,7 @@ class CancelRequestWidget extends StatelessWidget {
     return BlocListener<CancelRequestBloc, CancelRequestState>(
       listener: (context, state) {
         if (state.status.isSubmissionInProgress) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomProgressIndicatorDialog(),
-          );
+          FunctionalWidgets.showCustomDialog(context);
         }
 
         if (state.status.isSubmissionSuccess) {
@@ -1609,10 +1606,7 @@ class FeedbackAdminWidget extends StatelessWidget {
     return BlocListener<FeedbackAdminBloc, FeedbackAdminState>(
       listener: (context, state) {
         if (state.status.isSubmissionInProgress) {
-          showDialog(
-            context: context,
-            builder: (context) => const CustomProgressIndicatorDialog(),
-          );
+          FunctionalWidgets.showCustomDialog(context);
         }
 
         if (state.status.isSubmissionSuccess) {
