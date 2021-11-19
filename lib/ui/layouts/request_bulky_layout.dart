@@ -264,7 +264,7 @@ class RadioButtonInput extends StatelessWidget {
         color: groupValue == value ? Colors.green[50] : null,
         child: ListTile(
           leading: Radio<YesNo>(
-            activeColor: AppColors.greenFF61C53D,
+            activeColor: AppColors.greenFF01C971,
             groupValue: groupValue,
             value: value,
             onChanged: (value) {

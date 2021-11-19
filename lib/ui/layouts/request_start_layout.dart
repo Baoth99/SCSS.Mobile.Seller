@@ -822,7 +822,7 @@ class _InputContainer extends StatelessWidget {
             child: RadiantGradientMask(
               child: Icon(
                 iconData,
-                color: AppColors.greenFF61C53D,
+                color: AppColors.greenFF01C971,
                 size: 55.sp,
               ),
             ),

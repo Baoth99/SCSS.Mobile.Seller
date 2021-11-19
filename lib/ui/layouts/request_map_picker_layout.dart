@@ -214,7 +214,7 @@ class _SubmittedButton extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: AppColors.greenFF61C53D,
+            primary: AppColors.greenFF01C971,
             minimumSize: Size(
               1000.w,
               WidgetConstants.buttonCommonHeight.h,

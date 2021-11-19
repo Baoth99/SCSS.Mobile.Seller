@@ -414,7 +414,7 @@ class ProfileEditBody extends StatelessWidget {
             SignupInformationLayoutConstants.circularBorderRadius.r,
           ),
           borderSide: const BorderSide(
-            color: AppColors.greenFF61C53D,
+            color: AppColors.greenFF01C971,
           ),
         ),
         labelText: labelText,
@@ -496,7 +496,7 @@ class _RadioButtonGender extends StatelessWidget {
           text: label,
         ),
         leading: Radio<Gender>(
-          activeColor: AppColors.greenFF61C53D,
+          activeColor: AppColors.greenFF01C971,
           groupValue: value,
           value: gender,
           onChanged: (value) {

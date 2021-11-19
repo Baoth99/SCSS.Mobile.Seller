@@ -697,7 +697,7 @@ class Feedback extends StatelessWidget {
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppColors.greenFF61C53D),
+                borderSide: BorderSide(color: AppColors.greenFF01C971),
               ),
             ),
             textInputAction: TextInputAction.done,
@@ -721,7 +721,7 @@ class Feedback extends StatelessWidget {
                 double.infinity,
                 WidgetConstants.buttonCommonHeight.h,
               ),
-              primary: AppColors.greenFF61C53D,
+              primary: AppColors.greenFF01C971,
             ),
           ),
         ),
@@ -1036,7 +1036,7 @@ class RequestDetailCollectorInfo extends StatelessWidget {
   }
 
   Widget _getLineInfo(IconData icon, String data,
-      [Color? colorIcon = AppColors.greenFF61C53D]) {
+      [Color? colorIcon = AppColors.greenFF01C971]) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1061,7 +1061,7 @@ class RequestDetailCollectorInfo extends StatelessWidget {
   }
 
   Widget _getLineInfoCustom(IconData icon, String data,
-      [Color? colorIcon = AppColors.greenFF61C53D]) {
+      [Color? colorIcon = AppColors.greenFF01C971]) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1322,7 +1322,7 @@ class RequestDetailElementPattern extends StatelessWidget {
               RadiantGradientMask(
                 child: Icon(
                   icon,
-                  color: AppColors.greenFF61C53D,
+                  color: AppColors.greenFF01C971,
                   size: 60.sp,
                 ),
               ),
@@ -1458,9 +1458,10 @@ class RequestDetailHeader extends StatelessWidget {
     return Row(
       children: <Widget>[
         RadiantGradientMask(
-          child: const Icon(
+          child: Icon(
             Icons.description_outlined,
-            color: AppColors.greenFF61C53D,
+            color: AppColors.greenFF01C971,
+            size: 60.sp,
           ),
         ),
         Expanded(
@@ -1469,7 +1470,7 @@ class RequestDetailHeader extends StatelessWidget {
               horizontal: 20.w,
             ),
             child: CustomText(
-              text: 'Mã Đơn Hẹn: $code',
+              text: 'Mã Đơn: $code',
               fontWeight: FontWeight.w500,
               fontSize: 35.sp,
             ),

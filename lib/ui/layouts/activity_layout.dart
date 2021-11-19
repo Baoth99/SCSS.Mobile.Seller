@@ -201,7 +201,7 @@ class _ActivityListDataState extends State<ActivityListData> {
       enablePullDown: true,
       enablePullUp: true,
       header: const WaterDropHeader(
-        waterDropColor: AppColors.greenFF61C53D,
+        waterDropColor: AppColors.greenFF01C971,
         failed: SizedBox.shrink(),
         complete: SizedBox.shrink(),
       ),

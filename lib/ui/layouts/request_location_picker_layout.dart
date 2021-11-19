@@ -178,7 +178,7 @@ class _MapResult extends StatelessWidget {
 
   Widget getLoadingAnimation() {
     return const SpinKitRing(
-      color: AppColors.greenFF61C53D,
+      color: AppColors.greenFF01C971,
     );
   }
 }
