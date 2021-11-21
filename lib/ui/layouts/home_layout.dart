@@ -168,7 +168,7 @@ class _AccountBodyState extends State<AccountBody> {
     return Material(
       elevation: 1,
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppColors.white,
         ),
         child: Column(

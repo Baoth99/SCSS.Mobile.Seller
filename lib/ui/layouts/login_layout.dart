@@ -59,6 +59,12 @@ class LoginLayout extends StatelessWidget {
                 Routes.main,
               );
             }
+            if (state.status.isSubmissionFailure) {
+              FunctionalWidgets.showErrorSystemRouteButton(
+                context,
+                route: Routes.login,
+              );
+            }
           },
           child: const _Body(),
         ),
