@@ -234,6 +234,45 @@ class NetworkUtils {
     return response;
   }
 
+  static Future<http.Response> deleteNetwork({
+    required String uri,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queries,
+    required http.Client client,
+  }) async {
+    var url = Uri.parse(uri).replace(
+      queryParameters: queries,
+    );
+
+    //create request
+    var response = await client.delete(
+      url,
+      headers: headers,
+    );
+
+    //add header
+
+    return response;
+  }
+
+  static Future<http.Response> deleteNetworkWithBearer({
+    required String uri,
+    Map<String, String>? headers,
+    Map<String, dynamic>? queries,
+    required http.Client client,
+  }) async {
+    var newHeaders = <String, String>{
+      HttpHeaders.authorizationHeader: await getBearerToken(),
+    }..addAll(headers ?? {});
+
+    return await deleteNetwork(
+      uri: uri,
+      headers: newHeaders,
+      client: client,
+      queries: queries,
+    );
+  }
+
   static Future<http.Response> getNetworkWithBearer({
     required String uri,
     Map<String, String>? headers,

@@ -24,6 +24,8 @@ abstract class GoongMapService {
   Future<PlaceDetailServiceModel> getPlaceDetail(String placeId);
 
   Future<List<PersonalLocation>> getPersonalLocations();
+
+  Future<bool> removePersonalLocation(String id);
 }
 
 class GoongMapServiceImpl implements GoongMapService {
@@ -140,5 +142,23 @@ class GoongMapServiceImpl implements GoongMapService {
     }
 
     return result;
+  }
+
+  @override
+  Future<bool> removePersonalLocation(String id) async {
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .removePersonalLocation(
+          client,
+          id,
+        )
+        .whenComplete(() => client.close());
+
+    if (responseModel.isSuccess != null &&
+        responseModel.isSuccess! &&
+        responseModel.statusCode == NetworkConstants.ok200) {
+      return true;
+    }
+    return false;
   }
 }

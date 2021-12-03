@@ -2,6 +2,7 @@ import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/providers/networks/models/request/place_detail_by_place_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/predict_place_goong_map_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/reverse_geocoding_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/base_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/personal_location_get_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/place_detail_by_place_id_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/predict_place_goong_map_response_model.dart';
@@ -29,6 +30,9 @@ abstract class GoongMapNetwork {
   Future<PersonalLocationGetResponseModel> getPersonalLocations(
     http.Client client,
   );
+
+  Future<BaseResponseModel> removePersonalLocation(
+      http.Client client, String id);
 }
 
 class GoongMapNetworkImpl implements GoongMapNetwork {
@@ -128,6 +132,24 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
             PersonalLocationGetResponseModel>(
       response,
       personalLocationGetResponseModelFromJson,
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<BaseResponseModel> removePersonalLocation(
+      http.Client client, String id) async {
+    var response = await NetworkUtils.deleteNetworkWithBearer(
+        uri: APIServiceURI.removePersonalLocation,
+        client: client,
+        queries: {
+          'id': id,
+        });
+    var responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
     );
 
     return responseModel;

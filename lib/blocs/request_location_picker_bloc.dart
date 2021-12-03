@@ -52,6 +52,22 @@ class RequestLocationPickerBloc
           );
         }
       }
+    } else if (event is RemovePersonalLocation) {
+      try {
+        yield state.copyWith(
+            deleteLocationStatus: FormzStatus.submissionInProgress);
+        await _goongMapService.removePersonalLocation(event.id);
+        yield state.copyWith(
+            deleteLocationStatus: FormzStatus.submissionSuccess);
+      } catch (e) {
+        AppLog.error(e);
+      }
+    } else if (event is RefreshRemoveLocationStatus) {
+      try {
+        yield state.copyWith(deleteLocationStatus: FormzStatus.pure);
+      } catch (e) {
+        AppLog.error(e);
+      }
     }
   }
 }

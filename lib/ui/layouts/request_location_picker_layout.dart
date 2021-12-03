@@ -51,7 +51,18 @@ class RequestLocationPickerLayout extends StatelessWidget {
       ),
       body: BlocProvider<RequestLocationPickerBloc>(
         create: (context) => RequestLocationPickerBloc(),
-        child: const _Body(),
+        child:
+            BlocListener<RequestLocationPickerBloc, RequestLocationPickerState>(
+          listener: (context, state) {
+            if (state.deleteLocationStatus.isSubmissionSuccess) {
+              context.read<RequestBloc>().add(PersonalLocationGet());
+              context
+                  .read<RequestLocationPickerBloc>()
+                  .add(RefreshRemoveLocationStatus());
+            }
+          },
+          child: const _Body(),
+        ),
       ),
     );
   }
@@ -174,6 +185,7 @@ class _MapResult extends StatelessWidget {
                         district: personalLocations[index].district,
                         city: personalLocations[index].city,
                         isPersonal: true,
+                        personalLocationId: personalLocations[index].id,
                         personalName: personalLocations[index].placeName,
                       ),
                       separatorBuilder: (context, index) => Divider(
@@ -195,6 +207,7 @@ class _MapResult extends StatelessWidget {
                         district: predictions[index].district,
                         city: predictions[index].city,
                         isPersonal: false,
+                        personalLocationId: Symbols.empty,
                         personalName: Symbols.empty,
                       ),
                       separatorBuilder: (context, index) => Divider(
@@ -233,6 +246,7 @@ class MapResultTile extends StatelessWidget {
     required this.district,
     required this.city,
     required this.isPersonal,
+    required this.personalLocationId,
     required this.personalName,
   }) : super(key: key);
   final String main;
@@ -241,6 +255,7 @@ class MapResultTile extends StatelessWidget {
   final String district;
   final String city;
   final bool isPersonal;
+  final String personalLocationId;
   final String personalName;
 
   @override
@@ -264,7 +279,9 @@ class MapResultTile extends StatelessWidget {
                 Expanded(
                   child: resultTileContent(main, sub, context),
                 ),
-                isPersonal ? personalRemoveIcon() : const SizedBox.shrink()
+                isPersonal
+                    ? personalRemoveIcon(context)
+                    : const SizedBox.shrink()
               ],
             ),
           ),
@@ -273,9 +290,13 @@ class MapResultTile extends StatelessWidget {
     );
   }
 
-  Widget personalRemoveIcon() {
+  Widget personalRemoveIcon(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: () {
+        context
+            .read<RequestLocationPickerBloc>()
+            .add(RemovePersonalLocation(personalLocationId));
+      },
       icon: const Icon(Icons.delete),
     );
   }
