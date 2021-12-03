@@ -20,8 +20,8 @@ part 'events/request_event.dart';
 part 'states/request_state.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
-  late GoongMapService _goongMapService;
-  late CollectingRequestService _collectingRequestService;
+  late final GoongMapService _goongMapService;
+  late final CollectingRequestService _collectingRequestService;
 
   RequestBloc({
     GoongMapService? goongMapService,
@@ -168,6 +168,23 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           status: FormzStatus.pure,
         );
       }
+    } else if (event is PersonalLocationGet) {
+      try {
+        yield state.copyWith(
+          personalLocationStatus: FormzStatus.submissionInProgress,
+        );
+
+        //get
+        var personalLocations = await futureAppDuration(
+          _goongMapService.getPersonalLocations(),
+        );
+        yield state.copyWith(personalLocations: personalLocations);
+      } catch (e) {
+        AppLog.error(e);
+      }
+      yield state.copyWith(
+        personalLocationStatus: FormzStatus.submissionSuccess,
+      );
     }
   }
 

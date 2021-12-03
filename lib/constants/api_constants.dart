@@ -98,6 +98,10 @@ class APIServiceURI {
       '${EnvID4AppSettingValue.apiUrl}api/identity/account/confirm-otp-register';
   static final register =
       '${EnvBaseAppSettingValue.baseApiUrl}seller/account/register';
+  static final getPersonalLocation =
+      '${EnvBaseAppSettingValue.baseApiUrl}personal-location/get';
+  static final removePersonalLocation =
+      '${EnvBaseAppSettingValue.baseApiUrl}personal-location/remove';
 }
 
 class InvalidRequestCode {

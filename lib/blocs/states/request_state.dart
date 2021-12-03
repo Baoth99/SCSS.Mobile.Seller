@@ -12,6 +12,8 @@ class RequestState extends Equatable {
     this.status = FormzStatus.pure,
     this.errorCode = Symbols.empty,
     this.requestId = Symbols.empty,
+    this.personalLocations = const [],
+    this.personalLocationStatus = FormzStatus.pure,
   });
 
   final RequestAddress address;
@@ -24,6 +26,8 @@ class RequestState extends Equatable {
   final FormzStatus status;
   final String errorCode;
   final String requestId;
+  final List<PersonalLocation> personalLocations;
+  final FormzStatus personalLocationStatus;
 
   RequestState copyWith({
     RequestAddress? address,
@@ -36,6 +40,8 @@ class RequestState extends Equatable {
     FormzStatus? status,
     String? errorCode,
     String? requestId,
+    List<PersonalLocation>? personalLocations,
+    FormzStatus? personalLocationStatus,
   }) {
     return RequestState(
       address: address ?? this.address,
@@ -48,6 +54,9 @@ class RequestState extends Equatable {
       status: status ?? this.status,
       errorCode: errorCode ?? this.errorCode,
       requestId: requestId ?? this.requestId,
+      personalLocations: personalLocations ?? this.personalLocations,
+      personalLocationStatus:
+          personalLocationStatus ?? this.personalLocationStatus,
     );
   }
 
@@ -69,5 +78,44 @@ class RequestState extends Equatable {
         status,
         errorCode,
         requestId,
+        personalLocations,
+        personalLocationStatus,
+      ];
+}
+
+class PersonalLocation extends Equatable {
+  const PersonalLocation({
+    required this.id,
+    required this.placeId,
+    required this.placeName,
+    required this.addressName,
+    required this.address,
+    required this.latitude,
+    required this.longtitude,
+    required this.district,
+    required this.city,
+  });
+
+  final String id;
+  final String placeId;
+  final String placeName;
+  final String addressName;
+  final String address;
+  final double latitude;
+  final double longtitude;
+  final String district;
+  final String city;
+
+  @override
+  List<Object> get props => [
+        id,
+        placeId,
+        placeName,
+        addressName,
+        address,
+        latitude,
+        longtitude,
+        district,
+        city,
       ];
 }

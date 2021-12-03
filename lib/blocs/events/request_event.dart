@@ -102,3 +102,5 @@ class RequestImageDeleted extends RequestEvent {}
 class RequestAddressInitial extends RequestEvent {}
 
 class RequestSummited extends RequestEvent {}
+
+class PersonalLocationGet extends RequestEvent {}

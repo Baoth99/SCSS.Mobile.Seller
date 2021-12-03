@@ -2,6 +2,7 @@ import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/providers/networks/models/request/place_detail_by_place_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/predict_place_goong_map_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/reverse_geocoding_request_model.dart';
+import 'package:seller_app/providers/networks/models/response/personal_location_get_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/place_detail_by_place_id_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/predict_place_goong_map_response_model.dart';
 import 'package:seller_app/providers/networks/models/response/reverse_geocoding_response_model.dart';
@@ -22,6 +23,10 @@ abstract class GoongMapNetwork {
 
   Future<PlaceDetailByPlaceIdResponseModel> getPlaceDetailByPlaceId(
     PlaceDetailByPlaceIdRequestModel requestModel,
+    http.Client client,
+  );
+
+  Future<PersonalLocationGetResponseModel> getPersonalLocations(
     http.Client client,
   );
 }
@@ -106,6 +111,23 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
     //convert json to responseModel
     final responseModel = PlaceDetailByPlaceIdResponseModel.fromJson(
       jsonDecode(response.body),
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<PersonalLocationGetResponseModel> getPersonalLocations(
+      http.Client client) async {
+    var response = await NetworkUtils.getNetworkWithBearer(
+      uri: APIServiceURI.getPersonalLocation,
+      client: client,
+    );
+    var responseModel =
+        await NetworkUtils.checkSuccessStatusCodeAPIMainResponseModel<
+            PersonalLocationGetResponseModel>(
+      response,
+      personalLocationGetResponseModelFromJson,
     );
 
     return responseModel;

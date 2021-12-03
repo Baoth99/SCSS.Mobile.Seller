@@ -7,7 +7,6 @@ import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
 import 'package:seller_app/ui/layouts/request_location_picker_layout.dart';
-import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/ui/widgets/radiant_gradient_mask.dart';
@@ -28,6 +27,9 @@ class RequestStartLayout extends StatelessWidget {
         )
         ..add(
           RequestAddressInitial(),
+        )
+        ..add(
+          PersonalLocationGet(),
         ),
       child: BlocProvider.value(
         value: BlocProvider.of<RequestTimeBloc>(context)
@@ -61,7 +63,15 @@ class RequestStartLayout extends StatelessWidget {
               margin: EdgeInsets.symmetric(
                 horizontal: AppConstants.horizontalScaffoldMargin.w,
               ),
-              child: const _Body(),
+              child: BlocBuilder<RequestBloc, RequestState>(
+                builder: (context, state) {
+                  return state.personalLocationStatus.isSubmissionSuccess
+                      ? const _Body()
+                      : Center(
+                          child: FunctionalWidgets.getLoadingAnimation(),
+                        );
+                },
+              ),
             ),
           ),
         ),

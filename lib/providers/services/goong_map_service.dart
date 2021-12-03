@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
@@ -21,6 +22,8 @@ abstract class GoongMapService {
       double latitude, double longitude);
 
   Future<PlaceDetailServiceModel> getPlaceDetail(String placeId);
+
+  Future<List<PersonalLocation>> getPersonalLocations();
 }
 
 class GoongMapServiceImpl implements GoongMapService {
@@ -105,6 +108,36 @@ class GoongMapServiceImpl implements GoongMapService {
         .map<PlaceDetailByPlaceIdResponseModel, PlaceDetailServiceModel>(
       responseModel,
     );
+
+    return result;
+  }
+
+  @override
+  Future<List<PersonalLocation>> getPersonalLocations() async {
+    List<PersonalLocation> result = [];
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .getPersonalLocations(
+          client,
+        )
+        .whenComplete(() => client.close());
+    var data = responseModel.resData;
+    if (data.isNotEmpty) {
+      result = data
+          .map(
+            (l) => PersonalLocation(
+                id: l.id,
+                placeId: l.placeId,
+                placeName: l.placeName,
+                addressName: l.addressName,
+                address: l.address,
+                latitude: l.latitude,
+                longtitude: l.longtitude,
+                district: l.district,
+                city: l.city),
+          )
+          .toList();
+    }
 
     return result;
   }
