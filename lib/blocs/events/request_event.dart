@@ -7,6 +7,7 @@ abstract class RequestEvent extends AbstractEvent {
 class RequestStateInitial extends RequestEvent {}
 
 class RequestAddressPicked extends RequestEvent {
+  final String placeId;
   final double latitude;
   final double longitude;
   final String name;
@@ -15,6 +16,7 @@ class RequestAddressPicked extends RequestEvent {
   final String city;
 
   const RequestAddressPicked({
+    required this.placeId,
     required this.latitude,
     required this.longitude,
     required this.name,
@@ -25,6 +27,7 @@ class RequestAddressPicked extends RequestEvent {
 
   @override
   List<Object> get props => [
+        placeId,
         latitude,
         longitude,
         name,
@@ -104,3 +107,16 @@ class RequestAddressInitial extends RequestEvent {}
 class RequestSummited extends RequestEvent {}
 
 class PersonalLocationGet extends RequestEvent {}
+
+class CheckPersonalLocation extends RequestEvent {}
+
+class RefreshCheckPersonalLocation extends RequestEvent {}
+
+class AddPersonalLocation extends RequestEvent {
+  final String placeName;
+
+  const AddPersonalLocation(this.placeName);
+
+  @override
+  List<String> get props => [placeName];
+}

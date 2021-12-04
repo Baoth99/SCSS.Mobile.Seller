@@ -102,6 +102,8 @@ class APIServiceURI {
       '${EnvBaseAppSettingValue.baseApiUrl}personal-location/get';
   static final removePersonalLocation =
       '${EnvBaseAppSettingValue.baseApiUrl}personal-location/remove';
+  static final addPersonalLocation =
+      '${EnvBaseAppSettingValue.baseApiUrl}personal-location/add';
 }
 
 class InvalidRequestCode {

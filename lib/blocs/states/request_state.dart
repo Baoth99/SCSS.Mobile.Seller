@@ -1,5 +1,7 @@
 part of '../request_bloc.dart';
 
+enum NewPersonalLocationStatus { idle, bNew, success, error }
+
 class RequestState extends Equatable {
   const RequestState({
     this.address = const RequestAddress.pure(),
@@ -14,6 +16,7 @@ class RequestState extends Equatable {
     this.requestId = Symbols.empty,
     this.personalLocations = const [],
     this.personalLocationStatus = FormzStatus.pure,
+    this.newPersonalLocationStatus = NewPersonalLocationStatus.idle,
   });
 
   final RequestAddress address;
@@ -28,6 +31,7 @@ class RequestState extends Equatable {
   final String requestId;
   final List<PersonalLocation> personalLocations;
   final FormzStatus personalLocationStatus;
+  final NewPersonalLocationStatus newPersonalLocationStatus;
 
   RequestState copyWith({
     RequestAddress? address,
@@ -42,6 +46,7 @@ class RequestState extends Equatable {
     String? requestId,
     List<PersonalLocation>? personalLocations,
     FormzStatus? personalLocationStatus,
+    NewPersonalLocationStatus? newPersonalLocationStatus,
   }) {
     return RequestState(
       address: address ?? this.address,
@@ -57,6 +62,8 @@ class RequestState extends Equatable {
       personalLocations: personalLocations ?? this.personalLocations,
       personalLocationStatus:
           personalLocationStatus ?? this.personalLocationStatus,
+      newPersonalLocationStatus:
+          newPersonalLocationStatus ?? this.newPersonalLocationStatus,
     );
   }
 
@@ -80,6 +87,7 @@ class RequestState extends Equatable {
         requestId,
         personalLocations,
         personalLocationStatus,
+        newPersonalLocationStatus,
       ];
 }
 

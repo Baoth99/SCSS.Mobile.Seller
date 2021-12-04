@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:seller_app/constants/api_constants.dart';
+import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/providers/networks/models/request/add_personal_location_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/place_detail_by_place_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/predict_place_goong_map_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/reverse_geocoding_request_model.dart';
@@ -33,6 +37,10 @@ abstract class GoongMapNetwork {
 
   Future<BaseResponseModel> removePersonalLocation(
       http.Client client, String id);
+  Future<BaseResponseModel> addPersonalLocation(
+    http.Client client,
+    AddPersonalLocationRequestModel requestModel,
+  );
 }
 
 class GoongMapNetworkImpl implements GoongMapNetwork {
@@ -146,6 +154,27 @@ class GoongMapNetworkImpl implements GoongMapNetwork {
         queries: {
           'id': id,
         });
+    var responseModel = await NetworkUtils
+        .checkSuccessStatusCodeAPIMainResponseModel<BaseResponseModel>(
+      response,
+      baseResponseModelFromJson,
+    );
+
+    return responseModel;
+  }
+
+  @override
+  Future<BaseResponseModel> addPersonalLocation(
+      http.Client client, AddPersonalLocationRequestModel requestModel) async {
+    var response = await NetworkUtils.postBodyWithBearerAuth(
+      uri: APIServiceURI.addPersonalLocation,
+      client: client,
+      headers: {
+        HttpHeaders.contentTypeHeader: NetworkConstants.applicationJson,
+      },
+      body: addPersonalLocationRequestModelToJson(requestModel),
+    );
+
     var responseModel = await NetworkUtils
         .checkSuccessStatusCodeAPIMainResponseModel<BaseResponseModel>(
       response,

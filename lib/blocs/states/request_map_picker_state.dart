@@ -2,6 +2,7 @@ part of '../request_map_picker_bloc.dart';
 
 class RequestMapPickerState extends Equatable {
   const RequestMapPickerState({
+    this.placeId = Symbols.empty,
     this.latitude = 0,
     this.longitude = 0,
     this.placeName = Symbols.empty,
@@ -10,7 +11,7 @@ class RequestMapPickerState extends Equatable {
     this.city = Symbols.empty,
     this.status = FormzStatus.pure,
   });
-
+  final String placeId;
   final double latitude;
   final double longitude;
   final String placeName;
@@ -20,6 +21,7 @@ class RequestMapPickerState extends Equatable {
   final FormzStatus status;
 
   RequestMapPickerState copyWith({
+    String? placeId,
     double? latitude,
     double? longitude,
     String? placeName,
@@ -29,6 +31,7 @@ class RequestMapPickerState extends Equatable {
     FormzStatus? status,
   }) {
     return RequestMapPickerState(
+      placeId: placeId ?? this.placeId,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       placeName: placeName ?? this.placeName,
@@ -41,6 +44,7 @@ class RequestMapPickerState extends Equatable {
 
   @override
   List<Object> get props => [
+        placeId,
         latitude,
         longitude,
         placeName,

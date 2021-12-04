@@ -223,6 +223,7 @@ class _SubmittedButton extends StatelessWidget {
           onPressed: state.status.isSubmissionSuccess
               ? _onPressed(
                   context,
+                  state.placeId,
                   state.latitude,
                   state.longitude,
                   state.placeName,
@@ -242,6 +243,7 @@ class _SubmittedButton extends StatelessWidget {
 
   void Function() _onPressed(
     BuildContext context,
+    String placeId,
     double latitude,
     double longitude,
     String name,
@@ -252,6 +254,7 @@ class _SubmittedButton extends StatelessWidget {
     return () {
       context.read<RequestBloc>().add(
             RequestAddressPicked(
+              placeId: placeId,
               latitude: latitude,
               longitude: longitude,
               name: name,
@@ -260,10 +263,8 @@ class _SubmittedButton extends StatelessWidget {
               city: city,
             ),
           );
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName(Routes.requestStart),
-      );
+      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
     };
   }
 }

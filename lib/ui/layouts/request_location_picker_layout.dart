@@ -173,7 +173,7 @@ class _MapResult extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: const CustomText(
-                      text: 'Địa chỉ gần đây',
+                      text: 'Địa chỉ đã lưu',
                     ),
                   ),
                   Expanded(
@@ -312,10 +312,7 @@ class MapResultTile extends StatelessWidget {
             ),
           );
       //pop
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName(Routes.requestStart),
-      );
+      Navigator.of(context).pop(true);
     };
   }
 
