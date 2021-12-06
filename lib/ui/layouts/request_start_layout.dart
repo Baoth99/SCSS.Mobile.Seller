@@ -7,6 +7,7 @@ import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
+import 'package:seller_app/ui/app.dart';
 import 'package:seller_app/ui/layouts/request_location_picker_layout.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
@@ -306,7 +307,9 @@ class _Form extends StatelessWidget {
       )
           .then((value) {
         if (value != null && value is bool && value) {
-          context.read<RequestBloc>().add(CheckPersonalLocation());
+          SellerApp.navigatorKey.currentContext!
+              .read<RequestBloc>()
+              .add(CheckPersonalLocation());
         }
       });
     };
