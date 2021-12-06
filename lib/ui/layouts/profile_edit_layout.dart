@@ -114,7 +114,7 @@ class ProfileEditBody extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              avatar(),
+              // avatar(),
               inputs(context),
             ],
           ),
@@ -338,9 +338,7 @@ class ProfileEditBody extends StatelessWidget {
           ),
         ],
       ),
-      margin: EdgeInsets.symmetric(
-        vertical: 40.h
-      ),
+      margin: EdgeInsets.symmetric(vertical: 40.h),
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
