@@ -48,7 +48,7 @@ class _AccountBodyState extends State<AccountBody> {
 
     try {
       _timer = Timer.periodic(
-        const Duration(seconds: 10),
+        const Duration(seconds: 60),
         (timer) {
           try {
             context.read<HomeBloc>().add(HomeFetch());
@@ -74,15 +74,7 @@ class _AccountBodyState extends State<AccountBody> {
     return Column(
       children: [
         avatar(context),
-        BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            return state.status.isSubmissionSuccess
-                ? waitToCollect(context)
-                : (state.status.isSubmissionInProgress || state.status.isPure)
-                    ? FunctionalWidgets.getLoadingAnimation()
-                    : FunctionalWidgets.getErrorIcon();
-          },
-        )
+        waitToCollect(context),
       ],
     );
   }
@@ -165,57 +157,22 @@ class _AccountBodyState extends State<AccountBody> {
   }
 
   Widget waitToCollect(BuildContext context) {
-    return Material(
-      elevation: 1,
-      child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-        ),
-        child: Column(
-          children: [
-            Row(children: [
-              Container(
-                padding: EdgeInsets.only(top: 30.h, left: 45.w),
-                child: CustomText(
-                  text: 'Yêu cầu thu gom đã xác nhận',
-                  fontSize: 45.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ]),
-            BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                var a = state.activity;
-                if (a != null) {
-                  try {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: CollectingRequest(
-                            bookingId: a.collectingRequestId,
-                            bulky: a.isBulky,
-                            time:
-                                '${a.collectingRequestDate}, ${a.fromTime}-${a.toTime}',
-                            placeTitle: a.addressName,
-                            placeName: a.address,
-                          ),
-                        )
-                      ],
-                    );
-                  } catch (e) {
-                    AppLog.error(e);
-                    return _getEmptyActivity();
-                  }
-                } else {
-                  return _getEmptyActivity();
-                }
-              },
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return Material(
+          elevation: 1,
+          child: Container(
+            constraints: BoxConstraints(minHeight: 500.h),
+            decoration: const BoxDecoration(
+              color: AppColors.white,
             ),
-            BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                return state.activity != null
-                    ? InkWell(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
                         onTap: () {
                           context.read<MainBloc>().add(
                                 const MainBarItemTapped(
@@ -225,46 +182,118 @@ class _AccountBodyState extends State<AccountBody> {
                           widget.tabController.animateTo(1);
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 30.h,
-                            horizontal: 200.w,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 70.w,
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(bottom: 20.h),
-                                child: CustomText(
-                                  text: 'Xem tất cả',
-                                  fontSize: 45.sp,
-                                  fontWeight: FontWeight.w500,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Container(
-                                margin:
-                                    EdgeInsets.only(right: 30.w, bottom: 20.h),
-                                child: Icon(
-                                  Icons.chevron_right,
-                                  color: AppColors.greyFF9098B1,
-                                  size: 80.sp,
-                                ),
-                              )
-                            ],
+                          padding: EdgeInsets.only(top: 30.h, left: 45.w),
+                          child: CustomText(
+                            text: 'Yêu cầu thu gom đã xác nhận',
+                            fontSize: 45.sp,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
+                      ),
+                    ),
+                    state.status.isSubmissionInProgress
+                        ? const SizedBox.shrink()
+                        : IconButton(
+                            onPressed: () {
+                              context.read<HomeBloc>().add(HomeInitial());
+                            },
+                            icon: const Icon(
+                              Icons.replay,
+                              color: AppColors.greyFF9098B1,
+                            ),
+                          ),
+                  ],
+                ),
+                state.status.isSubmissionSuccess
+                    ? Column(
+                        children: [
+                          getNearestApprovedRequest(context, state),
+                          getSeeAllButton(context, state),
+                        ],
                       )
-                    : const SizedBox.shrink();
-              },
+                    : (state.status.isSubmissionInProgress ||
+                            state.status.isPure)
+                        ? FunctionalWidgets.getLoadingAnimation()
+                        : FunctionalWidgets.getErrorIcon(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget getNearestApprovedRequest(BuildContext context, HomeState state) {
+    var a = state.activity;
+    if (a != null) {
+      try {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: CollectingRequest(
+                bookingId: a.collectingRequestId,
+                bulky: a.isBulky,
+                time: '${a.collectingRequestDate}, ${a.fromTime}-${a.toTime}',
+                placeTitle: a.addressName,
+                placeName: a.address,
+              ),
             )
           ],
-        ),
-      ),
-    );
+        );
+      } catch (e) {
+        AppLog.error(e);
+        return _getEmptyActivity();
+      }
+    } else {
+      return _getEmptyActivity();
+    }
+  }
+
+  Widget getSeeAllButton(BuildContext context, HomeState state) {
+    return state.activity != null
+        ? InkWell(
+            onTap: () {
+              context.read<MainBloc>().add(
+                    const MainBarItemTapped(MainLayoutConstants.activity),
+                  );
+
+              widget.tabController.animateTo(1);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 30.h,
+                horizontal: 200.w,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 70.w,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20.h),
+                    child: CustomText(
+                      text: 'Xem tất cả',
+                      fontSize: 45.sp,
+                      fontWeight: FontWeight.w500,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 30.w, bottom: 20.h),
+                    child: Icon(
+                      Icons.chevron_right,
+                      color: AppColors.greyFF9098B1,
+                      size: 80.sp,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        : const SizedBox.shrink();
   }
 
   Widget _getEmptyActivity() {
