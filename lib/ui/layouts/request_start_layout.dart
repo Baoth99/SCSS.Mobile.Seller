@@ -729,7 +729,7 @@ class _TimeInputDialog extends StatelessWidget {
                 onDateTimeChanged: (value) {
                   time = value;
                 },
-                use24hFormat: false,
+                use24hFormat: true,
                 mode: CupertinoDatePickerMode.time,
                 minuteInterval: RequestMapPickerLayoutConstants.minuteInterval,
                 initialDateTime: DateTime(0, 0, 0, init.hour, init.minute),
