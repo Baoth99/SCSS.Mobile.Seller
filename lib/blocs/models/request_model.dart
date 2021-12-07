@@ -5,6 +5,7 @@ import 'package:seller_app/utils/common_utils.dart';
 
 class RequestAddressInfo extends Equatable {
   const RequestAddressInfo({
+    this.placeId,
     this.latitude,
     this.longitude,
     this.name,
@@ -13,6 +14,7 @@ class RequestAddressInfo extends Equatable {
     this.city,
   });
 
+  final String? placeId;
   final double? latitude;
   final double? longitude;
   final String? name;
@@ -22,6 +24,7 @@ class RequestAddressInfo extends Equatable {
 
   @override
   List<Object?> get props => [
+        placeId,
         latitude,
         longitude,
         name,

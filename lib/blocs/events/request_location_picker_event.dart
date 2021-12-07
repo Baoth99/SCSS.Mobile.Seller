@@ -16,3 +16,18 @@ class RequestLocationPickerSearchChanged extends RequestLocationPickerEvent {
         searchValue,
       ];
 }
+
+class RemovePersonalLocation extends RequestLocationPickerEvent {
+  const RemovePersonalLocation(
+    this.id,
+  );
+
+  final String id;
+
+  @override
+  List<String> get props => [
+        id,
+      ];
+}
+
+class RefreshRemoveLocationStatus extends RequestLocationPickerEvent {}

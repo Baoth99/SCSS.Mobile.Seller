@@ -1,10 +1,12 @@
 import 'package:http/http.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/providers/configs/injection_config.dart';
 import 'package:seller_app/providers/networks/goong_map_network.dart';
 import 'package:automap/automap.dart';
+import 'package:seller_app/providers/networks/models/request/add_personal_location_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/place_detail_by_place_id_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/predict_place_goong_map_request_model.dart';
 import 'package:seller_app/providers/networks/models/request/reverse_geocoding_request_model.dart';
@@ -21,6 +23,21 @@ abstract class GoongMapService {
       double latitude, double longitude);
 
   Future<PlaceDetailServiceModel> getPlaceDetail(String placeId);
+
+  Future<List<PersonalLocation>> getPersonalLocations();
+
+  Future<bool> removePersonalLocation(String id);
+
+  Future<bool> addPersonalLocation(
+    String placeId,
+    String placeName,
+    String addressName,
+    String address,
+    double latitude,
+    double longtitude,
+    String district,
+    String city,
+  );
 }
 
 class GoongMapServiceImpl implements GoongMapService {
@@ -81,6 +98,7 @@ class GoongMapServiceImpl implements GoongMapService {
       var address = addressList.join('${Symbols.comma} ');
 
       return PlaceNameByLatlngServiceModel(
+        placeId: firstResult?.placeId ?? Symbols.empty,
         name: name,
         address: address,
         district: addressComponents[addressComponents.length - 2].longName,
@@ -107,5 +125,89 @@ class GoongMapServiceImpl implements GoongMapService {
     );
 
     return result;
+  }
+
+  @override
+  Future<List<PersonalLocation>> getPersonalLocations() async {
+    List<PersonalLocation> result = [];
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .getPersonalLocations(
+          client,
+        )
+        .whenComplete(() => client.close());
+    var data = responseModel.resData;
+    if (data.isNotEmpty) {
+      result = data
+          .map(
+            (l) => PersonalLocation(
+                id: l.id,
+                placeId: l.placeId,
+                placeName: l.placeName,
+                addressName: l.addressName,
+                address: l.address,
+                latitude: l.latitude,
+                longtitude: l.longtitude,
+                district: l.district,
+                city: l.city),
+          )
+          .toList();
+    }
+
+    return result;
+  }
+
+  @override
+  Future<bool> removePersonalLocation(String id) async {
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .removePersonalLocation(
+          client,
+          id,
+        )
+        .whenComplete(() => client.close());
+
+    if (responseModel.isSuccess != null &&
+        responseModel.isSuccess! &&
+        responseModel.statusCode == NetworkConstants.ok200) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> addPersonalLocation(
+    String placeId,
+    String placeName,
+    String addressName,
+    String address,
+    double latitude,
+    double longtitude,
+    String district,
+    String city,
+  ) async {
+    var client = Client();
+    var responseModel = await _goongMapNetwork
+        .addPersonalLocation(
+          client,
+          AddPersonalLocationRequestModel(
+            placeId: placeId,
+            placeName: placeName,
+            addressName: addressName,
+            address: address,
+            latitude: latitude,
+            longtitude: longtitude,
+            district: district,
+            city: city,
+          ),
+        )
+        .whenComplete(() => client.close());
+
+    if (responseModel.isSuccess != null &&
+        responseModel.isSuccess! &&
+        responseModel.statusCode == NetworkConstants.ok200) {
+      return true;
+    }
+    return false;
   }
 }

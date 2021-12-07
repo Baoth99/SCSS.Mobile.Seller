@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +7,8 @@ import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_time_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
+import 'package:seller_app/ui/app.dart';
 import 'package:seller_app/ui/layouts/request_location_picker_layout.dart';
-import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:seller_app/ui/widgets/radiant_gradient_mask.dart';
@@ -28,45 +29,139 @@ class RequestStartLayout extends StatelessWidget {
         )
         ..add(
           RequestAddressInitial(),
+        )
+        ..add(
+          PersonalLocationGet(),
         ),
-      child: BlocProvider.value(
-        value: BlocProvider.of<RequestTimeBloc>(context)
-          ..add(
-            RequestTimeInitial(),
-          ),
-        child: BlocListener<RequestTimeBloc, RequestTimeState>(
-          listener: (context, state) {
-            if (state.blocStatus.isSubmissionInProgress) {
-              FunctionalWidgets.showCustomDialog(context);
-            }
-            if (state.blocStatus.isSubmissionSuccess) {
-              Navigator.of(context).popUntil(
-                ModalRoute.withName(Routes.requestStart),
-              );
-            }
-            if (state.blocStatus.isSubmissionFailure) {
-              Navigator.of(context).popUntil(
-                ModalRoute.withName(Routes.requestStart),
-              );
-            }
-          },
-          child: Scaffold(
-            appBar: FunctionalWidgets.buildAppBar(
-              context: context,
-              elevation: 0,
-              color: AppColors.black,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      child: BlocListener<RequestBloc, RequestState>(
+        listener: (context, state) {
+          if (state.newPersonalLocationStatus ==
+              NewPersonalLocationStatus.bNew) {
+            context.read<RequestBloc>().add(RefreshCheckPersonalLocation());
+            FunctionalWidgets.showAwesomeDialog(
+              context,
+              desc: 'Bạn có muốn lưu địa chỉ này không?',
+              dialogType: DialogType.QUESTION,
+              btnCancelText: 'Không',
+              btnOkText: 'Có',
+              btnOkOnpress: () {
+                Navigator.of(context).pop();
+                showDialogForNewPersonalLocationInput(
+                    context,
+                    state.address.value.name! +
+                        '\n' +
+                        state.address.value.address!);
+              },
+              dismissBack: false,
+            );
+          } else if (state.newPersonalLocationStatus ==
+              NewPersonalLocationStatus.success) {
+            context.read<RequestBloc>().add(RefreshCheckPersonalLocation());
+            FunctionalWidgets.showSnackBar(context, 'Đã thêm địa chỉ mới');
+          } else if (state.newPersonalLocationStatus ==
+              NewPersonalLocationStatus.error) {
+            context.read<RequestBloc>().add(RefreshCheckPersonalLocation());
+            FunctionalWidgets.showSnackBar(context, 'Có lỗi đến từ hệ thống');
+          }
+        },
+        child: BlocProvider.value(
+          value: BlocProvider.of<RequestTimeBloc>(context)
+            ..add(
+              RequestTimeInitial(),
             ),
-            body: Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: AppConstants.horizontalScaffoldMargin.w,
+          child: BlocListener<RequestTimeBloc, RequestTimeState>(
+            listener: (context, state) {
+              if (state.blocStatus.isSubmissionInProgress) {
+                FunctionalWidgets.showCustomDialog(context);
+              }
+              if (state.blocStatus.isSubmissionSuccess) {
+                Navigator.of(context).popUntil(
+                  ModalRoute.withName(Routes.requestStart),
+                );
+              }
+              if (state.blocStatus.isSubmissionFailure) {
+                Navigator.of(context).popUntil(
+                  ModalRoute.withName(Routes.requestStart),
+                );
+              }
+            },
+            child: Scaffold(
+              appBar: FunctionalWidgets.buildAppBar(
+                context: context,
+                elevation: 0,
+                color: AppColors.black,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
-              child: const _Body(),
+              body: Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: AppConstants.horizontalScaffoldMargin.w,
+                ),
+                child: BlocBuilder<RequestBloc, RequestState>(
+                  builder: (context, state) {
+                    return state.personalLocationStatus.isSubmissionSuccess
+                        ? const _Body()
+                        : Center(
+                            child: FunctionalWidgets.getLoadingAnimation(),
+                          );
+                  },
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<T?> showDialogForNewPersonalLocationInput<T>(
+      BuildContext context, String placeAdress) {
+    String placeName = Symbols.empty;
+    return showDialog<T>(
+      context: context,
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                autofocus: true,
+                decoration: const InputDecoration(hintText: 'Địa điểm'),
+                onChanged: (value) {
+                  placeName = value;
+                },
+              ),
+              TextFormField(
+                initialValue: placeAdress,
+                enabled: false,
+                maxLines: null,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const CustomText(text: 'Đóng'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const CustomText(text: 'Lưu'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      if (value != null && value is bool && value) {
+        context.read<RequestBloc>().add(
+              AddPersonalLocation(placeName),
+            );
+      }
+    });
   }
 }
 
@@ -76,7 +171,7 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0XFFF8F8F8),
+      color: const Color(0XFFF8F8F8),
       child: Column(
         children: <Widget>[
           const _Title(),
@@ -205,11 +300,18 @@ class _Form extends StatelessWidget {
 
   Function()? _onPlaceInputTapped(BuildContext context, String value) {
     return () {
-      Navigator.pushNamed(
-        context,
+      Navigator.of(context)
+          .pushNamed(
         Routes.requestLocationPicker,
         arguments: RequestLocationPickerArguments(value),
-      );
+      )
+          .then((value) {
+        if (value != null && value is bool && value) {
+          SellerApp.navigatorKey.currentContext!
+              .read<RequestBloc>()
+              .add(CheckPersonalLocation());
+        }
+      });
     };
   }
 
@@ -627,7 +729,7 @@ class _TimeInputDialog extends StatelessWidget {
                 onDateTimeChanged: (value) {
                   time = value;
                 },
-                use24hFormat: false,
+                use24hFormat: true,
                 mode: CupertinoDatePickerMode.time,
                 minuteInterval: RequestMapPickerLayoutConstants.minuteInterval,
                 initialDateTime: DateTime(0, 0, 0, init.hour, init.minute),

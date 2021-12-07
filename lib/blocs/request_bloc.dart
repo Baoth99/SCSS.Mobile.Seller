@@ -20,8 +20,8 @@ part 'events/request_event.dart';
 part 'states/request_state.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
-  late GoongMapService _goongMapService;
-  late CollectingRequestService _collectingRequestService;
+  late final GoongMapService _goongMapService;
+  late final CollectingRequestService _collectingRequestService;
 
   RequestBloc({
     GoongMapService? goongMapService,
@@ -38,6 +38,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     if (event is RequestAddressPicked) {
       var address = RequestAddress.dirty(
         RequestAddressInfo(
+          placeId: event.placeId,
           latitude: event.latitude,
           longitude: event.longitude,
           name: event.name,
@@ -56,6 +57,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
 
       var address = RequestAddress.dirty(
         RequestAddressInfo(
+          placeId: event.placeId,
           latitude: response.latitude,
           longitude: response.longitude,
           name: response.name,
@@ -168,7 +170,100 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
           status: FormzStatus.pure,
         );
       }
+    } else if (event is PersonalLocationGet) {
+      try {
+        yield state.copyWith(
+          personalLocationStatus: FormzStatus.submissionInProgress,
+        );
+
+        //get
+        var personalLocations = await futureAppDuration(
+          _goongMapService.getPersonalLocations(),
+        );
+        yield state.copyWith(personalLocations: personalLocations);
+      } catch (e) {
+        AppLog.error(e);
+      }
+      yield state.copyWith(
+        personalLocationStatus: FormzStatus.submissionSuccess,
+      );
+    } else if (event is CheckPersonalLocation) {
+      try {
+        var placeID = state.address.value.placeId;
+        if (placeID != null && placeID.isNotEmpty) {
+          var isNotExist = isPersonalLocation(placeID);
+          if (isNotExist) {
+            yield state.copyWith(
+              newPersonalLocationStatus: NewPersonalLocationStatus.bNew,
+            );
+          }
+        }
+      } catch (e) {
+        AppLog.error(e);
+      }
+    } else if (event is RefreshCheckPersonalLocation) {
+      try {
+        yield state.copyWith(
+            newPersonalLocationStatus: NewPersonalLocationStatus.idle);
+      } catch (e) {
+        AppLog.error(e);
+      }
+    } else if (event is AddPersonalLocation) {
+      try {
+        var a = state.address.value;
+        var placeId = a.placeId;
+        var placeName = event.placeName.trim();
+        var addressName = a.name;
+        var address = a.address;
+        var latitude = a.latitude;
+        var longtitude = a.longitude;
+        var district = a.district;
+        var city = a.city;
+        if (placeId != null &&
+            addressName != null &&
+            address != null &&
+            latitude != null &&
+            longtitude != null &&
+            district != null &&
+            city != null) {
+          var result = await futureAppDuration(
+            _goongMapService.addPersonalLocation(
+              placeId,
+              placeName,
+              addressName,
+              address,
+              latitude,
+              longtitude,
+              district,
+              city,
+            ),
+          );
+          if (result) {
+            var newListPersonalLocations =
+                await _goongMapService.getPersonalLocations();
+            yield state.copyWith(
+              newPersonalLocationStatus: NewPersonalLocationStatus.success,
+              personalLocations: newListPersonalLocations,
+            );
+          } else {
+            throw Exception('Service addPersonalLocation return false');
+          }
+        } else {
+          throw Exception('Some data is null!');
+        }
+      } catch (e) {
+        AppLog.error(e);
+        yield state.copyWith(
+          newPersonalLocationStatus: NewPersonalLocationStatus.error,
+        );
+      }
     }
+  }
+
+  bool isPersonalLocation(String placeId) {
+    var result = state.personalLocations
+        .every((location) => location.placeId != placeId);
+    return result;
   }
 
   Future<String> _sendRequest(RequestState state) async {

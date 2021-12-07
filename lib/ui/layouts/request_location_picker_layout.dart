@@ -6,6 +6,7 @@ import 'package:seller_app/blocs/request_bloc.dart';
 import 'package:seller_app/blocs/request_location_picker_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/layouts/request_map_picker_layout.dart';
+import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:seller_app/ui/widgets/function_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:formz/formz.dart';
@@ -50,7 +51,18 @@ class RequestLocationPickerLayout extends StatelessWidget {
       ),
       body: BlocProvider<RequestLocationPickerBloc>(
         create: (context) => RequestLocationPickerBloc(),
-        child: const _Body(),
+        child:
+            BlocListener<RequestLocationPickerBloc, RequestLocationPickerState>(
+          listener: (context, state) {
+            if (state.deleteLocationStatus.isSubmissionSuccess) {
+              context.read<RequestBloc>().add(PersonalLocationGet());
+              context
+                  .read<RequestLocationPickerBloc>()
+                  .add(RefreshRemoveLocationStatus());
+            }
+          },
+          child: const _Body(),
+        ),
       ),
     );
   }
@@ -146,32 +158,74 @@ class _MapResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RequestLocationPickerBloc, RequestLocationPickerState>(
-      builder: (context, state) {
-        final predictions = state.predictions;
-
-        return state.status.isSubmissionSuccess
-            ? ListView.separated(
-                itemBuilder: (context, index) => _MapResultTile(
-                  placeId: predictions[index].placeId,
-                  main: predictions[index].mainText,
-                  sub: predictions[index].secondaryText,
-                  district: predictions[index].district,
-                  city: predictions[index].city,
-                ),
-                separatorBuilder: (context, index) => Divider(
-                  color: AppColors.greyFFEEEEEE,
-                  thickness: 5.0.h,
-                ),
-                itemCount: predictions.length,
-              )
-            : state.status.isSubmissionInProgress
-                ? getLoadingAnimation()
-                : Icon(
-                    Icons.error,
-                    size: 180.sp,
-                    color: AppColors.red,
-                  );
+    return BlocBuilder<RequestBloc, RequestState>(
+      builder: (context, requeststate) {
+        return BlocBuilder<RequestLocationPickerBloc,
+            RequestLocationPickerState>(
+          builder: (context, state) {
+            final predictions = state.predictions;
+            if (predictions.isEmpty &&
+                requeststate.personalLocations.isNotEmpty &&
+                !state.status.isSubmissionInProgress) {
+              var personalLocations = requeststate.personalLocations;
+              return Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: const CustomText(
+                      text: 'Địa chỉ đã lưu',
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      itemBuilder: (context, index) => MapResultTile(
+                        placeId: personalLocations[index].placeId,
+                        main: personalLocations[index].addressName,
+                        sub: personalLocations[index].address,
+                        district: personalLocations[index].district,
+                        city: personalLocations[index].city,
+                        isPersonal: true,
+                        personalLocationId: personalLocations[index].id,
+                        personalName: personalLocations[index].placeName,
+                      ),
+                      separatorBuilder: (context, index) => Divider(
+                        color: AppColors.greyFFEEEEEE,
+                        thickness: 5.0.h,
+                      ),
+                      itemCount: personalLocations.length,
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return state.status.isSubmissionSuccess
+                  ? ListView.separated(
+                      itemBuilder: (context, index) => MapResultTile(
+                        placeId: predictions[index].placeId,
+                        main: predictions[index].mainText,
+                        sub: predictions[index].secondaryText,
+                        district: predictions[index].district,
+                        city: predictions[index].city,
+                        isPersonal: false,
+                        personalLocationId: Symbols.empty,
+                        personalName: Symbols.empty,
+                      ),
+                      separatorBuilder: (context, index) => Divider(
+                        color: AppColors.greyFFEEEEEE,
+                        thickness: 5.0.h,
+                      ),
+                      itemCount: predictions.length,
+                    )
+                  : state.status.isSubmissionInProgress
+                      ? getLoadingAnimation()
+                      : Icon(
+                          Icons.error,
+                          size: 180.sp,
+                          color: AppColors.red,
+                        );
+            }
+          },
+        );
       },
     );
   }
@@ -183,20 +237,26 @@ class _MapResult extends StatelessWidget {
   }
 }
 
-class _MapResultTile extends StatelessWidget {
-  const _MapResultTile({
+class MapResultTile extends StatelessWidget {
+  const MapResultTile({
     Key? key,
     required this.main,
     required this.sub,
     required this.placeId,
     required this.district,
     required this.city,
+    required this.isPersonal,
+    required this.personalLocationId,
+    required this.personalName,
   }) : super(key: key);
   final String main;
   final String sub;
   final String placeId;
   final String district;
   final String city;
+  final bool isPersonal;
+  final String personalLocationId;
+  final String personalName;
 
   @override
   Widget build(BuildContext context) {
@@ -210,18 +270,34 @@ class _MapResultTile extends StatelessWidget {
             margin: EdgeInsets.symmetric(
               vertical: 15.h,
             ),
-            height: 120.h,
+            constraints: BoxConstraints(
+              minHeight: 120.h,
+            ),
             child: Row(
               children: <Widget>[
                 _resultTileIcon(),
                 Expanded(
-                  child: _resultTileContent(main, sub, context),
+                  child: resultTileContent(main, sub, context),
                 ),
+                isPersonal
+                    ? personalRemoveIcon(context)
+                    : const SizedBox.shrink()
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget personalRemoveIcon(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        context
+            .read<RequestLocationPickerBloc>()
+            .add(RemovePersonalLocation(personalLocationId));
+      },
+      icon: const Icon(Icons.delete),
     );
   }
 
@@ -236,35 +312,43 @@ class _MapResultTile extends StatelessWidget {
             ),
           );
       //pop
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName(Routes.requestStart),
-      );
+      Navigator.of(context).pop(true);
     };
   }
 
-  static Widget _resultTileContent(
-      String main, String sub, BuildContext context) {
+  Widget resultTileContent(String main, String sub, BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          main,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: 45.sp,
-            fontWeight: FontWeight.w400,
+        isPersonal && personalName.isNotEmpty
+            ? Text(
+                personalName,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 45.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+              )
+            : const SizedBox.shrink(),
+        Flexible(
+          child: Text(
+            main,
+            style: TextStyle(
+              fontSize: 45.sp,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
-        Text(
-          sub,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: 38.sp,
-            color: Colors.grey[500],
+        Flexible(
+          child: Text(
+            sub,
+            style: TextStyle(
+              fontSize: 38.sp,
+              color: Colors.grey[500],
+            ),
           ),
         ),
       ],

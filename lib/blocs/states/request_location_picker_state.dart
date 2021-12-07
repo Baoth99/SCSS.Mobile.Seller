@@ -29,18 +29,22 @@ class RequestLocationPickerState extends Equatable {
   const RequestLocationPickerState({
     this.predictions = const [],
     this.status = FormzStatus.submissionSuccess,
+    this.deleteLocationStatus = FormzStatus.pure,
   });
 
   final List<AddressPrediction> predictions;
   final FormzStatus status;
+  final FormzStatus deleteLocationStatus;
 
   RequestLocationPickerState copyWith({
     List<AddressPrediction>? predictions,
     FormzStatus? status,
+    FormzStatus? deleteLocationStatus,
   }) {
     return RequestLocationPickerState(
       predictions: predictions ?? this.predictions,
       status: status ?? this.status,
+      deleteLocationStatus: deleteLocationStatus ?? this.deleteLocationStatus,
     );
   }
 
@@ -48,5 +52,6 @@ class RequestLocationPickerState extends Equatable {
   List<Object> get props => [
         predictions,
         status,
+        deleteLocationStatus,
       ];
 }

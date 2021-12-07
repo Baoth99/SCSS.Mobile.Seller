@@ -6,11 +6,18 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:seller_app/constants/api_constants.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/ui/widgets/arrow_back_button.dart';
-import 'package:seller_app/ui/widgets/custom_progress_indicator_dialog_widget.dart';
 import 'package:seller_app/ui/widgets/custom_text_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FunctionalWidgets {
+  static void showSnackBar(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: CustomText(text: text),
+      ),
+    );
+  }
+
   static AppBar buildAppBar({
     required BuildContext context,
     Color? color,

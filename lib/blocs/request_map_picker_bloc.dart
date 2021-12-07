@@ -37,6 +37,7 @@ class RequestMapPickerBloc
           //API
 
           yield state.copyWith(
+            placeId: result.placeId,
             latitude: event.latitude,
             longitude: event.longitude,
             placeName: result.name,
