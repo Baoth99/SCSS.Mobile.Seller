@@ -5,6 +5,7 @@ import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
+import 'package:seller_app/providers/services/firebase_service.dart';
 import 'package:seller_app/ui/layouts/account_layout.dart';
 import 'package:seller_app/ui/layouts/activity_layout.dart';
 import 'package:seller_app/ui/layouts/home_layout.dart';
@@ -27,6 +28,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    FirebaseNotification.getNotificationAfterTerminated();
+
     tabController = TabController(length: 3, vsync: this);
     // tabController.addListener(() {
     //   context.read<MainBloc>().add(MainActivityChanged(tabController.index));

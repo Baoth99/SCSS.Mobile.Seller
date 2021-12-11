@@ -138,7 +138,6 @@ class FirebaseNotification {
     // add listner to notification service
     await FirebaseNotification.addMessagingHandler();
     // TODO: REVIEW this
-    await FirebaseNotification.getNotificationAfterTerminated();
   }
 
   Future<String?> getToken() async {
