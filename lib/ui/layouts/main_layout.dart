@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/blocs/home_bloc.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
@@ -36,6 +37,8 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     //   context.read<MainBloc>().add(MainActivityChanged(tabController.index));
     // });
     context.read<MainBloc>().add(MainInitial());
+
+    context.read<HomeBloc>().add(HomeInitial());
 
     // Get number of  unread notifcation count
     context.read<NotificationBloc>().add(NotificationUncountGet());

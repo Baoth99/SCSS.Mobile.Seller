@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seller_app/blocs/home_bloc.dart';
 import 'package:seller_app/blocs/main_bloc.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/blocs/profile_bloc.dart';
@@ -42,6 +43,9 @@ class SellerApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ProfileBloc(),
+          ),
+          BlocProvider(
+            create: (context) => HomeBloc(),
           ),
         ],
         child: MaterialApp(

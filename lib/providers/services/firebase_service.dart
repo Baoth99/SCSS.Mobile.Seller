@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:seller_app/blocs/home_bloc.dart';
 import 'package:seller_app/blocs/notification_bloc.dart';
 import 'package:seller_app/constants/constants.dart';
 import 'package:seller_app/log/logger.dart';
@@ -69,6 +70,8 @@ Future<void> _firebaseLocalMessagingHandler() async {
 }
 
 void handleMessage(RemoteMessage message) {
+  SellerApp.navigatorKey.currentContext?.read<HomeBloc>().add(HomeFetch());
+
   SellerApp.navigatorKey.currentContext
       ?.read<NotificationBloc>()
       .add(NotificationUncountGet());
@@ -162,6 +165,8 @@ class FirebaseNotification {
   }
 
   static Future<void> firebaseForegroundMessagingHandler() async {
+    SellerApp.navigatorKey.currentContext?.read<HomeBloc>().add(HomeFetch());
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       //get uncount
       SellerApp.navigatorKey.currentContext

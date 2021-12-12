@@ -20,12 +20,9 @@ class HomeLayout extends StatelessWidget {
   TabController tabController;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeBloc()..add(HomeInitial()),
-      child: Scaffold(
-        body: AccountBody(
-          tabController: tabController,
-        ),
+    return Scaffold(
+      body: AccountBody(
+        tabController: tabController,
       ),
     );
   }
@@ -48,7 +45,7 @@ class _AccountBodyState extends State<AccountBody> {
 
     try {
       _timer = Timer.periodic(
-        const Duration(seconds: 60),
+        const Duration(seconds: 30),
         (timer) {
           try {
             context.read<HomeBloc>().add(HomeFetch());
