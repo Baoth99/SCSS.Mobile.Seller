@@ -605,24 +605,29 @@ class _TimeInputDialog extends StatelessWidget {
   Widget _getErrorTimeInput(
       BuildContext context, RequestTimeStatus status, RequestTimeState s) {
     String text = '';
-
-    switch (status) {
-      case RequestTimeStatus.lessThanNow:
-        text =
-            'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
-        break;
-      case RequestTimeStatus.notenough15fromtime:
-        text =
-            'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
-        break;
-      case RequestTimeStatus.rangeTimeBetweenTwonotenough:
-        text = 'Khoảng thời gian phải tối thiểu 15 phút';
-        break;
-      case RequestTimeStatus.notinrangetime:
-        text =
-            'Thời gian hẹn phải nằm trong khoảng ${s.operatingFromTime!.format(context)} - ${s.operatingTotime!.format(context)}';
-        break;
-      default:
+    if (s.chosableDates.length == 1 &&
+        s.chosableDates.first.isSameDate(DateTime.now())) {
+      text =
+          'Bạn đã đặt hết các ngày đặt hẹn. Hiện tại bạn vẫn có thể tiếp tục đặt 1 đơn đến ngay';
+    } else {
+      switch (status) {
+        case RequestTimeStatus.lessThanNow:
+          text =
+              'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
+          break;
+        case RequestTimeStatus.notenough15fromtime:
+          text =
+              'Thời gian bắt đầu tối thiểu phải lớn hơn thời gian hiện tại 15 phút';
+          break;
+        case RequestTimeStatus.rangeTimeBetweenTwonotenough:
+          text = 'Khoảng thời gian phải tối thiểu 15 phút';
+          break;
+        case RequestTimeStatus.notinrangetime:
+          text =
+              'Thời gian hẹn phải nằm trong khoảng ${s.operatingFromTime!.format(context)} - ${s.operatingTotime!.format(context)}';
+          break;
+        default:
+      }
     }
 
     return text.isEmpty
