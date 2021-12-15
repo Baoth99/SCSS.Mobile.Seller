@@ -31,8 +31,9 @@ class SignupPhoneNumberLayout extends StatelessWidget {
               if (state.status.isSubmissionSuccess) {
                 if (state.isSuccessful) {
                   // navigate to otp code
-                  Navigator.of(context).popAndPushNamed(
+                  Navigator.of(context).pushNamedAndRemoveUntil(
                     Routes.signupOTP,
+                    ModalRoute.withName(Routes.signupPhoneNumber),
                     arguments: SignupOTPArgument(
                       Symbols.vietnamCallingCode,
                       state.phoneNumber.value,

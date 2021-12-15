@@ -121,10 +121,10 @@ class ActivityServiceImpl implements ActivityService {
             )
             .toList(),
         isCancelable: d.isCancelable,
-        billTotal: d.transaction?.total ?? 0,
+        billTotal: (d.transaction?.total ?? 0) - (d.transaction?.fee ?? 0),
         point: d.transaction?.awardPoint ?? 0,
         serviceFee: d.transaction?.fee ?? 0,
-        itemTotal: (d.transaction?.total ?? 0) - (d.transaction?.fee ?? 0),
+        itemTotal: d.transaction?.total ?? 0,
         collectorName: d.collectorInfo?.name ?? Symbols.empty,
         collectorRating: d.collectorInfo?.rating ?? 0,
         collectorPhoneNumber: d.collectorInfo?.phone ?? Symbols.empty,
