@@ -1,4 +1,4 @@
-# seller_app
+# SCSS.Mobile.Seller
 
 A new Flutter project.
 
